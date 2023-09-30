@@ -1,0 +1,168 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "View" {
+    class MainView {
+        +main(): void
+    }
+}
+
+package "Controller" {
+    class OnlineStore {
+        +main(args: String[]): void
+    }
+
+    class Controller {
+        -data: Data
+        +Controller(data: Data)
+        +manageCustomers(): void
+        +manageItems(): void
+        +manageOrders(): void
+    }
+}
+
+package "Model" {
+    class Data {
+        -customers: CustomerList
+        -orders: OrderList
+        -items: ItemList
+        +Data()
+        +getCustomers(): CustomerList
+        +getOrders(): OrderList
+        +getItems(): ItemList
+    }
+
+    package "Lists" {
+        class CustomerList {
+            -customers: List<Customer>
+            +addCustomer(customer: Customer): void
+            +removeCustomer(customer: Customer): void
+            +getCustomers(): List<Customer>
+            +filterCustomersByType(type: CustomerType): List<Customer>
+        }
+
+        class OrderList {
+            -orders: List<Order>
+            +addOrder(order: Order): void
+            +removeOrder(order: Order): void
+            +getOrders(): List<Order>
+            +filterOrdersByCustomer(customer: Customer): List<Order>
+        }
+
+        class ItemList {
+            -items: List<Item>
+            +addItem(item: Item): void
+            +removeItem(item: Item): void
+            +getItems(): List<Item>
+        }
+    }
+
+    abstract class Customer {
+        -name: String
+        -address: String
+        -id: String
+        -email: String
+        -membershipFee: double
+        -customerType: CustomerType
+        +Customer(name: String, address: String, id: String, email: String, membershipFee: double, customerType: CustomerType)
+        +getName(): String
+        +setName(name: String): void
+        +getAddress(): String
+        +setAddress(address: String): void
+        +getId(): String
+        +setId(id: String): void
+        +getEmail(): String
+        +setEmail(email: String): void
+        +getMembershipFee(): double
+        +setMembershipFee(membershipFee: double): void
+        +getCustomerType(): CustomerType
+        +setCustomerType(customerType: CustomerType): void
+    }
+
+    class StandardCustomer {
+        +StandardCustomer(name: String, address: String, id: String, email: String)
+    }
+
+    class PremiumCustomer {
+        -shippingDiscount: double
+        +PremiumCustomer(name: String, address: String, id: String, email: String, shippingDiscount: double)
+        +getShippingDiscount(): double
+        +setShippingDiscount(shippingDiscount: double): void
+    }
+
+    abstract class Item {
+        -code: String
+        -description: String
+        -sellingPrice: double
+        -shippingCost: double
+        -preparationTimeMinutes: int
+        +Item(code: String, description: String, sellingPrice: double, shippingCost: double, preparationTimeMinutes: int)
+        +getCode(): String
+        +setCode(code: String): void
+        +getDescription(): String
+        +setDescription(description: String): void
+        +getSellingPrice(): double
+        +setSellingPrice(sellingPrice: double): void
+        +getShippingCost(): double
+        +setShippingCost(shippingCost: double): void
+        +getPreparationTimeMinutes(): int
+        +setPreparationTimeMinutes(preparationTimeMinutes: int): void
+    }
+
+    abstract class Order {
+        -orderNumber: int
+        -customer: Customer
+        -item: Item
+        -quantityUnits: int
+        -orderDateTime: DateTime
+        -preparationTimeMinutes: int
+        +Order(orderNumber: int, customer: Customer, item: Item, quantityUnits: int, orderDateTime: DateTime, preparationTimeMinutes: int)
+        +getOrderNumber(): int
+        +setOrderNumber(orderNumber: int): void
+        +getCustomer(): Customer
+        +setCustomer(customer: Customer): void
+        +getItem(): Item
+        +setItem(item: Item): void
+        +getQuantityUnits(): int
+        +setQuantityUnits(quantityUnits: int): void
+        +getOrderDateTime(): DateTime
+        +setOrderDateTime(orderDateTime: DateTime): void
+        +getPreparationTimeMinutes(): int
+        +setPreparationTimeMinutes(preparationTimeMinutes: int): void
+        +calculateOrderPrice(): double
+        +isCancelable(): boolean
+    }
+
+    enum CustomerType {
+        STANDARD
+        PREMIUM
+    }
+
+    enum TimeUnit {
+        DAYS
+        HOURS
+        MINUTES
+        SECONDS
+    }
+
+    interface List
+    interface Collection
+
+    List <|-- AbstractList
+    Collection <|-- AbstractCollection
+
+    Collection <|- List
+    AbstractCollection <|- AbstractList
+    AbstractList <|-- ArrayList
+
+    class ArrayList {
+        -elementData: Object[]
+        +size(): int
+    }
+
+    Customer -- Order : Places
+    StandardCustomer --|> Customer
+    PremiumCustomer --|> Customer
+    Order -- Item : Contains
+}
+@enduml
