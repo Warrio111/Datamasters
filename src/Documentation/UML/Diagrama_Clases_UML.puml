@@ -160,9 +160,16 @@ package "Model" {
         +size(): int
     }
 
-    Customer -- Order : Places
+    Customer o-- Order : Places
     StandardCustomer --|> Customer
     PremiumCustomer --|> Customer
-    Order -- Item : Contains
+    Order --o Item : Contains
+    Data --* Lists : Contains
+    CustomerList --* Customer : Contains
+    OrderList --* Order : Contains
+    ItemList --* Item : Contains
+
 }
+Model::Data o-- Controller::Controller : Aggregates
+Controller::Controller o-- View::MainView : Aggregates
 @enduml
