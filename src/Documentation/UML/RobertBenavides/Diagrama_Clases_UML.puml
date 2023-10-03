@@ -78,9 +78,10 @@ package "Model" {
         -address: String
         -id: String
         -email: String
-        -membershipFee: double
-        -customerType: CustomerType
-        +Customer(name: String, address: String, id: String, email: String, membershipFee: double, customerType: CustomerType)
+        #customerType: CustomerType
+        #membershipFee: double
+        #shippingDiscount: double
+        +Customer(name: String, address: String, id: String, email: String,  customerType: CustomerType, membershipFee: double,shippingDiscount: double)
         +getName(): String
         +setName(name: String): void
         +getAddress(): String
@@ -93,19 +94,25 @@ package "Model" {
         +setMembershipFee(membershipFee: double): void
         +getCustomerType(): CustomerType
         +setCustomerType(customerType: CustomerType): void
+        {abstract} +typeCustomer(): CustomerType
+        {abstract} +calculateMembershipFee(): double
+        {abstract} +shippingDiscount(): double
         +toString(): String
     }
 
     class StandardCustomer {
         +StandardCustomer(name: String, address: String, id: String, email: String)
+         +typeCustomer(): CustomerType
+         +calculateMembershipFee(): double
+         +shippingDiscount(): double
         +toString(): String
     }
 
     class PremiumCustomer {
-        -shippingDiscount: double
-        +PremiumCustomer(name: String, address: String, id: String, email: String, shippingDiscount: double)
-        +getShippingDiscount(): double
-        +setShippingDiscount(shippingDiscount: double): void
+        +PremiumCustomer(name: String, address: String, id: String, email: String, membershipFee: double,shippingDiscount: double)
+         +typeCustomer(): CustomerType
+         +calculateMembershipFee(): double
+         +shippingDiscount(): double
         +toString(): String
     }
 
@@ -183,10 +190,10 @@ package "Model" {
         +toString(): String
     }
 
-    Customer o-- Order : Places
+    Customer "1" *-- "1"Order : Places
     StandardCustomer --|> Customer
     PremiumCustomer --|> Customer
-    Order --o Item : Contains
+    Order "1" --* "1" Item : Contains
     Data "1" --* "*" List : Contains
     CustomerList "1" --* "*" Customer : Contains
     OrderList "1" --* "*" Order : Contains
