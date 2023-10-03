@@ -160,14 +160,14 @@ package "Model" {
         +size(): int
     }
 
-    Customer o-- Order : Places
+    Customer *-- Order : Places
     StandardCustomer --|> Customer
     PremiumCustomer --|> Customer
     Order --o Item : Contains
-    Data --* Lists : Contains
-    CustomerList --* Customer : Contains
-    OrderList --* Order : Contains
-    ItemList --* Item : Contains
+    Data --o Lists : Contains
+    CustomerList --o Customer : Contains
+    OrderList --o Order : Contains
+    ItemList --o Item : Contains
 
 }
 Model::Data o-- Controller::Controller : Aggregates
