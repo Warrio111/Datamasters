@@ -1,0 +1,72 @@
+@startuml
+skinparam actorStyle awesome
+left to right direction
+package Interfaces {
+:Artículo: as (Articulo)
+:Pedido: as (Pedido)
+:Cliente: as Cliente
+}
+(Use the application) as (Use)
+
+User -> (Start)
+User --> (Use)
+
+:Admin: as Admin
+Admin -> (Start)
+Admin ---> (Use)
+rectangle System {
+' Casos de Uso para la Gestión de Artículos
+:Gestión Artículos: as (GestionArticulos)
+:Añadir Articulo: as (AnadirArticulo)
+:Mostrar Artículos: as (MostrarArticulos)
+:Actualizar Artículos: as (ActualizarArticulos)
+:Eliminar Artículos: as (EliminarArticulos)
+:Aplicar 20% de descuento: as (Aplicar 20% de descuento)
+:Pedir datos nuevo cliente: as (Pedir datos nuevo cliente)
+
+' Casos de Uso para la Gestión de Clientes
+:Gestión de Clientes: as (GestionClientes)
+:Añadir Clientes: as (AnadirClientes)
+:Mostrar Clientes: as (MostrarClientes)
+:Mostrar Clientes Tipos: as (MostrarClientesTipo)
+:Actualizar Cliente: as (ActualizarCliente)
+:Eliminar Cliente: as (EliminarCliente)
+
+' Casos de Uso para la Gestión de Pedidos
+:Gestión de Pedidos: as (GestionPedidos)
+:Añadir Pedido: as (AnadirPedido)
+:Eliminar Pedido: as (EliminarPedido)
+:Mostrar pedidos pendientes de envío: as (MostrarPedidosPend)
+:Mostrar pedidos enviados: as (MostrarPedidosEnviados)
+:Actualizar Pedido: as (ActualizarPedido)
+}
+
+
+' Relaciones entre los Actores y los Casos de Uso
+
+Admin --> GestionArticulos : Realiza
+Admin --> GestionClientes : Realiza
+Admin --> GestionPedidos : Realiza
+User --> GestionPedidos : Realiza
+
+
+' Relaciones entre los Casos de Uso
+(GestionArticulos) --> (AnadirArticulo) : <<include>>
+(AnadirArticulo) --> (Aplicar 20% de descuento) : <<extends>>
+(AnadirArticulo) --> (Pedir datos nuevo cliente) : <<extends>>
+(GestionArticulos) --> MostrarArticulos : <<include>>
+(GestionArticulos) --> ActualizarArticulos : <<include>>
+(GestionArticulos) --> EliminarArticulos : <<include>>
+(GestionClientes) --> AnadirClientes : <<include>>
+(GestionClientes) --> MostrarClientes : <<include>>
+(GestionClientes) --> MostrarClientesTipo : <<include>>
+(GestionClientes) --> ActualizarCliente : <<include>>
+(GestionClientes) --> EliminarCliente : <<include>>
+(GestionPedidos) --> AnadirPedido : <<include>>
+(GestionPedidos) --> MostrarPedidosPend : <<include>>
+(GestionPedidos) --> MostrarPedidosEnviados : <<include>>
+(GestionPedidos) --> ActualizarPedido : <<include>>
+(GestionPedidos) --> EliminarPedido : <<include>>
+
+
+@enduml

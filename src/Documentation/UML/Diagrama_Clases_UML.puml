@@ -1,0 +1,210 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "View" {
+    class OnlineStore {
+       {static} +main(args: String[]): void
+    }
+    class ManageOS {
+        - controller: Controller
+        + ManageOS()
+        + ManageOS(controller: Controller)
+        + ManageOS(manageOS: ManageOS)
+        + run(): void
+        +manageCustomers(): void
+        +manageItems(): void
+        +manageOrders(): void
+    }
+}
+
+package "Controller" {
+    class Controller {
+        -data: Data
+        +Controller()
+        +Controller(data: Data)
+        +Controller(controller: Controller)
+    }
+
+    class ExceptionHandler {
+        +handleException(ex: Exception): void
+    }
+
+    class TestController {
+        +runTests(): void
+    }
+}
+
+package "Model" {
+    class Data {
+        -customersList: CustomerList
+        -ordersList: OrderList
+        -itemsList: ItemList
+        +Data()
+        +Data(customersList: CustomerList, ordersList: OrderList, itemsList: ItemList)
+        +Data(data: Data)
+        +getCustomers(): CustomerList
+        +getOrders(): OrderList
+        +getItems(): ItemList
+        +toString(): String
+    }
+
+    package "Lists" {
+        class CustomerList {
+            -customers: List<Customer>
+            +addCustomer(customer: Customer): void
+            +removeCustomer(customer: Customer): void
+            +getCustomers(): List<Customer>
+            +filterCustomersByType(type: CustomerType): List<Customer>
+        }
+
+        class OrderList {
+            -orders: List<Order>
+            +addOrder(order: Order): void
+            +removeOrder(order: Order): void
+            +getOrders(): List<Order>
+            +filterOrdersByCustomer(customer: Customer): List<Order>
+        }
+
+        class ItemList {
+            -items: List<Item>
+            +addItem(item: Item): void
+            +removeItem(item: Item): void
+            +getItems(): List<Item>
+        }
+    }
+
+    abstract class Customer {
+        -name: String
+        -address: String
+        -id: String
+        -email: String
+        #customerType: CustomerType
+        #membershipFee: double
+        #shippingDiscount: double
+        +Customer(name: String, address: String, id: String, email: String,  customerType: CustomerType, membershipFee: double,shippingDiscount: double)
+        +getName(): String
+        +setName(name: String): void
+        +getAddress(): String
+        +setAddress(address: String): void
+        +getId(): String
+        +setId(id: String): void
+        +getEmail(): String
+        +setEmail(email: String): void
+        +getMembershipFee(): double
+        +setMembershipFee(membershipFee: double): void
+        +getCustomerType(): CustomerType
+        +setCustomerType(customerType: CustomerType): void
+        {abstract} +typeCustomer(): CustomerType
+        {abstract} +calculateMembershipFee(): double
+        {abstract} +shippingDiscount(): double
+        +toString(): String
+    }
+
+    class StandardCustomer {
+        +StandardCustomer(name: String, address: String, id: String, email: String)
+         +typeCustomer(): CustomerType
+         +calculateMembershipFee(): double
+         +shippingDiscount(): double
+        +toString(): String
+    }
+
+    class PremiumCustomer {
+        +PremiumCustomer(name: String, address: String, id: String, email: String, membershipFee: double,shippingDiscount: double)
+         +typeCustomer(): CustomerType
+         +calculateMembershipFee(): double
+         +shippingDiscount(): double
+        +toString(): String
+    }
+
+    abstract class Item {
+        -code: String
+        -description: String
+        -sellingPrice: double
+        -shippingCost: double
+        -preparationTimeMinutes: int
+        +Item()
+        +Item(code: String, description: String, sellingPrice: double, shippingCost: double, preparationTimeMinutes: int)
+        +Item(item: Item)
+        +getCode(): String
+        +setCode(code: String): void
+        +getDescription(): String
+        +setDescription(description: String): void
+        +getSellingPrice(): double
+        +setSellingPrice(sellingPrice: double): void
+        +getShippingCost(): double
+        +setShippingCost(shippingCost: double): void
+        +getPreparationTimeMinutes(): int
+        +setPreparationTimeMinutes(preparationTimeMinutes: int): void
+        +toString(): String
+    }
+
+    abstract class Order {
+        -orderNumber: int
+        -customer: Customer
+        -item: Item
+        -quantityUnits: int
+        -orderDateTime: DateTime
+        -preparationTimeMinutes: int
+        +Order()
+        +Order(orderNumber: int, customer: Customer, item: Item, quantityUnits: int, orderDateTime: DateTime, preparationTimeMinutes: int)
+        +Order(order: Order)
+        +getOrderNumber(): int
+        +setOrderNumber(orderNumber: int): void
+        +getCustomer(): Customer
+        +setCustomer(customer: Customer): void
+        +getItem(): Item
+        +setItem(item: Item): void
+        +getQuantityUnits(): int
+        +setQuantityUnits(quantityUnits: int): void
+        +getOrderDateTime(): DateTime
+        +setOrderDateTime(orderDateTime: DateTime): void
+        +getPreparationTimeMinutes(): int
+        +setPreparationTimeMinutes(preparationTimeMinutes: int): void
+        +calculateOrderPrice(): double
+        +isCancelable(): boolean
+        +toString(): String
+    }
+
+    enum CustomerType {
+        STANDARD
+        PREMIUM
+    }
+
+    enum TimeUnit {
+        DAYS
+        HOURS
+        MINUTES
+        SECONDS
+    }
+
+    class List<T> {
+        -list: ArrayList<T>
+        +List()
+        +getSize(): int
+        +add(t: T): void
+        +delete(t: T): void
+        +getAt(position: int): T
+        +clear(): void
+        +isEmpty(): boolean
+        +getArrayList(): ArrayList<T>
+        +toString(): String
+    }
+
+    Customer "1" *-- "1"Order : Places
+    StandardCustomer --|> Customer
+    PremiumCustomer --|> Customer
+    Order "1" --* "1" Item : Contains
+    Data "1" --* "*" List : Contains
+    CustomerList "1" --* "*" Customer : Contains
+    OrderList "1" --* "*" Order : Contains
+    ItemList "1" --* "*" Item : Contains
+}
+
+Model::Data o-- Controller::Controller : Aggregates[1]
+Controller::Controller o-- View::OnlineStore : Aggregates[1]
+Controller::Controller -down-> ExceptionHandler : Uses
+Controller::Controller -down-> TestController : Uses
+ExceptionHandler <|-- TestController : Implements
+ExceptionHandler -down-> Exception : Throws
+TestController -down-> JUnit : Uses
+@enduml
