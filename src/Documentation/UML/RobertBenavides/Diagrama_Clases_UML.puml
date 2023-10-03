@@ -5,16 +5,6 @@ package "View" {
     class OnlineStore {
        {static} +main(args: String[]): void
     }
-}
-
-package "Controller" {
-    class Controller {
-        -data: Data
-        +Controller()
-        +Controller(data: Data)
-        +Controller(controller: Controller)
-    }
-
     class ManageOS {
         - controller: Controller
         + ManageOS()
@@ -24,6 +14,15 @@ package "Controller" {
         +manageCustomers(): void
         +manageItems(): void
         +manageOrders(): void
+    }
+}
+
+package "Controller" {
+    class Controller {
+        -data: Data
+        +Controller()
+        +Controller(data: Data)
+        +Controller(controller: Controller)
     }
 
     class ExceptionHandler {
@@ -116,7 +115,9 @@ package "Model" {
         -sellingPrice: double
         -shippingCost: double
         -preparationTimeMinutes: int
+        +Item()
         +Item(code: String, description: String, sellingPrice: double, shippingCost: double, preparationTimeMinutes: int)
+        +Item(item: Item)
         +getCode(): String
         +setCode(code: String): void
         +getDescription(): String
@@ -137,7 +138,9 @@ package "Model" {
         -quantityUnits: int
         -orderDateTime: DateTime
         -preparationTimeMinutes: int
+        +Order()
         +Order(orderNumber: int, customer: Customer, item: Item, quantityUnits: int, orderDateTime: DateTime, preparationTimeMinutes: int)
+        +Order(order: Order)
         +getOrderNumber(): int
         +setOrderNumber(orderNumber: int): void
         +getCustomer(): Customer
@@ -184,14 +187,14 @@ package "Model" {
     StandardCustomer --|> Customer
     PremiumCustomer --|> Customer
     Order --o Item : Contains
-    Data --* List : Contains
-    CustomerList --* Customer : Contains
-    OrderList --* Order : Contains
-    ItemList --* Item : Contains
+    Data "1" --* "*" List : Contains
+    CustomerList "1" --* "*" Customer : Contains
+    OrderList "1" --* "*" Order : Contains
+    ItemList "1" --* "*" Item : Contains
 }
 
-Model::Data o-- Controller::Controller : Aggregates
-Controller::Controller o-- View::OnlineStore : Aggregates
+Model::Data o-- Controller::Controller : Aggregates[1]
+Controller::Controller o-- View::OnlineStore : Aggregates[1]
 Controller::Controller -down-> ExceptionHandler : Uses
 Controller::Controller -down-> TestController : Uses
 ExceptionHandler <|-- TestController : Implements

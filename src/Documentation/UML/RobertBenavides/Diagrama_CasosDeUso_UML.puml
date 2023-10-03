@@ -21,6 +21,8 @@ rectangle System {
 :Mostrar Artículos: as (MostrarArticulos)
 :Actualizar Artículos: as (ActualizarArticulos)
 :Eliminar Artículos: as (EliminarArticulos)
+:Aplicar 20% de descuento: as (Aplicar 20% de descuento)
+:Pedir datos nuevo cliente: as (Pedir datos nuevo cliente)
 
 ' Casos de Uso para la Gestión de Clientes
 :Gestión de Clientes: as (GestionClientes)
@@ -49,7 +51,9 @@ User --> GestionPedidos : Realiza
 
 
 ' Relaciones entre los Casos de Uso
-(GestionArticulos) --> AnadirArticulo : <<include>>
+(GestionArticulos) --> (AnadirArticulo) : <<include>>
+(AnadirArticulo) --> (Aplicar 20% de descuento) : <<extends>>
+(AnadirArticulo) --> (Pedir datos nuevo cliente) : <<extends>>
 (GestionArticulos) --> MostrarArticulos : <<include>>
 (GestionArticulos) --> ActualizarArticulos : <<include>>
 (GestionArticulos) --> EliminarArticulos : <<include>>
