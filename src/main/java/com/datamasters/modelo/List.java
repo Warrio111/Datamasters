@@ -100,6 +100,18 @@ public class List<T> {
         return arrayList;
     }
 
+    public void setAt(int position, T value) {
+        if (position < 0 || position >= size) {
+            throw new IndexOutOfBoundsException("Index: " + position + ", Size: " + size);
+        }
+        Node<T> current = first;
+        for (int i = 0; i < position; i++) {
+            current = current.getNext();
+        }
+        current.setValue(value);
+    }
+
+
     private static class Node<T> {
         private T value;
         private Node<T> next;
@@ -127,6 +139,10 @@ public class List<T> {
             this.previous = previous;
         }
 
+
+        public void setValue(T value) {
+            this.value = value;
+        }
 
     }
 }
