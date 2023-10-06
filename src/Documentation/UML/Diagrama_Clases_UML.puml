@@ -193,11 +193,11 @@ package "Model" {
     Customer "1" *-- "1"Order : Places
     StandardCustomer --|> Customer
     PremiumCustomer --|> Customer
-    Order "1" --* "1" Item : Contains
-    Data "1" --* "*" List : Contains
-    CustomerList "1" --* "*" Customer : Contains
-    OrderList "1" --* "*" Order : Contains
-    ItemList "1" --* "*" Item : Contains
+    Order "1" --o "1" Item : Contains
+    Data "1" --o "*" List : Contains
+    CustomerList "1" --o "*" Customer : Contains
+    OrderList "1" --o "*" Order : Contains
+    ItemList "1" --o "*" Item : Contains
 }
 
 Model::Data o-- Controller::Controller : Aggregates[1]
