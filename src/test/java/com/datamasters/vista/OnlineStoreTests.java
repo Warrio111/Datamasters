@@ -1,10 +1,10 @@
-package com.datamasters.web;
+package com.datamasters.vista;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WebApplicationTests {
+class OnlineStoreTests {
 
 	@Test
 	void contextLoads() {
