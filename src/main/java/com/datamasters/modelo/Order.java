@@ -11,9 +11,6 @@ public class Order {
     private int preparationTimeMinutes;
 
     public Order(int orderNumber, Customer customer, Item item, int quantityUnits, LocalDateTime orderDateTime) {
-        if (orderDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("La fecha y hora del pedido no puede ser en el pasado.");
-        }
         this.orderNumber = orderNumber;
         this.customer = customer;
         this.item = item;
