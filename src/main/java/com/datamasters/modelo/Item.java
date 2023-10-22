@@ -1,6 +1,6 @@
 package com.datamasters.modelo;
 
-public abstract class Item {
+public  class Item {
     private String code;
     private String description;
     private double sellingPrice;
@@ -13,6 +13,9 @@ public abstract class Item {
 
     // Constructor con parámetros
     public Item(String code, String description, double sellingPrice, double shippingCost, int preparationTimeMinutes) {
+        if (preparationTimeMinutes < 0) {
+            throw new IllegalArgumentException("El tiempo de preparación no puede ser negativo.");
+        }
         this.code = code;
         this.description = description;
         this.sellingPrice = sellingPrice;

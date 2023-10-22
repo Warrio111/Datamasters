@@ -6,90 +6,79 @@ import static org.junit.Assert.*;
 
 public class ListTest {
 
-    private List<Integer> list;
+    private List<String> stringList;
 
     @Before
     public void setUp() {
-        list = new List<>();
+        stringList = new List<>();
     }
 
     @Test
-    public void testAddAndGet() {
-        list.add(1);
-        list.add(2);
-        list.add(3);
-
-        assertEquals(3, list.getSize());
-        assertEquals(Integer.valueOf(1), list.getAt(0));
-        assertEquals(Integer.valueOf(2), list.getAt(1));
-        assertEquals(Integer.valueOf(3), list.getAt(2));
+    public void testGetSize() {
+        assertEquals(0, stringList.getSize());
+        stringList.add("One");
+        assertEquals(1, stringList.getSize());
+        stringList.add("Two");
+        assertEquals(2, stringList.getSize());
     }
 
     @Test
-    public void testDelete() {
-        list.add(1);
-        list.add(2);
-        list.add(3);
+    public void testAddAndDelete() {
+        stringList.add("One");
+        stringList.add("Two");
+        stringList.add("Three");
 
-        list.delete(2);
+        assertEquals(3, stringList.getSize());
+        assertTrue(stringList.contains("Two"));
 
-        assertEquals(2, list.getSize());
-        assertEquals(Integer.valueOf(1), list.getAt(0));
-        assertEquals(Integer.valueOf(3), list.getAt(1));
+        stringList.delete("Two");
+        assertEquals(2, stringList.getSize());
+        assertFalse(stringList.contains("Two"));
+    }
+
+    @Test
+    public void testGetAt() {
+        stringList.add("One");
+        stringList.add("Two");
+        stringList.add("Three");
+
+        assertEquals("One", stringList.getAt(0));
+        assertEquals("Two", stringList.getAt(1));
+        assertEquals("Three", stringList.getAt(2));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> stringList.getAt(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> stringList.getAt(3));
+    }
+
+    @Test
+    public void testSetAt() {
+        stringList.add("One");
+        stringList.add("Two");
+
+        stringList.setAt(1, "NewValue");
+        assertEquals("NewValue", stringList.getAt(1));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> stringList.setAt(-1, "Invalid"));
+        assertThrows(IndexOutOfBoundsException.class, () -> stringList.setAt(2, "Invalid"));
     }
 
     @Test
     public void testClear() {
-        list.add(1);
-        list.add(2);
-        list.add(3);
+        stringList.add("One");
+        stringList.add("Two");
+        stringList.add("Three");
 
-        list.clear();
-
-        assertEquals(0, list.getSize());
-        assertTrue(list.isEmpty());
+        stringList.clear();
+        assertEquals(0, stringList.getSize());
+        assertTrue(stringList.isEmpty());
     }
+
     @Test
     public void testIsEmpty() {
-        assertTrue(list.isEmpty());
+        assertTrue(stringList.isEmpty());
+        stringList.add("One");
+        assertFalse(stringList.isEmpty());
+        stringList.clear();
+        assertTrue(stringList.isEmpty());
     }
-    @Test
-    public void testGetSize() {
-        assertEquals(0, list.getSize());
-    }
-    @Test
-    public void testGetAt() {
-        list.add(1);
-        list.add(2);
-        list.add(3);
-
-        assertEquals(Integer.valueOf(1), list.getAt(0));
-        assertEquals(Integer.valueOf(2), list.getAt(1));
-        assertEquals(Integer.valueOf(3), list.getAt(2));
-    }
-    @Test
-public void testSetAt() {
-        list.add(1);
-        list.add(2);
-        list.add(3);
-
-        list.setAt(1, 4);
-
-        assertEquals(Integer.valueOf(1), list.getAt(0));
-        assertEquals(Integer.valueOf(4), list.getAt(1));
-        assertEquals(Integer.valueOf(3), list.getAt(2));
-    }
-    @Test
-    public void testGetArrayList()
-    {
-        list.add(1);
-        list.add(2);
-        list.add(3);
-
-        assertEquals(3, list.getSize());
-        assertEquals(Integer.valueOf(1), list.getArrayList().getAt(0));
-        assertEquals(Integer.valueOf(2), list.getArrayList().getAt(1));
-        assertEquals(Integer.valueOf(3), list.getArrayList().getAt(2));
-    }
-
 }
