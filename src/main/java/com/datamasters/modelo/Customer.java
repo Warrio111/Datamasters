@@ -51,9 +51,7 @@ public abstract class Customer {
         this.email = email;
     }
 
-    public double getMembershipFee() {
-        return membershipFee;
-    }
+    public double getMembershipFee() { return this.membershipFee; }
 
     public void setMembershipFee(double membershipFee) {
         this.membershipFee = membershipFee;
@@ -62,7 +60,6 @@ public abstract class Customer {
     public CustomerType getCustomerType() {
         return customerType;
     }
-
     public void setCustomerType(CustomerType customerType) {
         this.customerType = customerType;
     }

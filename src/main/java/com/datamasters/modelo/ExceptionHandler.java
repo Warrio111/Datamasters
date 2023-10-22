@@ -1,4 +1,4 @@
-package com.datamasters.controlador;
+package com.datamasters.modelo;
 
 import java.io.FileWriter;
 import java.io.IOException;

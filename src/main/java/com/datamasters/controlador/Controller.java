@@ -9,7 +9,7 @@ public class Controller {
     private final Data data;
 
     public Controller() {
-        data = new Data();
+        this.data = new Data();
     }
 
     public Controller(Data data) {

@@ -1,148 +1,97 @@
 package com.datamasters.modelo;
-/*
-This is our personal implementation of double ciruclar linked list in Java
-Robert has studied this topic in the past and he has implemented this code from scratch
-You can find the Udemy mastering data structures and algorithms course from Abdul Bari:
-https://www.udemy.com/course/datastructurescncpp/
- */
+import java.util.ArrayList;
 public class List<T> {
-    private Node<T> first;
-    private Node<T> last;
-    private int size;
-
-    public List() {
-        first = null;
-        last = null;
-        size = 0;
+protected  ArrayList<T> list;
+    public List()
+    {
+        list = new ArrayList<>();
     }
-
-    public int getSize() {
-        return size;
+    public int getSize()
+    {
+        return list.size();
     }
-
-    public void add(T t) {
-        Node<T> newNode = new Node<>(t);
-        if (isEmpty()) {
-            first = newNode;
-            last = newNode;
-            first.setNext(last);
-            last.setPrevious(first);
-        } else {
-            newNode.setPrevious(last);
-            last.setNext(newNode);
-            last = newNode;
-            last.setNext(first);
-            first.setPrevious(last);
+    public void add(T element)
+    {
+        list.add(element);
+    }
+    public void delete(T element)
+    {
+        list.remove(element);
+    }
+    public T getAt(int index)
+    {
+        if(index < 0 || index >= list.size() || !list.isEmpty())
+        {
+            return list.get(index);
         }
-        size++;
-    }
-
-    public void delete(T t) {
-        if (isEmpty()) {
-            return;
-        }
-        Node<T> current = first;
-        while (current != null) {
-            if (current.getValue().equals(t)) {
-                if (size == 1) {
-                    first = null;
-                    last = null;
-                } else if (current == first) {
-                    first = current.getNext();
-                    first.setPrevious(last);
-                    last.setNext(first);
-                } else if (current == last) {
-                    last = current.getPrevious();
-                    last.setNext(first);
-                    first.setPrevious(last);
-                } else {
-                    current.getPrevious().setNext(current.getNext());
-                    current.getNext().setPrevious(current.getPrevious());
-                }
-                size--;
-                return;
-            }
-            current = current.getNext();
+        else {
+            throw  new IndexOutOfBoundsException("Index: " + index + ", Size: " + list.size());
         }
     }
-
-    public T getAt(int position) {
-        if (position < 0 || position >= size) {
-            throw new IndexOutOfBoundsException("Index: " + position + ", Size: " + size);
+    public void setAt(int index, T element)
+    {
+        if(index < 0 || index >= list.size()|| !list.isEmpty())
+        {
+            list.set(index, element);
         }
-        Node<T> current = first;
-        for (int i = 0; i < position; i++) {
-            current = current.getNext();
+        else {
+            throw  new IndexOutOfBoundsException("Index: " + index + ", Size: " + list.size());
         }
-        return current.getValue();
     }
-
-    public void clear() {
-        first = null;
-        last = null;
-        size = 0;
+    public void clear()
+    {
+        list.clear();
     }
-
-    public boolean isEmpty() {
-        return size == 0;
+    public boolean isEmpty()
+    {
+        return list.isEmpty();
     }
-
-    public List<T> getArrayList() {
-        List<T> arrayList = new List<>();
-        Node<T> current = first;
-        while (current != null) {
-            arrayList.add(current.getValue());
-            current = current.getNext();
-            if(current == first) {
-                break;
-            }
-        }
-        return arrayList;
+    public boolean contains(T element)
+    {
+        return list.contains(element);
     }
-
-    public void setAt(int position, T value) {
-        if (position < 0 || position >= size) {
-            throw new IndexOutOfBoundsException("Index: " + position + ", Size: " + size);
-        }
-        Node<T> current = first;
-        for (int i = 0; i < position; i++) {
-            current = current.getNext();
-        }
-        current.setValue(value);
+    public int indexOf(T element)
+    {
+        return list.indexOf(element);
     }
-
-
-    private static class Node<T> {
-        private T value;
-        private Node<T> next;
-        private Node<T> previous;
-        public Node(T value) {
-            this.value = value;
-            this.next = null;
-            this.previous = null;
-        }
-
-        public T getValue() {
-            return value;
-        }
-
-        public Node<T> getNext() {
-            return this.next;
-        }
-        public void setNext(Node<T> next) {
-            this.next = next;
-        }
-        public  Node<T> getPrevious() {
-            return this.previous;
-        }
-        public  void setPrevious(Node<T> previous) {
-            this.previous = previous;
-        }
-
-
-        public void setValue(T value) {
-            this.value = value;
-        }
-
+    public int lastIndexOf(T element)
+    {
+        return list.lastIndexOf(element);
+    }
+    public T[] toArray()
+    {
+        return (T[]) list.toArray();
+    }
+    public T[] toArray(T[] array)
+    {
+        return list.toArray(array);
+    }
+    public T getFirst()
+    {
+        return list.get(0);
+    }
+    public T getLast()
+    {
+        return list.get(list.size() - 1);
+    }
+    public void removeFirst()
+    {
+        list.remove(0);
+    }
+    public void removeLast()
+    {
+        list.remove(list.size() - 1);
+    }
+    public ArrayList<T> getArrayList()
+    {
+        return new ArrayList<>(list);
+    }
+    public void setArrayList(ArrayList<T> list)
+    {
+        this.list = list;
+    }
+    public void addAll(List<T> list)
+    {
+        this.list.addAll(list.getArrayList());
     }
 }

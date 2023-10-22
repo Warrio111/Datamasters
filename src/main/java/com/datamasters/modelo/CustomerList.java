@@ -1,28 +1,19 @@
 package com.datamasters.modelo;
 
-public class CustomerList {
-    private final List<Customer> customers;
-
+public class CustomerList extends List<Customer> {
     public CustomerList() {
-        customers = new List<>();
+        super(); // Call the constructor of the parent class
     }
+    public void addCustomer(Customer customer) { add(customer); }
 
-    public void addCustomer(Customer customer) {
-        customers.add(customer);
-    }
+    public void removeCustomer(Customer customer) { delete(customer); }
 
-    public void removeCustomer(Customer customer) {
-        customers.delete(customer);
-    }
-
-    public List<Customer> getCustomers() {
-        return customers;
-    }
+    public List<Customer> getCustomers() { return this; }
 
     public List<Customer> filterCustomersByType(CustomerType type) {
         List<Customer> filteredCustomers = new List<>();
-        for (int i = 0; i < customers.getSize(); i++) {
-            Customer customer = customers.getAt(i);
+        for (int i = 0; i < getSize(); i++) {
+            Customer customer = getAt(i);
             if (customer.getCustomerType() == type) {
                 filteredCustomers.add(customer);
             }

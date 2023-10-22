@@ -10,14 +10,17 @@ public class Order {
     private LocalDateTime orderDateTime;
     private int preparationTimeMinutes;
 
-    public Order(int orderNumber, Customer customer, Item item, int quantityUnits, LocalDateTime orderDateTime, int preparationTimeMinutes) {
+    public Order(int orderNumber, Customer customer, Item item, int quantityUnits, LocalDateTime orderDateTime) {
+        if (orderDateTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("La fecha y hora del pedido no puede ser en el pasado.");
+        }
         this.orderNumber = orderNumber;
         this.customer = customer;
         this.item = item;
         this.quantityUnits = quantityUnits;
         this.orderDateTime = orderDateTime;
-        this.preparationTimeMinutes = preparationTimeMinutes;
     }
+
 
     public int getOrderNumber() {
         return orderNumber;
@@ -60,23 +63,30 @@ public class Order {
     }
 
     public int getPreparationTimeMinutes() {
-        return preparationTimeMinutes;
+        return item.getPreparationTimeMinutes();
     }
 
     public void setPreparationTimeMinutes(int preparationTimeMinutes) {
-        this.preparationTimeMinutes = preparationTimeMinutes;
+        item.setPreparationTimeMinutes(preparationTimeMinutes);
     }
 
     public double calculateOrderPrice() {
+        if (quantityUnits < 0) {
+            throw new IllegalArgumentException("La cantidad de unidades no puede ser negativa.");
+        }
         double itemPrice = item.getSellingPrice() * quantityUnits;
         double shippingCost = item.getShippingCost();
         return itemPrice + shippingCost;
     }
 
-    public boolean isCancelable() {
-        LocalDateTime currentTime = LocalDateTime.now();
-        LocalDateTime cutoffTime = orderDateTime.minusMinutes(preparationTimeMinutes);
-        return currentTime.isBefore(cutoffTime);
+    public boolean orderIsSent(LocalDateTime currentTime) {
+        LocalDateTime cutoffTime = this.orderDateTime.plusMinutes(getPreparationTimeMinutes() * this.quantityUnits);
+        return currentTime.isAfter(cutoffTime);
+    }
+
+    public boolean isCancelable(LocalDateTime currentTime) {
+        LocalDateTime cutoffTime = this.orderDateTime.plusMinutes(getPreparationTimeMinutes() * this.quantityUnits);
+        return currentTime.isAfter(cutoffTime);
     }
 
     @Override
@@ -87,7 +97,9 @@ public class Order {
                 ", item=" + item +
                 ", quantityUnits=" + quantityUnits +
                 ", orderDateTime=" + orderDateTime +
-                ", preparationTimeMinutes=" + preparationTimeMinutes +
+                ", preparationTimeMinutes=" + getPreparationTimeMinutes() +
+                ", orderIsCancelable=" + isCancelable(LocalDateTime.now()) +
+                ", orderIsSent=" + orderIsSent(LocalDateTime.now()) +
                 '}';
     }
 }
