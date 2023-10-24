@@ -2,7 +2,7 @@ package com.datamasters.modelo;
 
 import java.time.LocalDateTime;
 
-public class Order {
+public class Orders {
     private int orderNumber;
     private Customer customer;
     private Item item;
@@ -10,15 +10,13 @@ public class Order {
     private LocalDateTime orderDateTime;
     private int preparationTimeMinutes;
 
-    public Order(int orderNumber, Customer customer, Item item, int quantityUnits, LocalDateTime orderDateTime) {
+    public Orders(int orderNumber, Customer customer, Item item, int quantityUnits, LocalDateTime orderDateTime) {
         this.orderNumber = orderNumber;
         this.customer = customer;
         this.item = item;
         this.quantityUnits = quantityUnits;
         this.orderDateTime = orderDateTime;
     }
-
-
     public int getOrderNumber() {
         return orderNumber;
     }
@@ -90,12 +88,15 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "orderNumber=" + orderNumber +
-                ", customer=" + customer +
-                ", item=" + item +
+                ", customer=" + customer.getId() +customer.getName() +
+                ", item=" + item.getCode() +item.getDescription() +
                 ", quantityUnits=" + quantityUnits +
+                ", Item price=  " + item.getSellingPrice()+
+                ", Order price= " + calculateOrderPrice() +
                 ", orderDateTime=" + orderDateTime +
                 ", preparationTimeMinutes=" + getPreparationTimeMinutes() +
                 ", orderIsCancelable=" + isCancelable(LocalDateTime.now()) +
+                ", shippingCost= " + item.getShippingCost()+
                 ", orderIsSent=" + orderIsSent(LocalDateTime.now()) +
                 '}';
     }

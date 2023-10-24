@@ -35,7 +35,7 @@ public class Controller {
         }
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(Orders order) {
         try {
             data.getOrders().addOrder(order);
         } catch (Exception ex) {
@@ -43,7 +43,7 @@ public class Controller {
         }
     }
 
-    public void removeOrder(Order order) {
+    public void removeOrder(Orders order) {
         try {
             data.getOrders().removeOrder(order);
         } catch (Exception ex) {
@@ -100,25 +100,25 @@ public class Controller {
     }
 
     public void deleteOrderByNumber(int orderNumber) {
-        Order order = findOrderByNumber(orderNumber);
+        Orders order = findOrderByNumber(orderNumber);
         if (order != null && !order.isCancelable(LocalDateTime.now())) {
             removeOrder(order);
         }
     }
-    public Order findOrderByNumber(int orderNumber) {
-        for (Order order : getOrders()) {
+    public Orders findOrderByNumber(int orderNumber) {
+        for (Orders order : getOrders()) {
             if (order.getOrderNumber() == orderNumber) {
                 return order;
             }
         }
         return null;
     }
-    public  ArrayList<Order> getOrders() {
+    public  ArrayList<Orders> getOrders() {
         return data.getOrders().getArrayList();
     }
-    public ArrayList<Order> getPendingOrders(String customer) {
-        ArrayList <Order> pendingOrders = new ArrayList<>();
-        for (Order order : getOrders()) {
+    public ArrayList<Orders> getPendingOrders(String customer) {
+        ArrayList <Orders> pendingOrders = new ArrayList<>();
+        for (Orders order : getOrders()) {
             if (order.getCustomer().getId().equals(customer) && !order.orderIsSent(LocalDateTime.now())) {
                 pendingOrders.add(order);
             }
@@ -126,9 +126,9 @@ public class Controller {
         return pendingOrders;
     }
 
-    public ArrayList<Order> getSentOrders(String customer) {
-        ArrayList <Order> sentOrders = new ArrayList<>();
-        for (Order order : getOrders()) {
+    public ArrayList<Orders> getSentOrders(String customer) {
+        ArrayList <Orders> sentOrders = new ArrayList<>();
+        for (Orders order : getOrders()) {
             if (order.getCustomer().getId().equals(customer) && order.orderIsSent(LocalDateTime.now())) {
                 sentOrders.add(order);
             }
