@@ -148,14 +148,17 @@ public class OrderTest {
     public void testToString() {
 
         String expected = "Order{" +
-                "orderNumber=1, " +
-                "customer=" + customer + ", " +
-                "item=" + item + ", " +
-                "quantityUnits=3, " +
-                "orderDateTime=" + order.getOrderDateTime() + ", " +
-                "preparationTimeMinutes=30, " +
-                "orderIsCancelable=false, " +
-                "orderIsSent=false}";
+                "orderNumber=1" +
+                ", customer=" + customer.getId() + customer.getName() +
+                ", item=" + item.getCode() +item.getDescription() +
+                ", quantityUnits=3" +
+                ", Item price=  " + item.getSellingPrice()+
+                ", Order price= " + order.calculateOrderPrice() +
+                ", orderDateTime=" + order.getOrderDateTime() +
+                ", preparationTimeMinutes=30" +
+                ", orderIsCancelable=false" +
+                ", shippingCost= " + item.getShippingCost()+
+                ", orderIsSent=false}";
         assertEquals(expected, order.toString());
     }
 }

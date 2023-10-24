@@ -88,7 +88,7 @@ public class Orders {
     public String toString() {
         return "Order{" +
                 "orderNumber=" + orderNumber +
-                ", customer=" + customer.getId() +customer.getName() +
+                ", customer=" + customer.getId() + customer.getName() +
                 ", item=" + item.getCode() +item.getDescription() +
                 ", quantityUnits=" + quantityUnits +
                 ", Item price=  " + item.getSellingPrice()+

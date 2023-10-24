@@ -106,7 +106,7 @@ public class TestController {
     @Test
     public void testAddOrder() {
         Item item = new Item("I001", "Sample Item", 10.0, 2.0, 30);
-        Order order = new Order(1, standardCustomer, item, 3, LocalDateTime.now().plusSeconds(1));
+        Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now().plusSeconds(1));
 
         controller.addOrder(order);
 
@@ -116,7 +116,7 @@ public class TestController {
     public void testRemoveOrder() {
 
         Item item = new Item("I001", "Sample Item", 10.0, 2.0, 30);
-        Order order = new Order(1, standardCustomer, item, 3, LocalDateTime.now());
+        Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now());
         controller.addOrder(order);
         assertEquals(1, controller.getOrders().size());
         controller.removeOrder(order);
@@ -162,7 +162,7 @@ public class TestController {
     public void testDeleteOrder() {
 
         Item item = new Item("I001", "Sample Item", 10.0, 2.0, 30);
-        Order order = new Order(1, standardCustomer, item, 3, LocalDateTime.now());
+        Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now());
 
         controller.addOrder(order);
         controller.deleteOrderByNumber(1);
@@ -175,13 +175,13 @@ public class TestController {
         Customer customer1 = new StandardCustomer("John Doe", "123 Main St", "C123", "john@example.com");
         Customer customer2 = new StandardCustomer("Jane Smith", "456 Elm St", "C456", "jane@example.com");
         Item item = new Item("I001", "Sample Item", 10.0, 2.0, 30);
-        Order order1 = new Order(1, customer1, item, 3, LocalDateTime.now().plusSeconds(1));
-        Order order2 = new Order(2, customer2, item, 3, LocalDateTime.now().plusSeconds(1));
+        Orders order1 = new Orders(1, customer1, item, 3, LocalDateTime.now().plusSeconds(1));
+        Orders order2 = new Orders(2, customer2, item, 3, LocalDateTime.now().plusSeconds(1));
 
         controller.addOrder(order1);
         controller.addOrder(order2);
 
-        ArrayList<Order> pendingOrders = controller.getPendingOrders("C123");
+        ArrayList<Orders> pendingOrders = controller.getPendingOrders("C123");
 
         assertEquals(1, pendingOrders.size());
         assertTrue(pendingOrders.get(0).getCustomer().getId().equals("C123"));
@@ -192,13 +192,13 @@ public class TestController {
         Customer customer1 = new StandardCustomer("John Doe", "123 Main St", "C123", "john@example.com");
         Customer customer2 = new StandardCustomer("Jane Smith", "456 Elm St", "C456", "jane@example.com");
         Item item = new Item("I001", "Sample Item", 10.0, 2.0, 5);
-        Order order1 = new Order(1, customer1, item, 3, LocalDateTime.now().minusMinutes(35));
-        Order order2 = new Order(2, customer2, item, 3, LocalDateTime.now());
+        Orders order1 = new Orders(1, customer1, item, 3, LocalDateTime.now().minusMinutes(35));
+        Orders order2 = new Orders(2, customer2, item, 3, LocalDateTime.now());
 
         controller.addOrder(order1);
         controller.addOrder(order2);
 
-        ArrayList<Order> sentOrders = controller.getSentOrders("C123");
+        ArrayList<Orders> sentOrders = controller.getSentOrders("C123");
 
         assertEquals(1, sentOrders.size());
         assertTrue(sentOrders.get(0).getCustomer().getId().equals("C123"));
