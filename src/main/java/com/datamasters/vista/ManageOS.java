@@ -238,7 +238,7 @@ public class ManageOS {
         System.out.print("Enter preparation time (minutes): ");
         int preparationTimeMinutes = scanner.nextInt();
 
-        Order order = new Order(orderNumber, customer, item, quantityUnits, orderDateTime);
+        Orders order = new Orders(orderNumber, customer, item, quantityUnits, orderDateTime);
         controller.addOrder(order);
         System.out.println("Order added successfully.");
     }
@@ -246,7 +246,7 @@ public class ManageOS {
     private void deleteOrder() {
         System.out.print("Enter order number to delete: ");
         int orderNumber = scanner.nextInt();
-        Order order = controller.findOrderByNumber(orderNumber);
+        Orders order = controller.findOrderByNumber(orderNumber);
 
         if (order != null) {
             if (!order.orderIsSent(LocalDateTime.now())) {
@@ -263,9 +263,9 @@ public class ManageOS {
     private void showPendingOrders() {
         System.out.println("Enter Customer ID to find pending order: ");
         String customerId = scanner.nextLine();
-        ArrayList<Order> pendingOrders = controller.getPendingOrders(customerId);
+        ArrayList<Orders> pendingOrders = controller.getPendingOrders(customerId);
         System.out.println("Pending Orders:");
-        for (Order order : pendingOrders) {
+        for (Orders order : pendingOrders) {
             System.out.println(order);
         }
     }
@@ -273,9 +273,9 @@ public class ManageOS {
     private void showSentOrders() {
         System.out.println("Enter Customer ID to find sent orders: ");
         String customerId = scanner.nextLine();
-        ArrayList<Order> sentOrders = controller.getSentOrders(customerId);
+        ArrayList<Orders> sentOrders = controller.getSentOrders(customerId);
         System.out.println("Sent Orders:");
-        for (Order order : sentOrders) {
+        for (Orders order : sentOrders) {
             System.out.println(order);
         }
     }

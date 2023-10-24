@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 
 public class OrderTest {
 
-    private Order order;
+    private Orders order;
     private Customer customer;
     private Item item;
 
@@ -19,14 +19,14 @@ public class OrderTest {
         customer = new StandardCustomer("John Doe", "123 Main St", "C123", "john@example.com");
         item = new Item("12345", "Sample Item", 19.99, 5.0, 30);
         LocalDateTime orderDateTime = LocalDateTime.now().plusMinutes(2);
-        order = new Order(1, customer, item, 3, orderDateTime);
+        order = new Orders(1, customer, item, 3, orderDateTime);
     }
     @BeforeEach
     public void setUpEach() {
         customer = new StandardCustomer("John Doe", "123 Main St", "C123", "john@example.com");
         item = new Item("12345", "Sample Item", 19.99, 5.0, 5);
         LocalDateTime orderDateTime = LocalDateTime.now().plusSeconds(2);
-        order = new Order(1, customer, item, 3, orderDateTime);
+        order = new Orders(1, customer, item, 3, orderDateTime);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class OrderTest {
     @Test
     public void testCalculateOrderPrice() {
         Item item = new Item("123", "Product", 10.0, 2.0, 5);
-        Order order = new Order(1, new StandardCustomer("John", "123 Street", "001", "john@example.com"), item, 3, LocalDateTime.now());
+        Orders order = new Orders(1, new StandardCustomer("John", "123 Street", "001", "john@example.com"), item, 3, LocalDateTime.now());
 
         double expectedPrice = 3 * 10.0 + 2.0; // (3 units * price per unit) + shipping cost
         double actualPrice = order.calculateOrderPrice();
@@ -115,7 +115,7 @@ public class OrderTest {
     public void testOrderSent() {
         LocalDateTime orderDateTime = LocalDateTime.now().plusSeconds(5); // 30 minutes ago
         Item item = new Item("123", "Product", 10.0, 2.0, 5);
-        Order order = new Order(1, new StandardCustomer("John", "123 Street", "001", "john@example.com"), item, 1, orderDateTime);
+        Orders order = new Orders(1, new StandardCustomer("John", "123 Street", "001", "john@example.com"), item, 1, orderDateTime);
         LocalDateTime currentTime = order.getOrderDateTime().plusMinutes(30);
         boolean isSent = order.orderIsSent(currentTime);
         assertTrue(isSent);
@@ -130,7 +130,7 @@ public class OrderTest {
     public void testIsCancelable() {
         LocalDateTime orderDateTime = LocalDateTime.now();
         LocalDateTime  currentTime = orderDateTime.plusMinutes(30); // 30 minutes from now
-        Order order = new Order(1, new StandardCustomer("John", "123 Street", "001", "john@example.com"), new Item(), 1, orderDateTime);
+        Orders order = new Orders(1, new StandardCustomer("John", "123 Street", "001", "john@example.com"), new Item(), 1, orderDateTime);
 
         boolean isCancelable = order.isCancelable(currentTime);
 
@@ -148,14 +148,17 @@ public class OrderTest {
     public void testToString() {
 
         String expected = "Order{" +
-                "orderNumber=1, " +
-                "customer=" + customer + ", " +
-                "item=" + item + ", " +
-                "quantityUnits=3, " +
-                "orderDateTime=" + order.getOrderDateTime() + ", " +
-                "preparationTimeMinutes=30, " +
-                "orderIsCancelable=false, " +
-                "orderIsSent=false}";
+                "orderNumber=1" +
+                ", customer=" + customer.getId() + customer.getName() +
+                ", item=" + item.getCode() +item.getDescription() +
+                ", quantityUnits=3" +
+                ", Item price=  " + item.getSellingPrice()+
+                ", Order price= " + order.calculateOrderPrice() +
+                ", orderDateTime=" + order.getOrderDateTime() +
+                ", preparationTimeMinutes=30" +
+                ", orderIsCancelable=false" +
+                ", shippingCost= " + item.getShippingCost()+
+                ", orderIsSent=false}";
         assertEquals(expected, order.toString());
     }
 }
