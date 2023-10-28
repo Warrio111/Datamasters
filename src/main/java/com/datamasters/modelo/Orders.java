@@ -94,7 +94,7 @@ public class Orders {
                 ", Item price=  " + item.getSellingPrice()+
                 ", Order price= " + calculateOrderPrice() +
                 ", orderDateTime=" + orderDateTime +
-                ", preparationTimeMinutes=" + getPreparationTimeMinutes() +
+                ", preparationTimeMinutes=" + getPreparationTimeMinutes()*quantityUnits +
                 ", orderIsCancelable=" + isCancelable(LocalDateTime.now()) +
                 ", shippingCost= " + item.getShippingCost()+
                 ", orderIsSent=" + orderIsSent(LocalDateTime.now()) +

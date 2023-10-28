@@ -235,8 +235,6 @@ public class ManageOS {
         scanner.nextLine(); // Consume the newline character
 
         LocalDateTime orderDateTime = LocalDateTime.now();
-        System.out.print("Enter preparation time (minutes): ");
-        int preparationTimeMinutes = scanner.nextInt();
 
         Orders order = new Orders(orderNumber, customer, item, quantityUnits, orderDateTime);
         controller.addOrder(order);
