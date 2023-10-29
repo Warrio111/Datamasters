@@ -4,7 +4,7 @@ import com.datamasters.modelo.Orders;
 
 import java.util.List;
 
-public interface DAO<T,String> {
+public interface DAO<T> {
     void insert(T c) throws DAOException;
     void update(T c) throws DAOException;
     void remove(T c) throws DAOException;
