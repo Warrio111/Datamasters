@@ -2,7 +2,6 @@ package com.datamasters.DAO.mysql;
 
 import com.datamasters.DAO.CustomerDAO;
 import com.datamasters.DAO.DAOException;
-import com.datamasters.DAO.ItemDAO;
 import com.datamasters.modelo.*;
 
 import java.sql.*;
