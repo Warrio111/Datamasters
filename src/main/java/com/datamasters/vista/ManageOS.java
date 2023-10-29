@@ -219,13 +219,14 @@ public class ManageOS {
             addCustomer();
             customer = controller.findCustomerById(customerId);
         }
-
+        scanner.nextLine(); // Consume the newline character
         System.out.print("Enter item code: ");
         String itemCode = scanner.nextLine();
         Item item = controller.findItemByCode(itemCode);
 
         if (item == null) {
             System.out.println("Product not found. Please add the product details.");
+            scanner.nextLine(); // Consume the newline character
             addItems();
             item = controller.findItemByCode(itemCode);
         }
