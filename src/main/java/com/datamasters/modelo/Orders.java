@@ -16,6 +16,7 @@ public class Orders {
         this.item = item;
         this.quantityUnits = quantityUnits;
         this.orderDateTime = orderDateTime;
+        this.preparationTimeMinutes = item.getPreparationTimeMinutes()*quantityUnits;
     }
     public int getOrderNumber() {
         return orderNumber;
@@ -58,11 +59,11 @@ public class Orders {
     }
 
     public int getPreparationTimeMinutes() {
-        return item.getPreparationTimeMinutes();
+        return this.preparationTimeMinutes;
     }
 
     public void setPreparationTimeMinutes(int preparationTimeMinutes) {
-        item.setPreparationTimeMinutes(preparationTimeMinutes);
+        this.preparationTimeMinutes = preparationTimeMinutes;
     }
 
     public double calculateOrderPrice() {
@@ -75,12 +76,12 @@ public class Orders {
     }
 
     public boolean orderIsSent(LocalDateTime currentTime) {
-        LocalDateTime cutoffTime = this.orderDateTime.plusMinutes(getPreparationTimeMinutes() * this.quantityUnits);
+        LocalDateTime cutoffTime = this.orderDateTime.plusMinutes(this.preparationTimeMinutes);
         return currentTime.isAfter(cutoffTime);
     }
 
     public boolean isCancelable(LocalDateTime currentTime) {
-        LocalDateTime cutoffTime = this.orderDateTime.plusMinutes(getPreparationTimeMinutes() * this.quantityUnits);
+        LocalDateTime cutoffTime = this.orderDateTime.plusMinutes(this.preparationTimeMinutes);
         return currentTime.isAfter(cutoffTime);
     }
 
@@ -94,7 +95,7 @@ public class Orders {
                 ", Item price=  " + item.getSellingPrice()+
                 ", Order price= " + calculateOrderPrice() +
                 ", orderDateTime=" + orderDateTime +
-                ", preparationTimeMinutes=" + getPreparationTimeMinutes()*quantityUnits +
+                ", preparationTimeMinutes=" + this.preparationTimeMinutes +
                 ", orderIsCancelable=" + isCancelable(LocalDateTime.now()) +
                 ", shippingCost= " + item.getShippingCost()+
                 ", orderIsSent=" + orderIsSent(LocalDateTime.now()) +
