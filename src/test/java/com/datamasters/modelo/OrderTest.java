@@ -91,7 +91,7 @@ public class OrderTest {
 
     @Test
     public void testGetPreparationTimeMinutes() {
-        assertEquals(30, order.getPreparationTimeMinutes());
+        assertEquals(90, order.getPreparationTimeMinutes());
     }
 
     @Test
@@ -155,7 +155,7 @@ public class OrderTest {
                 ", Item price=  " + item.getSellingPrice()+
                 ", Order price= " + order.calculateOrderPrice() +
                 ", orderDateTime=" + order.getOrderDateTime() +
-                ", preparationTimeMinutes=30" +
+                ", preparationTimeMinutes=90" +
                 ", orderIsCancelable=false" +
                 ", shippingCost= " + item.getShippingCost()+
                 ", orderIsSent=false}";
