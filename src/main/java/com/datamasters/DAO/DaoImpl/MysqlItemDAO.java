@@ -1,4 +1,5 @@
-package com.datamasters.DAO.mysql;
+/*
+package com.datamasters.DAO.DaoImpl;
 
 import com.datamasters.DAO.DAOException;
 import com.datamasters.DAO.ItemDAO;
@@ -193,8 +194,9 @@ public class MysqlItemDAO implements ItemDAO {
 
     public static void main(String[] args) throws DAOException {
         Connection connection = null;
-        /*try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+        */
+/*try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
             ItemDAO dao = new MysqlItemDAO(connection);
             Item it = new Item("3", "ddsgk", 40.00, 120.00, 8);
@@ -215,9 +217,11 @@ public class MysqlItemDAO implements ItemDAO {
             }
 
         }
-    }*/
-       /* try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+    }*//*
+
+       */
+/* try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
             ItemDAO dao = new MysqlItemDAO(connection);
             Item it = new Item("3", "ddsgk", 150.00, 120.00, 15);
@@ -239,9 +243,11 @@ public class MysqlItemDAO implements ItemDAO {
             }
 
         }
-    }*/
-        /*try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+    }*//*
+
+        */
+/*try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             ItemDAO dao = new MysqlItemDAO(connection);
@@ -263,9 +269,11 @@ public class MysqlItemDAO implements ItemDAO {
             }
 
         }
-    }*/
-       /* try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+    }*//*
+
+       */
+/* try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             ItemDAO dao = new MysqlItemDAO(connection); // Reemplaza "TuClaseConInsert" con el nombre de tu clase
@@ -291,9 +299,10 @@ public class MysqlItemDAO implements ItemDAO {
             }
 
         }
-    }*/
+    }*//*
+
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             ItemDAO dao = new MysqlItemDAO(connection); // Reemplaza "TuClaseConInsert" con el nombre de tu clase
@@ -316,3 +325,4 @@ public class MysqlItemDAO implements ItemDAO {
         }
     }
 }
+*/

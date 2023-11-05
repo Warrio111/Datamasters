@@ -1,4 +1,5 @@
-package com.datamasters.DAO.mysql;
+/*
+package com.datamasters.DAO.DaoImpl;
 
 import com.datamasters.DAO.CustomerDAO;
 import com.datamasters.DAO.DAOException;
@@ -207,8 +208,9 @@ public class MysqlCustomerDAO implements CustomerDAO {
         Connection connection = null;
         Customer c = new StandardCustomer("Hector", "Barcelona", "", "sdggs");
 
-       /* try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+       */
+/* try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
             CustomerDAO dao = new MysqlCustomerDAO(connection);
             dao.insert(c);
@@ -228,9 +230,11 @@ public class MysqlCustomerDAO implements CustomerDAO {
                 }
             }
 
-        }*/
-        /*try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+        }*//*
+
+        */
+/*try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
             CustomerDAO dao = new MysqlCustomerDAO(connection);
             c = new PremiumCustomer("Jordi", "Barcelona", "1", "sdggs", 5.05, 3.50);
@@ -250,9 +254,11 @@ public class MysqlCustomerDAO implements CustomerDAO {
                 }
             }
 
-        }*/
-         /*try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+        }*//*
+
+         */
+/*try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
             CustomerDAO dao = new MysqlCustomerDAO(connection);
             c = new PremiumCustomer("Robert", "Barcelona", "", "sdggs", 0, 0);
@@ -273,10 +279,12 @@ public class MysqlCustomerDAO implements CustomerDAO {
             }
 
         }
+        *//*
+
         */
-        /*
+/*
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             CustomerDAO dao = new MysqlCustomerDAO(connection); // Reemplaza "TuClaseConInsert" con el nombre de tu clase
@@ -300,9 +308,10 @@ public class MysqlCustomerDAO implements CustomerDAO {
                 }
             }
 
-        }*/
+        }*//*
+
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             CustomerDAO dao = new MysqlCustomerDAO(connection);
@@ -327,3 +336,4 @@ public class MysqlCustomerDAO implements CustomerDAO {
 
 }
 
+*/

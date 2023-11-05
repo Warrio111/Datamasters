@@ -1,4 +1,5 @@
-package com.datamasters.DAO.mysql;
+/*
+package com.datamasters.DAO.DaoImpl;
 
 import com.datamasters.DAO.DAOException;
 import com.datamasters.DAO.*;
@@ -233,8 +234,9 @@ public class MysqlOrderDAO implements OrderDAO {
         Connection connection = null;
         Customer c = new PremiumCustomer("Jordi", "Barcelona", "2", "sdggs", 10.05, 30.50);
         Item it = new Item("1", "dsgdsgs", 10.00, 12.00, 2);
-        /*try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+        */
+/*try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
             OrderDAO dao = new MysqlOrderDAO(connection);
             Orders order = new Orders(2, c, it, 3, LocalDateTime.now());
@@ -253,9 +255,11 @@ public class MysqlOrderDAO implements OrderDAO {
                 }
             }
 
-        }*/
-        /*try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+        }*//*
+
+        */
+/*try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
             OrderDAO dao = new MysqlOrderDAO(connection);
             Orders order = new Orders(2,c,it,50, LocalDateTime.now());
@@ -276,9 +280,11 @@ public class MysqlOrderDAO implements OrderDAO {
             }
 
         }
-    }*/
-       /* try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+    }*//*
+
+       */
+/* try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             OrderDAO dao = new MysqlOrderDAO(connection);
@@ -299,9 +305,11 @@ public class MysqlOrderDAO implements OrderDAO {
                 }
             }
 
-        }*/
-       /* try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+        }*//*
+
+       */
+/* try {
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             OrderDAO dao = new MysqlOrderDAO(connection); // Reemplaza "TuClaseConInsert" con el nombre de tu clase
@@ -322,9 +330,10 @@ public class MysqlOrderDAO implements OrderDAO {
                 }
             }
 
-        }*/
+        }*//*
+
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/onlinestore", "root", "1234");
+            connection = DriverManager.getConnection("jdbc:DaoImpl://localhost/onlinestore", "root", "1234");
 
 
             OrderDAO dao = new MysqlOrderDAO(connection); // Reemplaza "TuClaseConInsert" con el nombre de tu clase
@@ -354,3 +363,4 @@ public class MysqlOrderDAO implements OrderDAO {
     }
 
 }
+*/

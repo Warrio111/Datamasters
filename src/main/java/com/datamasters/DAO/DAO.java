@@ -9,5 +9,5 @@ public interface DAO<T> {
     void update(T c) throws DAOException;
     void remove(T c) throws DAOException;
     List<T> getAll() throws DAOException;
-    T getById(String id) throws DAOException;
+    T getById(int id) throws DAOException;
 }
