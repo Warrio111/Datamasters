@@ -253,7 +253,7 @@ public class MysqlItemDAO implements ItemDAO {
             ItemDAO dao = new MysqlItemDAO(connection);
             Item it = new Item("3", "ddsgk", 40.00, 120.00, 8);
 
-            dao.remove(it);
+            itemDao.remove(it);
 
             System.out.println("Registro eliminado exitosamente.");
 
