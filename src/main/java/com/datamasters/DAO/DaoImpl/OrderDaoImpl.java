@@ -5,16 +5,16 @@ import com.datamasters.modelo.*;
 import java.util.ArrayList;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
-    public final String INSERT = "INSERT INTO Orders(id_Customer,code_item,quantityUnits,orderDateTime) VALUES(?,?,?,?,?)";
-    public final String UPDATE = "UPDATE ORDERS SET  id_Customer = ?, code_item = ?, quantityUnits = ?, orderDateTime= ? WHERE orderNumber = ?";
-    public final String DELETE = "DELETE FROM ORDERS WHERE id_Customer = ?";
-    public final String GETALL = "SELECT * FROM ORDERS\n " +
-            "JOIN Customer ON ORDERS.id_Customer = Customer.id\n" +
-            "JOIN Item ON ORDERS.code_item = Item.code\n";
+    public final String INSERT = "INSERT INTO Order(id_Customer,code_item,quantityUnits,orderDateTime) VALUES(?,?,?,?)";
+    public final String UPDATE = "UPDATE ORDER SET  id_Customer = ?, code_item = ?, quantityUnits = ?, orderDateTime= ? WHERE orderNumber = ?";
+    public final String DELETE = "DELETE FROM ORDER WHERE id_Customer = ?";
+    public final String GETALL = "SELECT * FROM ORDER\n " +
+            "JOIN Customer ON ORDER.id_Customer = Customer.id\n" +
+            "JOIN Item ON ORDER.code_item = Item.code\n";
 
     // Consulta SQL para obtener el objeto Customer y el objeto Item
     public final String objecItemCustomer = "SELECT * FROM Customer c " + "JOIN Item i ON c.id_Customer = i.customer_id " + "WHERE c.id_Customer = ?";
@@ -22,9 +22,9 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     PreparedStatement statement = null;
 
 
-    public final String GETBYID = "SELECT * FROM ORDERS\n" +
-            "JOIN Customer ON ORDERS.id_Customer = Customer.id\n" +
-            "JOIN Item ON ORDERS.code_item = Item.code\n" +
+    public final String GETBYID = "SELECT * FROM ORDER\n" +
+            "JOIN Customer ON ORDER.id_Customer = Customer.id\n" +
+            "JOIN Item ON ORDER.code_item = Item.code\n" +
             "WHERE orderNumber = ?;";
 
     /**
@@ -195,7 +195,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     @Override
     public List<Orders> getAll() throws DAOException {
         ResultSet rs = null;
-        List<Orders> ordersList = new ArrayList<>();
+        List<Orders> ordersList = new List<>();
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETALL);
             rs = statement.executeQuery();
@@ -280,47 +280,4 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
         return false;
     }
 
-
-    public static void main(String[] args) throws DAOException, SQLException {
-        OrderDaoImpl dao = new OrderDaoImpl();
-        Customer c = new PremiumCustomer("Jordi", "Barcelona", "2", "sdggs", 10.05, 30.50);
-        Item it = new Item("1", "dsgdsgs", 10.00, 12.00, 2);
-        Orders order = new Orders(2, c, it, 60, LocalDateTime.now());
-
-        /*
-        //INSERT
-        Orders order = new Orders(2, c, it, 3, LocalDateTime.now());
-        dao.insert(order);
-
-        System.out.println("Registro insertado exitosamente.");
-        */
-
-
-        //UPDATE
-
-/*
-
-        dao.update(order);*/
-
-
-     /*   //DELETE
-
-
-        dao.remove(order);
-
-*/
-        //GETBYID
-
-
-          /*  dao.getById(1);*/
-
-        //GETALL
-
-            dao.getAll();
-
-            List<Orders> ordersList = dao.getAll();
-            for (Orders orders : ordersList) {
-                System.out.println(orders);
-            }
-    }
 }

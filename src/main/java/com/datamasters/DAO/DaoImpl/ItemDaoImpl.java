@@ -2,17 +2,17 @@ package com.datamasters.DAO.DaoImpl;
 import com.datamasters.DAO.*;
 import com.datamasters.modelo.Customer;
 import com.datamasters.modelo.Item;
+import com.datamasters.modelo.List;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     public final String INSERT = "INSERT INTO Item(description,sellingPrice,shippingCost,preparationTimeMinutes) VALUES(?,?,?,?)";
-    public final String UPDATE = "UPDATE Item SET code = ?,description = ?, sellingPrice = ?, shippingCost = ?,preparationTimeMinutes = ? WHERE code=?";
+    public final String UPDATE = "UPDATE Item SET description = ?, sellingPrice = ?, shippingCost = ?,preparationTimeMinutes = ? WHERE code=?";
     public final String DELETE = "DELETE FROM Item WHERE code= ?";
     public final String GETALL= "SELECT * FROM Item";
     public final String GETBYID= "SELECT * FROM Item WHERE code = ?;";
@@ -85,12 +85,11 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
 
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
-            statement.setInt(1, Integer.parseInt(c.getCode()));
-            statement.setString(2, c.getDescription());
-            statement.setDouble(3, c.getSellingPrice());
-            statement.setDouble(4, c.getShippingCost());
-            statement.setInt(5, c.getPreparationTimeMinutes());
-            statement.setInt(6,Integer.parseInt(c.getCode()));
+            statement.setString(1, c.getDescription());
+            statement.setDouble(2, c.getSellingPrice());
+            statement.setDouble(3, c.getShippingCost());
+            statement.setInt(4, c.getPreparationTimeMinutes());
+            statement.setInt(5,Integer.parseInt(c.getCode()));
 
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Could not be iserted");
@@ -165,14 +164,13 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     @Override
     public List<Item> getAll() throws DAOException {
         ResultSet rs = null;
-        List<Item> itemList = new ArrayList<>();
+        List<Item> itemList = new List<>(); // Cambia a tu clase List
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETALL);
             rs = statement.executeQuery();
             while (rs.next()) {
                 itemList.add(convertir(rs));
             }
-
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
@@ -194,6 +192,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
         }
         return itemList;
     }
+
 
     /**
      * @param id
@@ -230,50 +229,5 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
         }
         return it;
     }
-
-
-    public static void main(String[] args) throws DAOException, SQLException {
-        ItemDaoImpl itemDao = new ItemDaoImpl();
-
-        //INSERT
-    /*    ItemDaoImpl itemDao = new ItemDaoImpl();
-        Item item = new Item();
-        item.setDescription("Pizza");
-        item.setSellingPrice(100.0);
-        item.setShippingCost(50.0);
-        item.setPreparationTimeMinutes(30);
-        itemDao.insert(item);
-    */
-
-
-
-        //UPDATE
-        /*Item it = new Item("1", "Jamon", 150.00, 120.00, 15);
-
-        itemDao.update(it);
-
-        System.out.println("Registro actualizado exitosamente.");*/
-
-
-
-        //REMOVE
-       /* Item it = new Item("2", "ddsgk", 40.00, 120.00, 8);
-
-        itemDao.remove(it);
-        */
-
-
-
-       /* //GETALL
-        List<Item> itemList = itemDao.getAll();
-        for (Item items : itemList) {
-            System.out.println(items);
-        }*/
-
-        //GETBYID
-        itemDao.getById(1);
-
-    }
-
 
 }

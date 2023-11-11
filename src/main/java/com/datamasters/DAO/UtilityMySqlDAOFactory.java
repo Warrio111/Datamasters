@@ -1,16 +1,16 @@
 package com.datamasters.DAO;
 
-import com.datamasters.DAO.DaoImpl.*;
-import com.datamasters.DAO.*;
+import com.datamasters.DAO.DaoImpl.CustomerDaoImpl;
+import com.datamasters.DAO.DaoImpl.ItemDaoImpl;
+import com.datamasters.DAO.DaoImpl.OrderDaoImpl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.*;
 public class UtilityMySqlDAOFactory extends DAOFactory {
     public static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     public static final String DBURL = "jdbc:mysql://localhost:3306/onlinestore";
     public  static  final  String LOGIN = "root";
-    public  static  final  String PASSWORD = "1234";
+    public  static  final  String PASSWORD = "12345aA";
     static Connection conn = null;
     public static Connection createConnection() throws SQLException {
         try {

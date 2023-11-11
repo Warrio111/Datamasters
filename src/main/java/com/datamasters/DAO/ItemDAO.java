@@ -1,8 +1,7 @@
 package com.datamasters.DAO;
 
 import com.datamasters.modelo.Item;
-
-import java.util.List;
+import com.datamasters.modelo.List;
 
 public interface ItemDAO extends DAO<Item>{
 

@@ -1,9 +1,8 @@
 package com.datamasters.DAO;
 
-import com.datamasters.modelo.Orders;
+import com.datamasters.modelo.List;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public interface DAO<T> {
     void insert(T c) throws DAOException, SQLException;

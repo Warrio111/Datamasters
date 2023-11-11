@@ -2,7 +2,7 @@ package com.datamasters.DAO;
 
 import com.datamasters.modelo.Orders;
 
-import java.util.List;
+import com.datamasters.modelo.List;
 
 public interface OrderDAO extends DAO <Orders>{
     /**
