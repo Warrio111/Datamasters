@@ -4,12 +4,13 @@ import com.datamasters.DAO.*;
 import com.datamasters.modelo.Customer;
 import com.datamasters.modelo.PremiumCustomer;
 import com.datamasters.modelo.StandardCustomer;
+import com.datamasters.modelo.List;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
+
 
 public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
     public final String INSERT = "INSERT INTO Customer (name,address,id,email,customerType,membershipFee,shippingDiscount) VALUES(?,?,?,?,?,?,?)";
@@ -142,6 +143,8 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
             } else {
                 c = new StandardCustomer(name, address, id, email);
             }
+            System.out.println("Name: "+ name + ",Address: " + address + ",ID:" + id + ", Email: " + email + ", CustomerType: " +
+                    customerType + ",MembershipFee: " + membershipFee + ",ShippingDiscount: " + shippingDiscount );
 
             return c;
 
@@ -157,7 +160,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
     @Override
     public List<Customer> getAll() throws DAOException {
 
-        List<Customer> customerList = new ArrayList<>();
+        List<Customer> customerList = new List<>();
 
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETALL);
@@ -229,27 +232,18 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      * @throws DAOException
      */
     @Override
-    public void getCustomerType(String customerType) throws DAOException {
+    public Customer getCustomerType(String customerType) throws DAOException {
 
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYCUSTOMERTYPE);
             statement.setString(1, customerType);
             resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-
-                String name = resultSet.getString("name");
-                String address = resultSet.getString("address");
-                int id = resultSet.getInt("id");
-                String email = resultSet.getString("email");
-                String type = resultSet.getString("customerType");
-                Double membershipFee = resultSet.getDouble("membershipFee");
-                Double shippingDiscount = resultSet.getDouble("shippingDiscount");
-
-                System.out.println("Name: "+ name + ",Address: " + address + ",ID:" + id + ", Email: " + email + ", CustomerType: " +
-                        type + ",MembershipFee: " + membershipFee + ",ShippingDiscount: " + shippingDiscount );
+            if (resultSet.next()) {
+                c = convertir(resultSet);
+                System.out.println(c.toString());
+            } else {
+                throw new DAOException("Customer not found");
             }
-
             if (resultSet != null) {
                 try {
                     resultSet.close();
@@ -260,6 +254,47 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         }catch(Exception ex){
             new DAOException("Erron in SQL");
         }
+        return c;
+    }
+
+    /**
+     * @param customerType
+     * @return
+     * @throws DAOException
+     */
+    @Override
+    public List<Customer> getCustomerByType(String customerType) throws DAOException {
+        List<Customer> customerList = new List<>();
+
+        try {
+            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYCUSTOMERTYPE);
+            statement.setString(1, customerType);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                customerList.add(convertir(resultSet));
+            }
+
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }catch (SQLException ex) {
+            ex.printStackTrace(); // Imprimir detalles del error
+            throw new DAOException("Error in SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("ERROR in SQL", ex);
+                }
+            }
+        }
+        return customerList;
     }
 
     /**
@@ -279,7 +314,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      * @throws DAOException
      */
     @Override
-    public void getShippingDiscountByCustomer(int id) throws DAOException {
+    public Double getShippingDiscountByCustomer(int id) throws DAOException {
 
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETSHIPPINGDISCOUNTBYCOUSTOMET);
@@ -303,6 +338,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         }catch(Exception ex){
             new DAOException("Erron in SQL");
         }
+        return null;
     }
 
     /**
@@ -311,7 +347,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      * @throws DAOException
      */
     @Override
-    public void getMembershipFeeByCustomer(int id) throws DAOException {
+    public Double getMembershipFeeByCustomer(int id) throws DAOException {
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETMEMBERSHIPFEEBYCUSTOMER);
             statement.setInt(1, id);
@@ -334,6 +370,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         }catch(Exception ex){
             new DAOException("Erron in SQL");
         }
+        return null;
     }
 
     /**
@@ -362,19 +399,4 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         return null;
     }
 
-    public static void main(String[] args) throws DAOException {
-        CustomerDaoImpl dao = new CustomerDaoImpl();
-
-        //GETBYCUSTOMERTYPE
-
-        /*dao.getCustomerType("PREMIUM");*/
-
-        //GETSHIPPINGDISCOUNTBYCUSTOMER
-
-        /*dao.getShippingDiscountByCustomer(1);*/
-
-        //GETMEMBERSHIPFEEBYCUSTOMER
-
-        dao.getMembershipFeeByCustomer(1);
-    }
 }

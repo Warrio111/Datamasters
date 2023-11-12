@@ -1,9 +1,8 @@
 package com.datamasters.DAO;
 
 import com.datamasters.modelo.Customer;
-
+import com.datamasters.modelo.List;
 import java.sql.SQLException;
-import java.util.List;
 
 public interface CustomerDAO extends DAO<Customer>{
     /**
@@ -42,10 +41,11 @@ public interface CustomerDAO extends DAO<Customer>{
     @Override
     Customer getById(int id) throws DAOException;
 
-    void getCustomerType(String customerType) throws DAOException;
+    Customer getCustomerType(String customerType) throws DAOException;
+    List<Customer> getCustomerByType(String customerType) throws DAOException;
     Double getSpendByCustomer(int id) throws DAOException;
-    void getShippingDiscountByCustomer(int id) throws DAOException;
-    void getMembershipFeeByCustomer(int id) throws DAOException;
+    Double getShippingDiscountByCustomer(int id) throws DAOException;
+    Double getMembershipFeeByCustomer(int id) throws DAOException;
 
 
 }

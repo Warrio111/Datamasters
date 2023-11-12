@@ -4,7 +4,7 @@ import com.datamasters.modelo.Item;
 
 import com.datamasters.modelo.List;
 
-public interface ItemDAO extends DAO<Item> {
+public interface ItemDAO extends DAO<Item>{
 
     /**
      * @param c
@@ -42,4 +42,3 @@ public interface ItemDAO extends DAO<Item> {
     @Override
     Item getById(int id) throws DAOException;
 }
-
