@@ -17,7 +17,7 @@ public class Controller {
         this.exceptionHandler = new ExceptionHandler();
     }
 
-    public Controller(Data data, DAOFactory dao, ExceptionHandler exceptionHandler) {
+    public Controller(DAOFactory dao, ExceptionHandler exceptionHandler) {
         this.dao = dao;
         this.exceptionHandler = exceptionHandler;
     }

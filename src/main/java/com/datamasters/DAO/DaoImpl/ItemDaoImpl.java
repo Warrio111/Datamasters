@@ -164,7 +164,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     @Override
     public List<Item> getAll() throws DAOException {
         ResultSet rs = null;
-        List<Item> itemList = new List<>(); // Cambia a tu clase List
+        List<Item> itemList = new List<>();
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETALL);
             rs = statement.executeQuery();

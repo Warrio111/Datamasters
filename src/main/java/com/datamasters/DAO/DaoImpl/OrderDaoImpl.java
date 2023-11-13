@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 
 public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
-    public final String INSERT = "INSERT INTO Order(id_Customer,code_item,quantityUnits,orderDateTime) VALUES(?,?,?,?)";
-    public final String UPDATE = "UPDATE ORDER SET  id_Customer = ?, code_item = ?, quantityUnits = ?, orderDateTime= ? WHERE orderNumber = ?";
-    public final String DELETE = "DELETE FROM ORDER WHERE id_Customer = ?";
-    public final String GETALL = "SELECT * FROM ORDER\n " +
-            "JOIN Customer ON ORDER.id_Customer = Customer.id\n" +
-            "JOIN Item ON ORDER.code_item = Item.code\n";
+    public final String INSERT = "INSERT INTO Orders(orderNumber,quantityUnits,orderDateTime,preparationTimeMinutes,Customer_id,Item_code) VALUES(?,?,?,?,?,?)";
+    public final String UPDATE = "UPDATE ORDERS SET  orderNumber = ?, quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? WHERE orderNumber = ?";
+    public final String DELETE = "DELETE FROM ORDERS WHERE id_Customer = ?";
+    public final String GETALL = "SELECT * FROM ORDERS\n " +
+            "JOIN Customer ON ORDERS.id_Customer = Customer.id\n" +
+            "JOIN Item ON ORDERS.code_item = Item.code\n";
 
     // Consulta SQL para obtener el objeto Customer y el objeto Item
     public final String objecItemCustomer = "SELECT * FROM Customer c " + "JOIN Item i ON c.id_Customer = i.customer_id " + "WHERE c.id_Customer = ?";
@@ -22,9 +22,9 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     PreparedStatement statement = null;
 
 
-    public final String GETBYID = "SELECT * FROM ORDER\n" +
-            "JOIN Customer ON ORDER.id_Customer = Customer.id\n" +
-            "JOIN Item ON ORDER.code_item = Item.code\n" +
+    public final String GETBYID = "SELECT * FROM ORDERS\n" +
+            "JOIN Customer ON ORDERS.id_Customer = Customer.id\n" +
+            "JOIN Item ON ORDERS.code_item = Item.code\n" +
             "WHERE orderNumber = ?;";
 
     /**
@@ -61,11 +61,13 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
-            statement.setString(1, c.getCustomer().getId());
-            statement.setString(2, c.getItem().getCode());
-            statement.setInt(3, c.getQuantityUnits());
+            statement.setInt(1,c.getOrderNumber());
+            statement.setInt(2, c.getQuantityUnits());
             Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-            statement.setTimestamp(4, date);
+            statement.setTimestamp(3, date);
+            statement.setInt(4, c.getPreparationTimeMinutes());
+            statement.setString(5, c.getCustomer().getId());
+            statement.setString(6, c.getItem().getCode());
 
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Could not be iserted");
@@ -94,12 +96,14 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
         try {
             if (c != null) {
                 statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
-                statement.setString(1, c.getCustomer().getId());
-                statement.setString(2, c.getItem().getCode());
-                statement.setInt(3, c.getQuantityUnits());
+                statement.setInt(1,c.getOrderNumber());
+                statement.setInt(2, c.getQuantityUnits());
                 Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-                statement.setTimestamp(4, date);
-                statement.setInt(5, c.getOrderNumber());
+                statement.setTimestamp(3, date);
+                statement.setInt(4, c.getPreparationTimeMinutes());
+                statement.setString(5, c.getCustomer().getId());
+                statement.setString(6, c.getItem().getCode());
+                statement.setInt(7, c.getOrderNumber());
 
                 if (statement.executeUpdate() == 0) {
                     throw new DAOException("Could not be updated");

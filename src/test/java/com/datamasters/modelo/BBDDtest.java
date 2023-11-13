@@ -21,7 +21,7 @@ public class BBDDtest {
 
 
     public final String INSERT = "INSERT INTO Item(description,sellingPrice,shippingCost,preparationTimeMinutes) VALUES(?,?,?,?)";
-    public final String UPDATE = "UPDATE Item SET code = ?,description = ?, sellingPrice = ?, shippingCost = ?,preparationTimeMinutes = ? WHERE code=?";
+    public final String UPDATE = "UPDATE Item SET description = ?, sellingPrice = ?, shippingCost = ?,preparationTimeMinutes = ? WHERE code=?";
     public final String DELETE = "DELETE FROM Item WHERE code= ?";
     public final String GETALL = "SELECT * FROM Item";
     public final String GETBYID = "SELECT * FROM Item WHERE code = ?;";
@@ -71,12 +71,11 @@ public class BBDDtest {
     public void updateItemBBDD() throws SQLException {
         PreparedStatement statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
 
-        statement.setInt(1, 2);
-        statement.setString(2, "Pizza de jamón y queso");
-        statement.setDouble(3, 12.50);
-        statement.setDouble(4, 2.50);
-        statement.setInt(5, 10);
-        statement.setInt(6, 14);
+        statement.setString(1, "Pizza de jamón y queso");
+        statement.setDouble(2, 12.50);
+        statement.setDouble(3, 2.50);
+        statement.setInt(4, 10);
+        statement.setInt(5, 14);
 
         // Ejecuta la inserción
         int filasAfectadas = statement.executeUpdate();
