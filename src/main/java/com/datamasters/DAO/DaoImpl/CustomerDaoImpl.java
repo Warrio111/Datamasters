@@ -13,11 +13,11 @@ import java.sql.SQLException;
 
 
 public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
-    public final String INSERT = "INSERT INTO Customer (name,address,id,email,customerType,membershipFee,shippingDiscount) VALUES(?,?,?,?,?,?,?)";
-    public final String UPDATE = "UPDATE Customer SET name = ?, address = ?, id = ?, email = ?,customerType =?, memberShipFee = ?,shippingDiscount = ?  WHERE id=?";
+    public final String INSERT = "INSERT INTO Customer (name,address,email,customerType,membershipFee,shippingDiscount) VALUES(?,?,?,?,?,?)";
+    public final String UPDATE = "UPDATE Customer SET name = ?, address = ?, email = ?,customerType =?, memberShipFee = ?,shippingDiscount = ?  WHERE id=?";
     public final String DELETE = "DELETE FROM Customer WHERE id= ?";
     public final String GETALL= "SELECT * FROM Customer";
-    public final String GETBYID= "SELECT FROM Customer WHERE id = ?;";
+    public final String GETBYID= "SELECT * FROM Customer WHERE id = ?";
     public final String GETBYCUSTOMERTYPE = "SELECT * FROM Customer WHERE customerType = ?;";
 
     public final String GETSHIPPINGDISCOUNTBYCOUSTOMET = "SELECT * FROM Customer WHERE id = ?;";
@@ -40,11 +40,10 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
             statement.setString(1, c.getName());
             statement.setString(2, c.getAddress());
-            statement.setString(3, c.getId());
-            statement.setString(4, c.getEmail());
-            statement.setString(5, c.getCustomerType().toString());
-            statement.setDouble(6, c.getMembershipFee());
-            statement.setDouble(7, c.getShippingDiscount());
+            statement.setString(3, c.getEmail());
+            statement.setString(4, c.getCustomerType().toString());
+            statement.setDouble(5, c.getMembershipFee());
+            statement.setDouble(6, c.getShippingDiscount());
 
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Could not be iserted");
@@ -73,12 +72,11 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
             statement.setString(1, c.getName());
             statement.setString(2, c.getAddress());
-            statement.setString(3, c.getId());
-            statement.setString(4, c.getEmail());
-            statement.setString(5, c.getCustomerType().toString());
-            statement.setDouble(6, c.getMembershipFee());
-            statement.setDouble(7, c.getShippingDiscount());
-            statement.setString(8, c.getId());
+            statement.setString(3, c.getEmail());
+            statement.setString(4, c.getCustomerType().toString());
+            statement.setDouble(5, c.getMembershipFee());
+            statement.setDouble(6, c.getShippingDiscount());
+            statement.setString(7, c.getId());
 
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Could not be updated");
@@ -105,7 +103,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
     public void remove(Customer c) throws DAOException {
         try{
             if(c != null) {
-                statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
+                statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(DELETE);
                 statement.setString(1, c.getId());
                 int customerDelete = statement.executeUpdate();
                 if (customerDelete == 0) {

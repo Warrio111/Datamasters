@@ -11,10 +11,10 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
     public final String INSERT = "INSERT INTO Orders(orderNumber,quantityUnits,orderDateTime,preparationTimeMinutes,Customer_id,Item_code) VALUES(?,?,?,?,?,?)";
     public final String UPDATE = "UPDATE ORDERS SET  orderNumber = ?, quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? WHERE orderNumber = ?";
-    public final String DELETE = "DELETE FROM ORDERS WHERE id_Customer = ?";
+    public final String DELETE = "DELETE FROM ORDERS WHERE Customer_id = ?";
     public final String GETALL = "SELECT * FROM ORDERS\n " +
-            "JOIN Customer ON ORDERS.id_Customer = Customer.id\n" +
-            "JOIN Item ON ORDERS.code_item = Item.code\n";
+            "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
+            "JOIN Item ON ORDERS.Item_code= Item.code\n";
 
     // Consulta SQL para obtener el objeto Customer y el objeto Item
     public final String objecItemCustomer = "SELECT * FROM Customer c " + "JOIN Item i ON c.id_Customer = i.customer_id " + "WHERE c.id_Customer = ?";
@@ -23,8 +23,8 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
 
     public final String GETBYID = "SELECT * FROM ORDERS\n" +
-            "JOIN Customer ON ORDERS.id_Customer = Customer.id\n" +
-            "JOIN Item ON ORDERS.code_item = Item.code\n" +
+            "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
+            "JOIN Item ON ORDERS.Item_code = Item.code\n" +
             "WHERE orderNumber = ?;";
 
     /**
@@ -245,7 +245,6 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
             Customer c = null;
             if (resultSet.next()) {
                 order = convertir(resultSet);
-                System.out.println(order.toString());
             } else {
                 throw new DAOException("Customer not found");
             }

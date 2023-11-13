@@ -1,7 +1,9 @@
 package com.datamasters.controlador;
 
+import com.datamasters.DAO.CustomerDAO;
 import com.datamasters.DAO.DAOException;
 import com.datamasters.DAO.DAOFactory;
+import com.datamasters.DAO.DaoImpl.OrderDaoImpl;
 import com.datamasters.modelo.*;
 
 import java.sql.SQLException;
@@ -85,45 +87,31 @@ public class Controller {
         return dao.getCustomerDAO().getCustomerByType(String.valueOf(type)).getArrayList();
     }
     public Customer findCustomerById(String customerId) throws DAOException, SQLException {
-
-        for (Customer customer : getCustomers()) {
-            if (customer.getId().equals(customerId)) {
-                return customer;
-            }
-        }
-        return null;
+        return dao.getCustomerDAO().getById(Integer.parseInt(customerId));
     }
     public ArrayList<Item> getItems() throws DAOException {
         return dao.getItemDAO().getAll().getArrayList();
     }
 
     public Item findItemByCode(String itemCode) throws DAOException {
-        for(Item item : getItems()) {
-            if (item.getCode().equals(itemCode)) {
-                return item;
-            }
-        }
-        return null;
+        return dao.getItemDAO().getById(Integer.parseInt(itemCode));
     }
 
     public void deleteOrderByNumber(int orderNumber) throws DAOException {
         Orders order = findOrderByNumber(orderNumber);
         if (order != null && !order.isCancelable(LocalDateTime.now())) {
-            removeOrder(order);
+            dao.getOrdersDAO().remove(order);
         }
     }
     public Orders findOrderByNumber(int orderNumber) throws DAOException {
-        for (Orders order : getOrders()) {
-            if (order.getOrderNumber() == orderNumber) {
-                return order;
-            }
-        }
-        return null;
+
+        return dao.getOrdersDAO().getById(orderNumber);
     }
     public  ArrayList<Orders> getOrders() throws DAOException {
         return dao.getOrdersDAO().getAll().getArrayList();
     }
     public ArrayList<Orders> getPendingOrders(String customer) throws DAOException {
+
         ArrayList <Orders> pendingOrders = new ArrayList<>();
         for (Orders order : getOrders()) {
             if (order.getCustomer().getId().equals(customer) && !order.orderIsSent(LocalDateTime.now())) {
