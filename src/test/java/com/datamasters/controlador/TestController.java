@@ -1,16 +1,12 @@
 package com.datamasters.controlador;
 
 import com.datamasters.DAO.DAOException;
-import com.datamasters.DAO.UtilityMySqlDAOFactory;
 import com.datamasters.modelo.*;
-import org.assertj.core.api.AbstractObjectArrayAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
 import static org.junit.Assert.*;
-
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -75,6 +71,8 @@ public class TestController {
         assertEquals(controller.getCustomers().size(),controller.getDao().getCustomerDAO().getAll().getArrayList().size());
         assertEquals("Jane Smith", controller.getCustomers().get(2).getName());
     }
+    //TODO
+    //ESTE FALLA
     @Test
     public void testRemoveCustomer() throws DAOException, SQLException {
         controller.addCustomer(standardCustomer);

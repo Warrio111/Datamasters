@@ -6,10 +6,7 @@ import com.datamasters.modelo.PremiumCustomer;
 import com.datamasters.modelo.StandardCustomer;
 import com.datamasters.modelo.List;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import java.sql.*;
 
 
 public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
@@ -27,8 +24,12 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
 
     PreparedStatement statement = null;
 
+    Connection connection = null;
+
     ResultSet resultSet = null;
     Customer c = null;
+    CallableStatement callableStatement = null;
+
 
     /**
      * @param c
@@ -197,8 +198,46 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
     @Override
     public Customer getById(int id) throws DAOException {
 
-
         try {
+            connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call getByIdCustomer(?)}");
+            callableStatement.setInt(1, id);
+
+            resultSet = callableStatement.executeQuery();
+
+            if (resultSet.next()) {
+                c = convertir(resultSet);
+                System.out.println(c.toString());
+            } else {
+                throw new DAOException("Customer not found");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // Imprimir detalles del error
+            throw new DAOException("Error in SQL", ex);
+
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (callableStatement != null) {
+                try {
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return c;
+
+
+        /*try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYID);
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
@@ -221,7 +260,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
                 }
             }
         }
-        return c;
+        return c;*/
     }
 
     /**
