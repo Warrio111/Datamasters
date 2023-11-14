@@ -54,7 +54,8 @@ public class ManageOS {
 
     private void manageItems() throws DAOException {
         System.out.println("1. Add Item");
-        System.out.println("2. Show Item");
+        System.out.println("2. Delete Item");
+        System.out.println("3. Show Item");
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
@@ -63,6 +64,8 @@ public class ManageOS {
                 addItems();
                 break;
             case 2:
+                removeItem();
+            case 3:
                 showItems();
                 break;
             default:
@@ -73,9 +76,10 @@ public class ManageOS {
 
     private void manageCustomers() throws DAOException, SQLException {
         System.out.println("1. Add Customer");
-        System.out.println("2. Show Customers");
-        System.out.println("3. Show Standard Customers");
-        System.out.println("4. Show Premium Customers");
+        System.out.println("2. Delete Customer");
+        System.out.println("3. Show Customers");
+        System.out.println("4. Show Standard Customers");
+        System.out.println("5. Show Premium Customers");
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
@@ -84,12 +88,14 @@ public class ManageOS {
                 addCustomer();
                 break;
             case 2:
+                removeCustomer();
+            case 3:
                 showCustomers();
                 break;
-            case 3:
+            case 4:
                 showStandardCustomers();
                 break;
-            case 4:
+            case 5:
                 showPremiumCustomers();
                 break;
             default:
@@ -140,7 +146,18 @@ public class ManageOS {
         controller.addItem(item);
         System.out.println("Item added successfully.");
     }
+    public void removeItem() throws DAOException {
+        System.out.println("Enter code of Item to delete");
+        String code = scanner.nextLine();
+        ArrayList<Item> items = controller.getItems();
+        for (Item item : items) {
+            if(code.equals(item.getCode())){
+                controller.removeItem(item);
+                System.out.println("Item has been deleted");
+            }
+        }
 
+    }
     private void showItems() throws DAOException {
         ArrayList<Item> items = controller.getItems();
         System.out.println("Items:");
@@ -182,7 +199,19 @@ public class ManageOS {
             exceptionHandler.handleException(ex);
         }
     }
+    public void removeCustomer() throws DAOException, SQLException {
+        System.out.println("Enter id of customer to remove");
+        String id = scanner.nextLine();
 
+        ArrayList<Customer> customers = controller.getCustomers();
+        for (Customer customer : customers) {
+            if(id.equals(customer.getId())){
+                controller.removeCustomer(customer);
+                System.out.println("Customer has been removed");
+            }
+        }
+
+    }
     private void showCustomers() throws DAOException, SQLException {
         ArrayList<Customer> customers = controller.getCustomers();
         System.out.println("Customers:");
