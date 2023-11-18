@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 
 public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
-    public final String INSERT = "INSERT INTO Orders(orderNumber,quantityUnits,orderDateTime,preparationTimeMinutes,Customer_id,Item_code) VALUES(?,?,?,?,?,?)";
-    public final String UPDATE = "UPDATE ORDERS SET  orderNumber = ?, quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? WHERE orderNumber = ?";
+    public final String INSERT = "INSERT INTO Orders(quantityUnits,orderDateTime,preparationTimeMinutes,Customer_id,Item_code) VALUES(?,?,?,?,?)";
+    public final String UPDATE = "UPDATE ORDERS SET  quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? WHERE orderNumber = ?";
     public final String DELETE = "DELETE FROM ORDERS WHERE Customer_id = ?";
     public final String GETALL = "SELECT * FROM ORDERS\n " +
             "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
@@ -61,13 +61,12 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
         try {
             statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
-            statement.setInt(1,c.getOrderNumber());
-            statement.setInt(2, c.getQuantityUnits());
+            statement.setInt(1, c.getQuantityUnits());
             Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-            statement.setTimestamp(3, date);
-            statement.setInt(4, c.getPreparationTimeMinutes());
-            statement.setString(5, c.getCustomer().getId());
-            statement.setString(6, c.getItem().getCode());
+            statement.setTimestamp(2, date);
+            statement.setInt(3, c.getPreparationTimeMinutes());
+            statement.setString(4, c.getCustomer().getId());
+            statement.setString(5, c.getItem().getCode());
 
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Could not be iserted");
@@ -96,14 +95,13 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
         try {
             if (c != null) {
                 statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
-                statement.setInt(1,c.getOrderNumber());
-                statement.setInt(2, c.getQuantityUnits());
+                statement.setInt(1, c.getQuantityUnits());
                 Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-                statement.setTimestamp(3, date);
-                statement.setInt(4, c.getPreparationTimeMinutes());
-                statement.setString(5, c.getCustomer().getId());
-                statement.setString(6, c.getItem().getCode());
-                statement.setInt(7, c.getOrderNumber());
+                statement.setTimestamp(2, date);
+                statement.setInt(3, c.getPreparationTimeMinutes());
+                statement.setString(4, c.getCustomer().getId());
+                statement.setString(5, c.getItem().getCode());
+                statement.setInt(6, c.getOrderNumber());
 
                 if (statement.executeUpdate() == 0) {
                     throw new DAOException("Could not be updated");
