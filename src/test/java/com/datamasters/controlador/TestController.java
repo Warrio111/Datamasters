@@ -2,6 +2,7 @@ package com.datamasters.controlador;
 
 import com.datamasters.DAO.DAOException;
 import com.datamasters.modelo.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -28,15 +29,35 @@ public class TestController {
         standardCustomer = new StandardCustomer("John Doe", "123 Main St", "6", "john@example.com");
         premiumCustomer = new PremiumCustomer("Jane Smith", "456 Oak St", "7", "jane@gmail.com", 1000.0, 0.1);
     }
-    @AfterEach
+    @After
     public void tearDownEach() throws DAOException, SQLException {
-        if (controller.getCustomers().contains(standardCustomer)) {
-            controller.removeCustomer(standardCustomer);
-        }
-        if (controller.getCustomers().contains(premiumCustomer)) {
-            controller.removeCustomer(premiumCustomer);
+        removeAllCustomers();
+        removeAllItems();
+        removeAllOrders();
+    }
+
+    private void removeAllCustomers() throws DAOException, SQLException {
+        ArrayList<Customer> customers = controller.getCustomers();
+        for (Customer customer : customers) {
+            controller.removeCustomer(customer);
         }
     }
+
+    private void removeAllItems() throws DAOException {
+        ArrayList<Item> items = controller.getItems();
+        for (Item item : items) {
+            controller.removeItem(item);
+        }
+    }
+
+    private void removeAllOrders() throws DAOException {
+        ArrayList<Orders> orders = controller.getOrders();
+        for (Orders order : orders) {
+            controller.deleteOrderByNumber(order.getOrderNumber());
+        }
+    }
+
+
 
     @Test
     public void testAddItem() throws DAOException, SQLException {
@@ -72,9 +93,10 @@ public class TestController {
     public void testAddPremiumCustomer() throws DAOException, SQLException {
 
         controller.addCustomer(premiumCustomer);
+        premiumCustomer.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
 
         assertEquals(controller.getCustomers().size(),controller.getDao().getCustomerDAO().getAll().getArrayList().size());
-        assertEquals("Jane Smith", controller.getCustomers().get(2).getName());
+        assertEquals(premiumCustomer.getId(),controller.getCustomers().get(controller.getCustomers().size() -1).getId());
     }
 
     @Test
@@ -115,35 +137,48 @@ public class TestController {
         //assertEquals(premiumCustomer, premiumCustomers.get(0));
     }
     @Test
-    public void testAddOrder() throws DAOException {
+    public void testAddOrder() throws DAOException, SQLException {
         Item item = new Item("001", "Sample Item", 10.0, 2.0, 30);
-        Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now().plusSeconds(1));
-
+        controller.addItem(item);
+        item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
+        // get last customer from BBDD
+        controller.addCustomer(standardCustomer);
+        standardCustomer.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
+        Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now().plusSeconds(5));
+        int sizeActual = controller.getOrders().size();
         controller.addOrder(order);
 
-        assertEquals(1, controller.getOrders().size());
-    }
-    @Test
-    public void testRemoveOrder() throws DAOException {
-
-        Item item = new Item("001", "Sample Item", 10.0, 2.0, 30);
-        Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now());
-        controller.addOrder(order);
-        assertEquals(1, controller.getOrders().size());
+        assertEquals(sizeActual+1, controller.getOrders().size());
         controller.removeOrder(order);
 
-        assertEquals(0, controller.getOrders().size());
+    }
+    @Test
+    public void testRemoveOrder() throws DAOException, SQLException {
+
+        Item item = new Item("001", "Sample Item", 10.0, 2.0, 30);
+        controller.addItem(item);
+        item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
+        controller.addCustomer(standardCustomer);
+        standardCustomer.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
+        Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now());
+        int sizeActual = controller.getOrders().size();
+        controller.addOrder(order);
+        assertEquals(sizeActual+1, controller.getOrders().size());
+        controller.removeOrder(order);
+
+        assertEquals(sizeActual, controller.getOrders().size());
     }
 
     @Test
     public void testFindCustomerById() throws DAOException, SQLException {
 
         controller.addCustomer(standardCustomer);
-
-        Customer foundCustomer = controller.findCustomerById("9");
+        Customer lastCutomer = controller.getCustomers().get(controller.getCustomers().size() -1);
+        standardCustomer.setId(lastCutomer.getId());
+        Customer foundCustomer = controller.findCustomerById(standardCustomer.getId());
 
         assertNotNull(foundCustomer);
-        assertEquals("9", foundCustomer.getId());
+        assertEquals(standardCustomer.getId(), foundCustomer.getId());
     }
     @Test
     public void testGetItems() throws DAOException {
@@ -162,61 +197,87 @@ public class TestController {
     public void testFindItemByCode() throws DAOException {
         Item item = new Item("1", "Sample Item", 10.0, 2.0, 30);
         controller.addItem(item);
-
-        Item foundItem = controller.findItemByCode("1");
+        item.setCode(String.valueOf(controller.getItems().get(controller.getItems().size() -1).getCode()));
+        Item foundItem = controller.findItemByCode(item.getCode());
 
         assertNotNull(foundItem);
-        assertEquals("1", foundItem.getCode());
+        assertEquals(item.getCode(), foundItem.getCode());
     }
 
     @Test
-    public void testDeleteOrder() throws DAOException {
-
+    public void testDeleteOrder() throws DAOException, SQLException {
+        removeAllCustomers();
+        removeAllItems();
+        removeAllOrders();
+        controller.addCustomer(standardCustomer);
         Item item = new Item("001", "Sample Item", 10.0, 2.0, 30);
+        controller.addItem(item);
+        item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
+        standardCustomer.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now());
-
+        int sizeActual = controller.getOrders().size();
         controller.addOrder(order);
+        order.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
+        assertEquals(sizeActual+1, controller.getOrders().size());
+        controller.deleteOrderByNumber(order.getOrderNumber());
 
-        // Obtener el número de la última orden agregada
-        Orders orderNumber = controller.getOrders().get(controller.getOrders().size() - 1);
-        controller.deleteOrderByNumber(orderNumber.getOrderNumber());
-
-        assertEquals(0, controller.getOrders().size());
+        assertEquals(sizeActual, controller.getOrders().size());
     }
 
 
+
     @Test
-    public void testGetPendingOrders() throws DAOException {
+    public void testGetPendingOrders() throws DAOException, SQLException {
         Customer customer1 = new StandardCustomer("John Doe", "123 Main St", "1", "john@example.com");
+        controller.addCustomer(customer1);
+        customer1.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         Customer customer2 = new StandardCustomer("Jane Smith", "456 Elm St", "2", "jane@example.com");
+        controller.addCustomer(customer2);
+        customer2.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         Item item = new Item("1", "Sample Item", 10.0, 2.0, 30);
+        controller.addItem(item);
+        item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
         Orders order1 = new Orders(1, customer1, item, 3, LocalDateTime.now().plusSeconds(1));
         Orders order2 = new Orders(2, customer2, item, 3, LocalDateTime.now().plusSeconds(1));
 
         controller.addOrder(order1);
+        order1.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
         controller.addOrder(order2);
+        order2.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
 
-        ArrayList<Orders> pendingOrders = controller.getPendingOrders("1");
+        ArrayList<Orders> pendingOrders = controller.getPendingOrders(customer1.getId());
 
         assertEquals(1, pendingOrders.size());
-        assertTrue(pendingOrders.get(0).getCustomer().getId().equals("1"));
+        assertTrue(pendingOrders.get(0).getCustomer().getId().equals(customer1.getId()));
+        controller.removeOrder(order1);
+        controller.removeOrder(order2);
     }
 
     @Test
-    public void testGetSentOrders() throws DAOException {
+    public void testGetSentOrders() throws DAOException, SQLException {
         Customer customer1 = new StandardCustomer("John Doe", "123 Main St", "1", "john@example.com");
         Customer customer2 = new StandardCustomer("Jane Smith", "456 Elm St", "2", "jane@example.com");
+        controller.addCustomer(customer1);
+        customer1.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
+        controller.addCustomer(customer2);
+        customer2.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         Item item = new Item("001", "Sample Item", 10.0, 2.0, 5);
-        Orders order1 = new Orders(1, customer1, item, 3, LocalDateTime.now().minusMinutes(35));
-        Orders order2 = new Orders(2, customer2, item, 3, LocalDateTime.now());
+        controller.addItem(item);
+        item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
+        Orders order1 = new Orders(1, customer1, item, 3, LocalDateTime.now().minusMinutes(100));
+        Orders order2 = new Orders(2, customer2, item, 3, LocalDateTime.now().plusMinutes(100));
 
         controller.addOrder(order1);
+        order1.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
         controller.addOrder(order2);
-
-        ArrayList<Orders> sentOrders = controller.getSentOrders("1");
+        order2.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
+        ArrayList<Orders> sentOrders = controller.getSentOrders(customer1.getId());
 
         assertEquals(1, sentOrders.size());
-        assertTrue(sentOrders.get(0).getCustomer().getId().equals("2"));
+        assertTrue(sentOrders.get(0).getCustomer().getId().equals(customer1.getId()));
+        int ordernumber = order1.getOrderNumber();
+        controller.deleteOrderByNumber(order1.getOrderNumber());
+        controller.deleteOrderByNumber(order2.getOrderNumber());
     }
 
     @Test

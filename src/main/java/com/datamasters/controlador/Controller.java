@@ -81,20 +81,37 @@ public class Controller {
 
     }
     public Customer getCustomerByType(CustomerType type) throws DAOException, SQLException {
-        return dao.getCustomerDAO().getCustomerType(String.valueOf(type));
+
+        try {
+            return dao.getCustomerDAO().getCustomerType(String.valueOf(type));
+        } catch ( Exception e) {
+            return null;
+        }
     }
     public ArrayList<Customer> getCustomersByType(CustomerType type) throws DAOException, SQLException {
-        return dao.getCustomerDAO().getCustomerByType(String.valueOf(type)).getArrayList();
+        try {
+            return dao.getCustomerDAO().getCustomerByType(String.valueOf(type)).getArrayList();
+        } catch ( Exception e) {
+            return null;
+        }
     }
     public Customer findCustomerById(String customerId) throws DAOException, SQLException {
-        return dao.getCustomerDAO().getById(Integer.parseInt(customerId));
+        try {
+            return dao.getCustomerDAO().getById(Integer.parseInt(customerId));
+        } catch ( Exception e) {
+            return null;
+        }
     }
     public ArrayList<Item> getItems() throws DAOException {
         return dao.getItemDAO().getAll().getArrayList();
     }
 
     public Item findItemByCode(String itemCode) throws DAOException {
-        return dao.getItemDAO().getById(Integer.parseInt(itemCode));
+        try {
+            return dao.getItemDAO().getById(Integer.parseInt(itemCode));
+        } catch ( Exception e) {
+            return null;
+        }
     }
 
     public void deleteOrderByNumber(int orderNumber) throws DAOException {
@@ -104,8 +121,11 @@ public class Controller {
         }
     }
     public Orders findOrderByNumber(int orderNumber) throws DAOException {
-
-        return dao.getOrdersDAO().getById(orderNumber);
+        try {
+            return dao.getOrdersDAO().getById(orderNumber);
+        } catch ( Exception e) {
+            return null;
+        }
     }
     public  ArrayList<Orders> getOrders() throws DAOException {
         return dao.getOrdersDAO().getAll().getArrayList();

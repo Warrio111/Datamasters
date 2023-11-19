@@ -182,6 +182,7 @@ public class ManageOS {
             if (customerType == CustomerType.STANDARD) {
                 Customer customer = new StandardCustomer(name, address, id, email);
                 controller.addCustomer(customer);
+                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("Standard customer added successfully.");
             } else if (customerType == CustomerType.PREMIUM) {
                 System.out.print("Enter membership fee: ");
@@ -191,6 +192,7 @@ public class ManageOS {
 
                 Customer customer = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
                 controller.addCustomer(customer);
+                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("Premium customer added successfully.");
             } else {
                 System.out.println("Invalid customer type. Please try again.");
@@ -248,7 +250,7 @@ public class ManageOS {
         if (customer == null) {
             System.out.println("Customer not found. Please add the customer details.");
             addCustomer();
-            customer = controller.findCustomerById(customerId);
+            customer = controller.getCustomers().get(controller.getCustomers().size()-1);
         }
         scanner.nextLine(); // Consume the newline character
         System.out.print("Enter item code: ");
@@ -259,7 +261,8 @@ public class ManageOS {
             System.out.println("Product not found. Please add the product details.");
             scanner.nextLine(); // Consume the newline character
             addItems();
-            item = controller.findItemByCode(itemCode);
+            item = controller.getItems().get(controller.getItems().size()-1);
+
         }
 
         System.out.print("Enter quantity of units: ");
