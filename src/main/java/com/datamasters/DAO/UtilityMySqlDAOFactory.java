@@ -10,7 +10,7 @@ public class UtilityMySqlDAOFactory extends DAOFactory {
     public static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     public static final String DBURL = "jdbc:mysql://localhost:3306/onlinestore";
     public  static  final  String LOGIN = "root";
-    public  static  final  String PASSWORD = "12345aA";
+    public  static  final  String PASSWORD = "1234";
     static Connection conn = null;
     public static Connection createConnection() throws SQLException {
         try {

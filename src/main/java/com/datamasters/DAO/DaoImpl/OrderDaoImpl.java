@@ -21,7 +21,11 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
     PreparedStatement statement = null;
 
+    Connection connection = null;
 
+    ResultSet resultSet = null;
+    Orders order = null;
+    CallableStatement callableStatement = null;
     public final String GETBYID = "SELECT * FROM ORDERS\n" +
             "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
             "JOIN Item ON ORDERS.Item_code = Item.code\n" +
@@ -233,7 +237,43 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public Orders getById(int id) throws DAOException {
-        ResultSet resultSet = null;
+
+        try {
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call orderById(?)}");
+            callableStatement.setInt(1, id);
+
+            resultSet = callableStatement.executeQuery();
+
+            if (resultSet.next()) {
+                order = convertir(resultSet);
+                System.out.println(order.toString());
+            } else {
+                throw new DAOException("Order not found");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // Imprimir detalles del error
+            throw new DAOException("Error in SQL", ex);
+
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (callableStatement != null) {
+                try {
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        /*ResultSet resultSet = null;
         Orders order = null;
 
         try {
@@ -257,7 +297,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
                     throw new RuntimeException(e);
                 }
             }
-        }
+        }*/
         return order;
     }
 

@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import com.datamasters.modelo.List;
 
 public class BBDDtest {
 
@@ -75,7 +76,7 @@ public class BBDDtest {
         statement.setDouble(2, 12.50);
         statement.setDouble(3, 2.50);
         statement.setInt(4, 10);
-        statement.setInt(5, 14);
+        statement.setInt(5, 24);
 
         // Ejecuta la inserción
         int filasAfectadas = statement.executeUpdate();
@@ -102,16 +103,27 @@ public class BBDDtest {
         }
         resultSet.close();
     }
-}
-   // @Test
-    /*public void removeItemBBDD() throws SQLException, DAOException {
+
+   @Test
+    public void removeItemBBDD() throws SQLException, DAOException {
+
         ItemDaoImpl dao = new ItemDaoImpl();
 
         int codeToDelete = 2;
 
+        Item itemToDelete = null;
+
+        List<Item> itemList = dao.getAll();
+
+        for(int i = 0; i < itemList.getSize(); i++) {
+            if(codeToDelete == Integer.parseInt(itemList.getAt(i).getCode())) {
+                itemToDelete = itemList.getAt(i);
+            }
+        }
+
         try {
             // Llama al método remove para eliminar el elemento utilizando el ID como un String
-            dao.remove(new Item(String.valueOf(codeToDelete))); // Convierte el ID a String
+            dao.remove(itemToDelete); // Convierte el ID a String
             // Si no se lanzó una excepción, la eliminación se realizó correctamente
             assertTrue(true);
         } catch (DAOException e) {
@@ -119,6 +131,6 @@ public class BBDDtest {
             fail("Error en la eliminación: " + e.getMessage());
         }
     }
-}*/
+}
 
 
