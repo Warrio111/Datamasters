@@ -1,27 +1,32 @@
 package com.datamasters.controlador;
 
+import com.datamasters.DAO.CustomerDAO;
+import com.datamasters.DAO.DAOException;
+import com.datamasters.DAO.DAOFactory;
+import com.datamasters.DAO.DaoImpl.OrderDaoImpl;
 import com.datamasters.modelo.*;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Controller {
-    private final Data data;
+    private final DAOFactory dao;
     private final ExceptionHandler exceptionHandler;
 
-    public Controller() {
-        this.data = new Data();
+    public Controller() throws DAOException {
+        this.dao = DAOFactory.getDAOFactory(1);
         this.exceptionHandler = new ExceptionHandler();
     }
 
-    public Controller(Data data, ExceptionHandler exceptionHandler) {
-        this.data = data;
+    public Controller(DAOFactory dao, ExceptionHandler exceptionHandler) {
+        this.dao = dao;
         this.exceptionHandler = exceptionHandler;
     }
 
     public void addCustomer(Customer customer) {
         try {
-            data.getCustomers().addCustomer(customer);
+            dao.getCustomerDAO().insert(customer);
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
@@ -29,7 +34,7 @@ public class Controller {
 
     public void removeCustomer(Customer customer) {
         try {
-            data.getCustomers().removeCustomer(customer);
+            dao.getCustomerDAO().remove(customer);
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
@@ -37,7 +42,7 @@ public class Controller {
 
     public void addOrder(Orders order) {
         try {
-            data.getOrders().addOrder(order);
+            dao.getOrdersDAO().insert(order);
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
@@ -45,7 +50,7 @@ public class Controller {
 
     public void removeOrder(Orders order) {
         try {
-            data.getOrders().removeOrder(order);
+            dao.getOrdersDAO().remove(order);
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
@@ -53,7 +58,7 @@ public class Controller {
 
     public void addItem(Item item) {
         try {
-            data.getItems().addItem(item);
+            dao.getItemDAO().insert(item);
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
@@ -61,62 +66,72 @@ public class Controller {
 
     public void removeItem(Item item) {
         try {
-            data.getItems().removeItem(item);
+            dao.getItemDAO().remove(item);
         } catch (Exception ex) {
             exceptionHandler.handleException(ex);
         }
     }
-
-    public Data getData() {
-        return data;
+    public DAOFactory getDao() {
+        return dao;
     }
 
-    public ArrayList<Customer> getCustomers() {
-        return data.getCustomers().getArrayList();
-    }
-    public ArrayList<Customer> getCustomerByType(CustomerType type) {
-        return data.getCustomers().filterCustomersByType(type).getArrayList();
-    }
-    public Customer findCustomerById(String customerId) {
+    public ArrayList<Customer> getCustomers() throws DAOException, SQLException {
 
-        for (Customer customer : getCustomers()) {
-            if (customer.getId().equals(customerId)) {
-                return customer;
-            }
+        return dao.getCustomerDAO().getAll().getArrayList();
+
+    }
+    public Customer getCustomerByType(CustomerType type) throws DAOException, SQLException {
+
+        try {
+            return dao.getCustomerDAO().getCustomerType(String.valueOf(type));
+        } catch ( Exception e) {
+            return null;
         }
-        return null;
     }
-    public ArrayList<Item> getItems() {
-        return data.getItems().getArrayList();
-    }
-
-    public Item findItemByCode(String itemCode) {
-        for(Item item : getItems()) {
-            if (item.getCode().equals(itemCode)) {
-                return item;
-            }
+    public ArrayList<Customer> getCustomersByType(CustomerType type) throws DAOException, SQLException {
+        try {
+            return dao.getCustomerDAO().getCustomerByType(String.valueOf(type)).getArrayList();
+        } catch ( Exception e) {
+            return null;
         }
-        return null;
+    }
+    public Customer findCustomerById(String customerId) throws DAOException, SQLException {
+        try {
+            return dao.getCustomerDAO().getById(Integer.parseInt(customerId));
+        } catch ( Exception e) {
+            return null;
+        }
+    }
+    public ArrayList<Item> getItems() throws DAOException {
+        return dao.getItemDAO().getAll().getArrayList();
     }
 
-    public void deleteOrderByNumber(int orderNumber) {
+    public Item findItemByCode(String itemCode) throws DAOException {
+        try {
+            return dao.getItemDAO().getById(Integer.parseInt(itemCode));
+        } catch ( Exception e) {
+            return null;
+        }
+    }
+
+    public void deleteOrderByNumber(int orderNumber) throws DAOException {
         Orders order = findOrderByNumber(orderNumber);
         if (order != null && !order.isCancelable(LocalDateTime.now())) {
-            removeOrder(order);
+            dao.getOrdersDAO().remove(order);
         }
     }
-    public Orders findOrderByNumber(int orderNumber) {
-        for (Orders order : getOrders()) {
-            if (order.getOrderNumber() == orderNumber) {
-                return order;
-            }
+    public Orders findOrderByNumber(int orderNumber) throws DAOException {
+        try {
+            return dao.getOrdersDAO().getById(orderNumber);
+        } catch ( Exception e) {
+            return null;
         }
-        return null;
     }
-    public  ArrayList<Orders> getOrders() {
-        return data.getOrders().getArrayList();
+    public  ArrayList<Orders> getOrders() throws DAOException {
+        return dao.getOrdersDAO().getAll().getArrayList();
     }
-    public ArrayList<Orders> getPendingOrders(String customer) {
+    public ArrayList<Orders> getPendingOrders(String customer) throws DAOException {
+
         ArrayList <Orders> pendingOrders = new ArrayList<>();
         for (Orders order : getOrders()) {
             if (order.getCustomer().getId().equals(customer) && !order.orderIsSent(LocalDateTime.now())) {
@@ -126,7 +141,7 @@ public class Controller {
         return pendingOrders;
     }
 
-    public ArrayList<Orders> getSentOrders(String customer) {
+    public ArrayList<Orders> getSentOrders(String customer) throws DAOException {
         ArrayList <Orders> sentOrders = new ArrayList<>();
         for (Orders order : getOrders()) {
             if (order.getCustomer().getId().equals(customer) && order.orderIsSent(LocalDateTime.now())) {

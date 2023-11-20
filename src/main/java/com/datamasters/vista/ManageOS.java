@@ -1,8 +1,10 @@
 package com.datamasters.vista;
 
+import com.datamasters.DAO.DAOException;
 import com.datamasters.controlador.Controller;
 import com.datamasters.modelo.*;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
@@ -11,13 +13,13 @@ public class ManageOS {
     private final Controller controller;
     private final Scanner scanner;
     private final ExceptionHandler exceptionHandler;
-    public ManageOS() {
+    public ManageOS() throws DAOException {
         this.controller = new Controller();
         this.scanner = new Scanner(System.in);
         this.exceptionHandler = new ExceptionHandler();
     }
 
-    public void run() {
+    public void run() throws DAOException, SQLException {
         boolean exit = false;
 
         while (!exit) {
@@ -50,9 +52,10 @@ public class ManageOS {
         scanner.close();
     }
 
-    private void manageItems() {
+    private void manageItems() throws DAOException {
         System.out.println("1. Add Item");
-        System.out.println("2. Show Item");
+        System.out.println("2. Delete Item");
+        System.out.println("3. Show Item");
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
@@ -61,6 +64,8 @@ public class ManageOS {
                 addItems();
                 break;
             case 2:
+                removeItem();
+            case 3:
                 showItems();
                 break;
             default:
@@ -69,11 +74,12 @@ public class ManageOS {
         }
     }
 
-    private void manageCustomers() {
+    private void manageCustomers() throws DAOException, SQLException {
         System.out.println("1. Add Customer");
-        System.out.println("2. Show Customers");
-        System.out.println("3. Show Standard Customers");
-        System.out.println("4. Show Premium Customers");
+        System.out.println("2. Delete Customer");
+        System.out.println("3. Show Customers");
+        System.out.println("4. Show Standard Customers");
+        System.out.println("5. Show Premium Customers");
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
@@ -82,12 +88,14 @@ public class ManageOS {
                 addCustomer();
                 break;
             case 2:
+                removeCustomer();
+            case 3:
                 showCustomers();
                 break;
-            case 3:
+            case 4:
                 showStandardCustomers();
                 break;
-            case 4:
+            case 5:
                 showPremiumCustomers();
                 break;
             default:
@@ -96,7 +104,7 @@ public class ManageOS {
         }
     }
 
-    private void manageOrders() {
+    private void manageOrders() throws DAOException, SQLException {
         System.out.println("1. Add Order");
         System.out.println("2. Delete Order");
         System.out.println("3. Show Pending Orders");
@@ -138,8 +146,19 @@ public class ManageOS {
         controller.addItem(item);
         System.out.println("Item added successfully.");
     }
+    public void removeItem() throws DAOException {
+        System.out.println("Enter code of Item to delete");
+        String code = scanner.nextLine();
+        ArrayList<Item> items = controller.getItems();
+        for (Item item : items) {
+            if(code.equals(item.getCode())){
+                controller.removeItem(item);
+                System.out.println("Item has been deleted");
+            }
+        }
 
-    private void showItems() {
+    }
+    private void showItems() throws DAOException {
         ArrayList<Item> items = controller.getItems();
         System.out.println("Items:");
         for (Item item : items) {
@@ -163,6 +182,7 @@ public class ManageOS {
             if (customerType == CustomerType.STANDARD) {
                 Customer customer = new StandardCustomer(name, address, id, email);
                 controller.addCustomer(customer);
+                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("Standard customer added successfully.");
             } else if (customerType == CustomerType.PREMIUM) {
                 System.out.print("Enter membership fee: ");
@@ -172,6 +192,7 @@ public class ManageOS {
 
                 Customer customer = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
                 controller.addCustomer(customer);
+                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("Premium customer added successfully.");
             } else {
                 System.out.println("Invalid customer type. Please try again.");
@@ -180,8 +201,20 @@ public class ManageOS {
             exceptionHandler.handleException(ex);
         }
     }
+    public void removeCustomer() throws DAOException, SQLException {
+        System.out.println("Enter id of customer to remove");
+        String id = scanner.nextLine();
 
-    private void showCustomers() {
+        ArrayList<Customer> customers = controller.getCustomers();
+        for (Customer customer : customers) {
+            if(id.equals(customer.getId())){
+                controller.removeCustomer(customer);
+                System.out.println("Customer has been removed");
+            }
+        }
+
+    }
+    private void showCustomers() throws DAOException, SQLException {
         ArrayList<Customer> customers = controller.getCustomers();
         System.out.println("Customers:");
         for (Customer customer : customers) {
@@ -189,23 +222,23 @@ public class ManageOS {
         }
     }
 
-    private void showStandardCustomers() {
-        ArrayList<Customer> standardCustomers = controller.getCustomerByType(CustomerType.STANDARD);
+    private void showStandardCustomers() throws DAOException, SQLException {
+        ArrayList<Customer> standardCustomers = controller.getCustomersByType(CustomerType.STANDARD);
         System.out.println("Standard Customers:");
         for (Customer customer : standardCustomers) {
             System.out.println(customer);
         }
     }
 
-    private void showPremiumCustomers() {
-        ArrayList<Customer> premiumCustomers = controller.getCustomerByType(CustomerType.PREMIUM);
+    private void showPremiumCustomers() throws DAOException, SQLException {
+        ArrayList<Customer> premiumCustomers = controller.getCustomersByType(CustomerType.PREMIUM);
         System.out.println("Premium Customers:");
         for (Customer customer : premiumCustomers) {
             System.out.println(customer);
         }
     }
 
-    private void addOrder() {
+    private void addOrder() throws DAOException, SQLException {
         System.out.print("Enter order number: ");
         int orderNumber = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
@@ -217,7 +250,7 @@ public class ManageOS {
         if (customer == null) {
             System.out.println("Customer not found. Please add the customer details.");
             addCustomer();
-            customer = controller.findCustomerById(customerId);
+            customer = controller.getCustomers().get(controller.getCustomers().size()-1);
         }
         scanner.nextLine(); // Consume the newline character
         System.out.print("Enter item code: ");
@@ -228,7 +261,8 @@ public class ManageOS {
             System.out.println("Product not found. Please add the product details.");
             scanner.nextLine(); // Consume the newline character
             addItems();
-            item = controller.findItemByCode(itemCode);
+            item = controller.getItems().get(controller.getItems().size()-1);
+
         }
 
         System.out.print("Enter quantity of units: ");
@@ -242,7 +276,7 @@ public class ManageOS {
         System.out.println("Order added successfully.");
     }
 
-    private void deleteOrder() {
+    private void deleteOrder() throws DAOException {
         System.out.print("Enter order number to delete: ");
         int orderNumber = scanner.nextInt();
         Orders order = controller.findOrderByNumber(orderNumber);
@@ -259,7 +293,7 @@ public class ManageOS {
         }
     }
 
-    private void showPendingOrders() {
+    private void showPendingOrders() throws DAOException {
         System.out.println("Enter Customer ID to find pending order: ");
         String customerId = scanner.nextLine();
         ArrayList<Orders> pendingOrders = controller.getPendingOrders(customerId);
@@ -269,7 +303,7 @@ public class ManageOS {
         }
     }
 
-    private void showSentOrders() {
+    private void showSentOrders() throws DAOException {
         System.out.println("Enter Customer ID to find sent orders: ");
         String customerId = scanner.nextLine();
         ArrayList<Orders> sentOrders = controller.getSentOrders(customerId);
