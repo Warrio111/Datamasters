@@ -31,7 +31,7 @@ CREATE TABLE `customer` (
   `shippingDiscount` double NOT NULL,
   `customerType` enum('STANDARD','PREMIUM') NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=628 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=703 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,6 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (625,'Robert','ElPrat','robert@gmail.com',50,20,'STANDARD'),(626,'Manuel','El Prat','manuel@gmail.com',20.2,5,'STANDARD'),(627,'Manuel','El Prat','manuel@gmail.com',20.2,5,'STANDARD');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,7 +57,7 @@ CREATE TABLE `item` (
   `shippingCost` double NOT NULL,
   `preparationTimeMinutes` int NOT NULL,
   PRIMARY KEY (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,6 +66,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
+INSERT INTO `item` VALUES (175,'Pizza de jamón y queso',12.5,2.5,10),(176,'Pizza de jamón y queso',12.5,2.5,10);
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,7 +178,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteOrder`(IN p_id INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteOrder`(IN p_orderNumber INT)
 BEGIN
     START TRANSACTION;
     SAVEPOINT sp1;
@@ -189,7 +189,7 @@ BEGIN
             RESIGNAL;
         END;
         DELETE FROM Orders
-        WHERE id = p_id;
+        WHERE orderNumber = p_orderNumber;
     END;
     COMMIT;
 END ;;
@@ -258,7 +258,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertItem`(IN code INT, IN description varchar(255), IN sellingPrice Double,  IN shippingCost Double, IN preparationTimeMinutes INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertItem`( IN description varchar(255), IN sellingPrice Double,  IN shippingCost Double, IN preparationTimeMinutes INT)
 BEGIN
     START TRANSACTION;
     SAVEPOINT sp1;
@@ -268,7 +268,7 @@ BEGIN
             ROLLBACK TO SAVEPOINT sp1;
             RESIGNAL;
         END;
-        INSERT INTO Item (code,description,sellingPrice,shippingCost,preparationTimeMinutes) values (code,description,sellingPrice,shippingCost,preparationTimeMinutes);
+        INSERT INTO Item (description,sellingPrice,shippingCost,preparationTimeMinutes) values (description,sellingPrice,shippingCost,preparationTimeMinutes);
     END;
     COMMIT;
 END ;;
@@ -287,7 +287,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertOrder`(IN orderNumber INT,IN quantityUnits INT,IN orderDateTime datetime,IN preparationTimeMinutes INT,IN Customer_ID INT,IN Item_Code INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertOrder`(IN quantityUnits INT,IN orderDateTime datetime,IN preparationTimeMinutes INT,IN Customer_ID INT,IN Item_Code INT)
 BEGIN
     START TRANSACTION;
     SAVEPOINT sp1;
@@ -297,7 +297,7 @@ BEGIN
             ROLLBACK TO SAVEPOINT sp1;
             RESIGNAL;
         END;
-        INSERT INTO Orders (orderNumber,quantityUnits,orderDateTime,preparationTimeMinutes,Customer_ID,Item_Code) VALUES (orderNumber,quantityUnits,orderDateTime,preparationTimeMinutes,Customer_ID,Item_Code);
+        INSERT INTO Orders (quantityUnits,orderDateTime,preparationTimeMinutes,Customer_ID,Item_Code) VALUES (quantityUnits,orderDateTime,preparationTimeMinutes,Customer_ID,Item_Code);
     END;
     COMMIT;
 END ;;
@@ -427,4 +427,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-22 11:37:35
+-- Dump completed on 2023-11-22 12:10:03

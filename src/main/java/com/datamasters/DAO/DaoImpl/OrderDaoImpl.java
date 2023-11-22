@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
     public final String INSERT = "INSERT INTO Orders(quantityUnits,orderDateTime,preparationTimeMinutes,Customer_id,Item_code) VALUES(?,?,?,?,?)";
-    public final String UPDATE = "UPDATE ORDERS SET  quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? WHERE orderNumber = ?";
+    public final String UPDATE = "UPDATE ORDERS SET  quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? Item_code = ? WHERE orderNumber = ?";
     public final String DELETE = "DELETE FROM ORDERS WHERE Customer_id = ?";
     public final String GETALL = "SELECT * FROM ORDERS\n " +
             "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
@@ -20,6 +20,9 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     public final String objecItemCustomer = "SELECT * FROM Customer c " + "JOIN Item i ON c.id_Customer = i.customer_id " + "WHERE c.id_Customer = ?";
 
     PreparedStatement statement = null;
+    CallableStatement callableStatement = null;
+    ResultSet resultSet = null;
+    Orders order = null;
 
     public final String GETBYID = "SELECT * FROM ORDERS\n" +
             "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
@@ -59,29 +62,31 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     public void insert(Orders c) throws DAOException {
 
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
-            statement.setInt(1, c.getQuantityUnits());
-            Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-            statement.setTimestamp(2, date);
-            statement.setInt(3, c.getPreparationTimeMinutes());
-            statement.setString(4, c.getCustomer().getId());
-            statement.setString(5, c.getItem().getCode());
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
 
-            if (statement.executeUpdate() == 0) {
-                throw new DAOException("Could not be iserted");
-            }
+            callableStatement = connection.prepareCall("{call InsertOrder(?,?,?,?,?)}");
+            callableStatement.setInt(1, c.getQuantityUnits());
+            Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
+            callableStatement.setTimestamp(2, date);
+            callableStatement.setInt(3, c.getPreparationTimeMinutes());
+            callableStatement.setString(4, c.getCustomer().getId());
+            callableStatement.setString(5, c.getItem().getCode());
+
+            resultSet = callableStatement.executeQuery();
+
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
+
         } finally {
-            if (statement != null) {
+
+            if (callableStatement != null) {
                 try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
-
         }
     }
 
@@ -91,35 +96,35 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public void update(Orders c) throws DAOException {
-        try {
-            if (c != null) {
-                statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
-                statement.setInt(1, c.getQuantityUnits());
-                Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-                statement.setTimestamp(2, date);
-                statement.setInt(3, c.getPreparationTimeMinutes());
-                statement.setString(4, c.getCustomer().getId());
-                statement.setString(5, c.getItem().getCode());
-                statement.setInt(6, c.getOrderNumber());
 
-                if (statement.executeUpdate() == 0) {
-                    throw new DAOException("Could not be updated");
-                } else {
-                    System.out.println("Registro actualizado");
-                }
-            }
+        try {
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call UpdateOrder(?,?,?,?,?,?)}");
+            callableStatement.setInt(1, c.getQuantityUnits());
+            Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
+            callableStatement.setTimestamp(2, date);
+            callableStatement.setInt(3, c.getPreparationTimeMinutes());
+            callableStatement.setString(4, c.getCustomer().getId());
+            callableStatement.setString(5, c.getItem().getCode());
+            callableStatement.setInt(6, c.getOrderNumber());
+
+
+            resultSet = callableStatement.executeQuery();
+
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
+
         } finally {
-            if (statement != null) {
+
+            if (callableStatement != null) {
                 try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
-
         }
     }
 
@@ -129,27 +134,28 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public void remove(Orders c) throws DAOException {
+
         try {
-            if (c != null) {
-                statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(DELETE);
-                statement.setString(1, c.getCustomer().getId());
-                int customerDelete = statement.executeUpdate();
-                if (customerDelete == 0) {
-                    throw new DAOException("Could not be deleted");
-                }
-            }
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call DeleteOrder(?)}");
+            callableStatement.setInt(1, c.getOrderNumber());
+
+            resultSet = callableStatement.executeQuery();
+
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
+
         } finally {
-            if (statement != null) {
+
+            if (callableStatement != null) {
                 try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
-
         }
     }
 
@@ -232,9 +238,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public Orders getById(int id) throws DAOException {
-        CallableStatement callableStatement = null;
-        ResultSet resultSet = null;
-        Orders order = null;
+
         try {
             Connection connection = UtilityMySqlDAOFactory.getConnection();
 
@@ -269,31 +273,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
                 }
             }
         }
-        /*ResultSet resultSet = null;
-        Orders order = null;
 
-        try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYID);
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            Customer c = null;
-            if (resultSet.next()) {
-                order = convertir(resultSet);
-            } else {
-                throw new DAOException("Customer not found");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }*/
         return order;
     }
 

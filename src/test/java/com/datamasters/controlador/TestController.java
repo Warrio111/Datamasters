@@ -162,6 +162,7 @@ public class TestController {
         Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now());
         int sizeActual = controller.getOrders().size();
         controller.addOrder(order);
+        order.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
         assertEquals(sizeActual+1, controller.getOrders().size());
         controller.removeOrder(order);
 
