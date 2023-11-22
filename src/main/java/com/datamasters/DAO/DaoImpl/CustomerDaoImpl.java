@@ -1,7 +1,9 @@
 package com.datamasters.DAO.DaoImpl;
 
 import com.datamasters.DAO.*;
+
 import com.datamasters.modelo.*;
+
 
 import java.sql.*;
 
@@ -34,6 +36,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      */
     @Override
     public void insert(Customer c) throws DAOException, SQLException {
+
 
 
         try {
@@ -72,6 +75,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      */
     @Override
     public void update(Customer c) throws DAOException {
+
 
 
         try {
@@ -113,6 +117,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
     @Override
     public void remove(Customer c) throws DAOException {
 
+
         try {
             Connection connection = UtilityMySqlDAOFactory.getConnection();
 
@@ -137,7 +142,6 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         }
     }
     public Customer convertir(ResultSet rs) throws DAOException {
-
         try {
 
             String name = rs.getString("name");
@@ -153,7 +157,6 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
             } else {
                 c = new StandardCustomer(name, address, id, email);
             }
-
             return c;
 
         } catch (SQLException e) {
@@ -244,9 +247,6 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         }
 
         return c;
-
-
-
     }
 
     /**

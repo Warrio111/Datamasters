@@ -3,9 +3,11 @@ import com.datamasters.DAO.*;
 import com.datamasters.modelo.Customer;
 import com.datamasters.modelo.Item;
 import com.datamasters.modelo.List;
+
 import com.datamasters.modelo.Orders;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 
 public class ItemDaoImpl extends DAOFactory implements ItemDAO {
@@ -19,7 +21,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     CallableStatement callableStatement = null;
     ResultSet resultSet = null;
     Orders order = null;
-
+  
     public ItemDaoImpl() throws DAOException {
         getDAOFactory(1);
     }
@@ -56,6 +58,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     public void insert(Item c) throws DAOException {
 
         try {
+
             Connection connection = UtilityMySqlDAOFactory.getConnection();
 
             callableStatement = connection.prepareCall("{call InsertItem(?,?,?,?)}");
@@ -78,6 +81,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
                     callableStatement.close();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
+
                 }
             }
         }
@@ -89,6 +93,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
      */
     @Override
     public void update(Item c) throws DAOException {
+
 
 
         try {
@@ -114,6 +119,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
                     callableStatement.close();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
+
                 }
             }
         }
@@ -125,6 +131,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
      */
     @Override
     public void remove(Item c) throws DAOException {
+
 
         try {
             Connection connection = UtilityMySqlDAOFactory.getConnection();
@@ -147,6 +154,7 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
                     throw new RuntimeException(e);
                 }
             }
+
         }
     }
     public Item convertir(ResultSet rs) throws DAOException{

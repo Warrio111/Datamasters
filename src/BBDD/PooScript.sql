@@ -31,6 +31,7 @@ CREATE TABLE `customer` (
   `shippingDiscount` double NOT NULL,
   `customerType` enum('STANDARD','PREMIUM') NOT NULL,
   PRIMARY KEY (`id`)
+
 ) ENGINE=InnoDB AUTO_INCREMENT=703 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -57,7 +58,9 @@ CREATE TABLE `item` (
   `shippingCost` double NOT NULL,
   `preparationTimeMinutes` int NOT NULL,
   PRIMARY KEY (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8mb3;
+
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +69,9 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
+
 INSERT INTO `item` VALUES (175,'Pizza de jamón y queso',12.5,2.5,10),(176,'Pizza de jamón y queso',12.5,2.5,10);
+
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -89,7 +94,8 @@ CREATE TABLE `orders` (
   KEY `fk_Order_Item1_idx` (`Item_code`),
   CONSTRAINT `fk_Order_Customer` FOREIGN KEY (`Customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_Order_Item1` FOREIGN KEY (`Item_code`) REFERENCES `item` (`code`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,6 +114,7 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'onlinestore'
 --
+
 /*!50003 DROP PROCEDURE IF EXISTS `DeleteCustomer` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -417,6 +424,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -427,4 +435,6 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+
 -- Dump completed on 2023-11-22 12:10:03
+

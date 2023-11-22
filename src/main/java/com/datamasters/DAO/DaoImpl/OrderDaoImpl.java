@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
     public final String INSERT = "INSERT INTO Orders(quantityUnits,orderDateTime,preparationTimeMinutes,Customer_id,Item_code) VALUES(?,?,?,?,?)";
+
     public final String UPDATE = "UPDATE ORDERS SET  quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? Item_code = ? WHERE orderNumber = ?";
+
     public final String DELETE = "DELETE FROM ORDERS WHERE Customer_id = ?";
     public final String GETALL = "SELECT * FROM ORDERS\n " +
             "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
@@ -20,9 +22,11 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     public final String objecItemCustomer = "SELECT * FROM Customer c " + "JOIN Item i ON c.id_Customer = i.customer_id " + "WHERE c.id_Customer = ?";
 
     PreparedStatement statement = null;
+
     CallableStatement callableStatement = null;
     ResultSet resultSet = null;
     Orders order = null;
+
 
     public final String GETBYID = "SELECT * FROM ORDERS\n" +
             "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
@@ -62,6 +66,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     public void insert(Orders c) throws DAOException {
 
         try {
+
             Connection connection = UtilityMySqlDAOFactory.getConnection();
 
             callableStatement = connection.prepareCall("{call InsertOrder(?,?,?,?,?)}");
@@ -87,6 +92,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
                     throw new RuntimeException(e);
                 }
             }
+
         }
     }
 
@@ -96,6 +102,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public void update(Orders c) throws DAOException {
+
 
         try {
             Connection connection = UtilityMySqlDAOFactory.getConnection();
@@ -125,6 +132,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
                     throw new RuntimeException(e);
                 }
             }
+
         }
     }
 
@@ -134,6 +142,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public void remove(Orders c) throws DAOException {
+
 
         try {
             Connection connection = UtilityMySqlDAOFactory.getConnection();
@@ -156,6 +165,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
                     throw new RuntimeException(e);
                 }
             }
+
         }
     }
 
@@ -180,7 +190,9 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
             int preparationTimeMinutes = rs.getInt("preparationTimeMinutes");
 
             Item it = new Item(code, description, sellingPrice, shippingCost, preparationTimeMinutes);
+
             if (customerType.equals("PREMIUM")) {
+
                 c = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
             } else {
                 c = new StandardCustomer(name, address, id, email);
