@@ -142,8 +142,6 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
             } else {
                 c = new StandardCustomer(name, address, id, email);
             }
-            System.out.println("Name: "+ name + ",Address: " + address + ",ID:" + id + ", Email: " + email + ", CustomerType: " +
-                    customerType + ",MembershipFee: " + membershipFee + ",ShippingDiscount: " + shippingDiscount );
 
             return c;
 

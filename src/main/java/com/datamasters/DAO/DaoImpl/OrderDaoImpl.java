@@ -21,11 +21,6 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
     PreparedStatement statement = null;
 
-    Connection connection = null;
-
-    ResultSet resultSet = null;
-    Orders order = null;
-    CallableStatement callableStatement = null;
     public final String GETBYID = "SELECT * FROM ORDERS\n" +
             "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
             "JOIN Item ON ORDERS.Item_code = Item.code\n" +
@@ -179,7 +174,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
             int preparationTimeMinutes = rs.getInt("preparationTimeMinutes");
 
             Item it = new Item(code, description, sellingPrice, shippingCost, preparationTimeMinutes);
-            if ("PREMIUM".equals(customerType)) {
+            if (customerType.equals("PREMIUM")) {
                 c = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
             } else {
                 c = new StandardCustomer(name, address, id, email);
@@ -237,7 +232,9 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public Orders getById(int id) throws DAOException {
-
+        CallableStatement callableStatement = null;
+        ResultSet resultSet = null;
+        Orders order = null;
         try {
             Connection connection = UtilityMySqlDAOFactory.getConnection();
 
@@ -248,7 +245,6 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
 
             if (resultSet.next()) {
                 order = convertir(resultSet);
-                System.out.println(order.toString());
             } else {
                 throw new DAOException("Order not found");
             }

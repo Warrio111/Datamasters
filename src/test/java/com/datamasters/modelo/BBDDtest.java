@@ -3,6 +3,7 @@ package com.datamasters.modelo;
 import static org.junit.Assert.*;
 
 import com.datamasters.DAO.DaoImpl.ItemDaoImpl;
+import com.datamasters.controlador.Controller;
 import org.junit.Before;
 import org.junit.Test;
 import com.datamasters.modelo.Item;
@@ -19,6 +20,7 @@ public class BBDDtest {
     private Orders order;
     private Customer customer;
     private Connection connection;
+    private Controller controller;
 
 
     public final String INSERT = "INSERT INTO Item(description,sellingPrice,shippingCost,preparationTimeMinutes) VALUES(?,?,?,?)";
@@ -30,7 +32,10 @@ public class BBDDtest {
     public BBDDtest() throws SQLException {
         this.connection = UtilityMySqlDAOFactory.getConnection();
     }
-
+    @Before
+    public void setUp() throws Exception {
+        controller = new Controller();
+    }
     @Test
     public void insertItemBBDD() throws SQLException, DAOException {
         PreparedStatement statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
@@ -69,14 +74,14 @@ public class BBDDtest {
     }
 
     @Test
-    public void updateItemBBDD() throws SQLException {
+    public void updateItemBBDD() throws SQLException, DAOException {
+        insertItemBBDD();
         PreparedStatement statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
-
         statement.setString(1, "Pizza de jamón y queso");
         statement.setDouble(2, 12.50);
         statement.setDouble(3, 2.50);
         statement.setInt(4, 10);
-        statement.setInt(5, 24);
+        statement.setInt(5, Integer.parseInt(controller.getItems().get(controller.getItems().size() -1).getCode()));
 
         // Ejecuta la inserción
         int filasAfectadas = statement.executeUpdate();
