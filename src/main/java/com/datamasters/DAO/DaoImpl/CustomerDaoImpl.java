@@ -1,10 +1,9 @@
 package com.datamasters.DAO.DaoImpl;
 
 import com.datamasters.DAO.*;
-import com.datamasters.modelo.Customer;
-import com.datamasters.modelo.PremiumCustomer;
-import com.datamasters.modelo.StandardCustomer;
-import com.datamasters.modelo.List;
+
+import com.datamasters.modelo.*;
+
 
 import java.sql.*;
 
@@ -37,27 +36,34 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      */
     @Override
     public void insert(Customer c) throws DAOException, SQLException {
-        try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
-            statement.setString(1, c.getName());
-            statement.setString(2, c.getAddress());
-            statement.setString(3, c.getEmail());
-            statement.setString(4, c.getCustomerType().toString());
-            statement.setDouble(5, c.getMembershipFee());
-            statement.setDouble(6, c.getShippingDiscount());
 
-            if (statement.executeUpdate() == 0) {
-                throw new DAOException("Could not be iserted");
-            }
+
+
+        try {
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call InsertCustomer(?,?,?,?,?,?)}");
+            callableStatement.setString(1, c.getName());
+            callableStatement.setString(2, c.getAddress());
+            callableStatement.setString(3, c.getEmail());
+            callableStatement.setDouble(4, c.getMembershipFee());
+            callableStatement.setDouble(5, c.getShippingDiscount());
+            callableStatement.setString(6, c.getCustomerType().toString());
+
+
+            callableStatement.execute();
+
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
+
         } finally {
-            if (statement != null) {
+
+            if (callableStatement != null) {
                 try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -69,28 +75,36 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      */
     @Override
     public void update(Customer c) throws DAOException {
-        try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
-            statement.setString(1, c.getName());
-            statement.setString(2, c.getAddress());
-            statement.setString(3, c.getEmail());
-            statement.setString(4, c.getCustomerType().toString());
-            statement.setDouble(5, c.getMembershipFee());
-            statement.setDouble(6, c.getShippingDiscount());
-            statement.setString(7, c.getId());
 
-            if (statement.executeUpdate() == 0) {
-                throw new DAOException("Could not be updated");
-            }
+
+
+        try {
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call UpdateCustomer(?,?,?,?,?,?,?)}");
+            callableStatement.setString(1, c.getName());
+            callableStatement.setString(2, c.getAddress());
+            callableStatement.setString(3, c.getEmail());
+            callableStatement.setDouble(4, c.getMembershipFee());
+            callableStatement.setDouble(5, c.getShippingDiscount());
+            callableStatement.setString(6, c.getCustomerType().toString());
+            callableStatement.setString(7, c.getName());
+
+
+
+            resultSet = callableStatement.executeQuery();
+
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
+
         } finally {
-            if (statement != null) {
+
+            if (callableStatement != null) {
                 try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -102,31 +116,32 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
      */
     @Override
     public void remove(Customer c) throws DAOException {
-        try{
-            if(c != null) {
-                statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(DELETE);
-                statement.setString(1, c.getId());
-                int customerDelete = statement.executeUpdate();
-                if (customerDelete == 0) {
-                    throw new DAOException("Could not be deleted");
-                }
-            }
-        }catch (SQLException ex){
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL",ex);
-        }finally{
-            if(statement != null){
-                try{
-                    statement.close();
-                }catch(SQLException ex){
-                    throw new DAOException("ERROR in SQL",ex);
-                }
-            }
 
+
+        try {
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call DeleteCustomer(?)}");
+            callableStatement.setString(1,c.getId());
+
+            resultSet = callableStatement.executeQuery();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // Imprimir detalles del error
+            throw new DAOException("Error in SQL", ex);
+
+        } finally {
+
+            if (callableStatement != null) {
+                try {
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
     public Customer convertir(ResultSet rs) throws DAOException {
-        Customer c = null;
         try {
 
             String name = rs.getString("name");
@@ -142,9 +157,6 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
             } else {
                 c = new StandardCustomer(name, address, id, email);
             }
-            System.out.println("Name: "+ name + ",Address: " + address + ",ID:" + id + ", Email: " + email + ", CustomerType: " +
-                    customerType + ",MembershipFee: " + membershipFee + ",ShippingDiscount: " + shippingDiscount );
-
             return c;
 
         } catch (SQLException e) {
@@ -235,32 +247,6 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         }
 
         return c;
-
-
-        /*try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYID);
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                c = convertir(resultSet);
-                System.out.println(c.toString());
-            } else {
-                throw new DAOException("Customer not found");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return c;*/
     }
 
     /**

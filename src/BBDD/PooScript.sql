@@ -31,7 +31,8 @@ CREATE TABLE `customer` (
   `shippingDiscount` double NOT NULL,
   `customerType` enum('STANDARD','PREMIUM') NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=505 DEFAULT CHARSET=utf8mb3;
+
+) ENGINE=InnoDB AUTO_INCREMENT=703 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +41,6 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (5,'Robert','El Prat De Llobregat','robert@gmail.com',0,0,'STANDARD'),(496,'John Doe','123 Main St','john@example.com',0,0,'STANDARD'),(497,'Jane Smith','456 Oak St','jane@gmail.com',1000,0.1,'PREMIUM'),(498,'John Doe','123 Main St','john@example.com',0,0,'STANDARD'),(499,'Jane Smith','456 Oak St','jane@gmail.com',1000,0.1,'PREMIUM'),(500,'John Doe','123 Main St','john@example.com',0,0,'STANDARD'),(502,'John Doe','123 Main St','john@example.com',0,0,'STANDARD'),(503,'John Doe','123 Main St','john@example.com',0,0,'STANDARD');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,7 +58,9 @@ CREATE TABLE `item` (
   `shippingCost` double NOT NULL,
   `preparationTimeMinutes` int NOT NULL,
   PRIMARY KEY (`code`)
+
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +69,9 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,'Pizza',100,50,30),(2,'Pizza',100,50,30),(24,'Sample Item',10,2,30),(28,'Sample Item',10,2,30),(29,'Sample Item',10,2,30),(30,'Sample Item',10,2,30),(31,'Sample Item',10,2,30),(32,'Sample Item',10,2,30),(33,'Sample Item',10,2,30),(34,'Sample Item',10,2,30),(35,'Sample Item',10,2,30),(36,'Sample Item',10,2,30),(37,'Sample Item',10,2,30),(38,'Sample Item',10,2,30),(39,'Sample Item',10,2,30);
+
+INSERT INTO `item` VALUES (175,'Pizza de jamón y queso',12.5,2.5,10),(176,'Pizza de jamón y queso',12.5,2.5,10);
+
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,6 +95,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_Order_Customer` FOREIGN KEY (`Customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_Order_Item1` FOREIGN KEY (`Item_code`) REFERENCES `item` (`code`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,6 +114,97 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'onlinestore'
 --
+
+/*!50003 DROP PROCEDURE IF EXISTS `DeleteCustomer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteCustomer`(IN p_id INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        DELETE FROM CUSTOMER
+        WHERE id = p_id;
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `DeleteItem` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteItem`(IN p_code INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        DELETE FROM Item
+        WHERE code = p_code;
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `DeleteOrder` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteOrder`(IN p_orderNumber INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        DELETE FROM Orders
+        WHERE orderNumber = p_orderNumber;
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `getByIdCustomer` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -130,6 +226,205 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InsertCustomer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertCustomer`(IN name varchar(255), IN address varchar(255), IN email varchar(255),  IN membershipFee Double, IN shippingDiscount Double,IN customerType enum("STANDARD","PREMIUM"))
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        INSERT INTO customer (name,address,email,membershipFee,shippingDiscount,customerType) VALUES (name,address,email,membershipFee,shippingDiscount,customerType);
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InsertItem` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertItem`( IN description varchar(255), IN sellingPrice Double,  IN shippingCost Double, IN preparationTimeMinutes INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        INSERT INTO Item (description,sellingPrice,shippingCost,preparationTimeMinutes) values (description,sellingPrice,shippingCost,preparationTimeMinutes);
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InsertOrder` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertOrder`(IN quantityUnits INT,IN orderDateTime datetime,IN preparationTimeMinutes INT,IN Customer_ID INT,IN Item_Code INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        INSERT INTO Orders (quantityUnits,orderDateTime,preparationTimeMinutes,Customer_ID,Item_Code) VALUES (quantityUnits,orderDateTime,preparationTimeMinutes,Customer_ID,Item_Code);
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `orderById` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `orderById`(IN orderNumberBuscado INT)
+BEGIN
+	SELECT *
+    FROM orders
+    WHERE orderNumber = orderNumberBuscado;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `UpdateCustomer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateCustomer`(IN p_name varchar(255), IN p_address varchar(255), IN p_email varchar(255),  IN p_membershipFee Double, IN p_shippingDiscount Double,IN p_customerType enum("STANDARD","PREMIUM"),IN p_id INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        UPDATE Customer SET code = p_code,description = p_description,sellingPrice = p_sellingPrice,shippingCost = p_shippingCost,preparationTimeMinutes = p_preparationTimeMinutes
+        WHERE id = p_id;
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `UpdateItem` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateItem`(IN p_code INT, IN p_description varchar(255), IN p_sellingPrice Double,  IN p_shippingCost Double, IN p_preparationTimeMinutes INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        UPDATE Item SET code = p_code,description = p_description,sellingPrice = p_sellingPrice,shippingCost = p_shippingCost,preparationTimeMinutes = p_preparationTimeMinutes
+        WHERE code = p_code;
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `UpdateOrder` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateOrder`(IN p_quantityUnits INT,IN p_orderDateTime datetime,IN p_preparationTimeMinutes INT,IN p_Customer_ID INT,IN p_Item_Code INT,IN p_orderNumber INT)
+BEGIN
+    START TRANSACTION;
+    SAVEPOINT sp1;
+    BEGIN
+        DECLARE exit handler for sqlexception
+        BEGIN
+            ROLLBACK TO SAVEPOINT sp1;
+            RESIGNAL;
+        END;
+        UPDATE ORDERS SET quantityUnits = p_quantityUnits,orderDateTime = p_orderDateTime,preparationTimeMinutes = p_preparationTimeMinutes,Customer_ID = p_Customer_ID,Item_Code = p_Item_Code
+        WHERE orderNumber = p_orderNumber;
+    END;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -140,4 +435,6 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-18 20:50:38
+
+-- Dump completed on 2023-11-22 12:10:03
+

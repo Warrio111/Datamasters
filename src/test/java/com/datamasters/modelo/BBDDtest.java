@@ -3,15 +3,16 @@ package com.datamasters.modelo;
 import static org.junit.Assert.*;
 
 import com.datamasters.DAO.DaoImpl.ItemDaoImpl;
+
+import com.datamasters.controlador.Controller;
 import org.junit.Before;
 import org.junit.Test;
-import com.datamasters.modelo.Item;
+
 import com.datamasters.DAO.*;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import com.datamasters.modelo.List;
 
 public class BBDDtest {
 
@@ -19,6 +20,9 @@ public class BBDDtest {
     private Orders order;
     private Customer customer;
     private Connection connection;
+
+    private Controller controller;
+
 
 
     public final String INSERT = "INSERT INTO Item(description,sellingPrice,shippingCost,preparationTimeMinutes) VALUES(?,?,?,?)";
@@ -31,8 +35,13 @@ public class BBDDtest {
         this.connection = UtilityMySqlDAOFactory.getConnection();
     }
 
+    @Before
+    public void setUp() throws Exception {
+        controller = new Controller();
+    }
     @Test
     public void insertItemBBDD() throws SQLException, DAOException {
+
         PreparedStatement statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
 
         statement.setString(1, "Pizza de jamón y queso");
@@ -65,18 +74,19 @@ public class BBDDtest {
         }
         resultSet.close();
 
-
     }
 
     @Test
-    public void updateItemBBDD() throws SQLException {
+    public void updateItemBBDD() throws SQLException, DAOException {
+        insertItemBBDD();
         PreparedStatement statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
 
         statement.setString(1, "Pizza de jamón y queso");
         statement.setDouble(2, 12.50);
         statement.setDouble(3, 2.50);
         statement.setInt(4, 10);
-        statement.setInt(5, 24);
+
+        statement.setInt(5, Integer.parseInt(controller.getItems().get(controller.getItems().size() -1).getCode()));
 
         // Ejecuta la inserción
         int filasAfectadas = statement.executeUpdate();
@@ -109,14 +119,18 @@ public class BBDDtest {
 
         ItemDaoImpl dao = new ItemDaoImpl();
 
-        int codeToDelete = 2;
+
+        String codeToDelete = controller.getItems().get(controller.getItems().size() -1).getCode();
+
 
         Item itemToDelete = null;
 
         List<Item> itemList = dao.getAll();
 
         for(int i = 0; i < itemList.getSize(); i++) {
-            if(codeToDelete == Integer.parseInt(itemList.getAt(i).getCode())) {
+
+            if(codeToDelete.equals(itemList.getAt(i).getCode())) {
+
                 itemToDelete = itemList.getAt(i);
             }
         }

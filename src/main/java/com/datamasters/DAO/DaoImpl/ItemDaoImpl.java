@@ -4,10 +4,10 @@ import com.datamasters.modelo.Customer;
 import com.datamasters.modelo.Item;
 import com.datamasters.modelo.List;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.datamasters.modelo.Orders;
+
+import java.sql.*;
+
 import java.util.ArrayList;
 
 public class ItemDaoImpl extends DAOFactory implements ItemDAO {
@@ -17,6 +17,11 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     public final String GETALL= "SELECT * FROM Item";
     public final String GETBYID= "SELECT * FROM Item WHERE code = ?;";
     PreparedStatement statement = null;
+
+    CallableStatement callableStatement = null;
+    ResultSet resultSet = null;
+    Orders order = null;
+  
     public ItemDaoImpl() throws DAOException {
         getDAOFactory(1);
     }
@@ -53,24 +58,30 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     public void insert(Item c) throws DAOException {
 
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(INSERT);
-            statement.setString(1, c.getDescription());
-            statement.setDouble(2, c.getSellingPrice());
-            statement.setDouble(3, c.getShippingCost());
-            statement.setInt(4, c.getPreparationTimeMinutes());
 
-            if (statement.executeUpdate() == 0) {
-                throw new DAOException("Could not be iserted");
-            }
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call InsertItem(?,?,?,?)}");
+            callableStatement.setString(1, c.getDescription());
+            callableStatement.setDouble(2, c.getSellingPrice());
+            callableStatement.setDouble(3, c.getShippingCost());
+            callableStatement.setInt(4, c.getPreparationTimeMinutes());
+
+
+            callableStatement.execute();
+
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
+
         } finally {
-            if (statement != null) {
+
+            if (callableStatement != null) {
                 try {
-                    UtilityMySqlDAOFactory.closeConnection();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+
                 }
             }
         }
@@ -83,26 +94,32 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     @Override
     public void update(Item c) throws DAOException {
 
-        try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(UPDATE);
-            statement.setString(1, c.getDescription());
-            statement.setDouble(2, c.getSellingPrice());
-            statement.setDouble(3, c.getShippingCost());
-            statement.setInt(4, c.getPreparationTimeMinutes());
-            statement.setInt(5,Integer.parseInt(c.getCode()));
 
-            if (statement.executeUpdate() == 0) {
-                throw new DAOException("Could not be iserted");
-            }
+
+        try {
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call UpdatetItem(?,?,?,?,?)}");
+            callableStatement.setString(1, c.getDescription());
+            callableStatement.setDouble(2, c.getSellingPrice());
+            callableStatement.setDouble(3, c.getShippingCost());
+            callableStatement.setInt(4, c.getPreparationTimeMinutes());
+            callableStatement.setString(5, c.getCode());
+
+            callableStatement.execute();
+
         } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
             throw new DAOException("Error in SQL", ex);
+
         } finally {
-            if (statement != null) {
+
+            if (callableStatement != null) {
                 try {
-                    UtilityMySqlDAOFactory.closeConnection();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+
                 }
             }
         }
@@ -114,24 +131,27 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
      */
     @Override
     public void remove(Item c) throws DAOException {
-        try{
-            if(c != null) {
-                statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(DELETE);
-                statement.setString(1, c.getCode());
-                int customerDelete = statement.executeUpdate();
-                if (customerDelete == 0) {
-                    throw new DAOException("Could not be deleted");
-                }
-            }
-        }catch (SQLException ex){
+
+
+        try {
+            Connection connection = UtilityMySqlDAOFactory.getConnection();
+
+            callableStatement = connection.prepareCall("{call DeleteItem(?)}");
+            callableStatement.setString(1, c.getCode());
+
+            callableStatement.execute();
+
+        } catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL",ex);
-        }finally{
-            if(statement != null){
-                try{
-                    statement.close();
-                }catch(SQLException ex){
-                    throw new DAOException("ERROR in SQL",ex);
+            throw new DAOException("Error in SQL", ex);
+
+        } finally {
+
+            if (callableStatement != null) {
+                try {
+                    callableStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
 

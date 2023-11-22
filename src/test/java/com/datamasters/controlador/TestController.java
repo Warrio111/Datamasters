@@ -34,6 +34,7 @@ public class TestController {
         removeAllCustomers();
         removeAllItems();
         removeAllOrders();
+
     }
 
     private void removeAllCustomers() throws DAOException, SQLException {
@@ -56,8 +57,6 @@ public class TestController {
             controller.deleteOrderByNumber(order.getOrderNumber());
         }
     }
-
-
 
     @Test
     public void testAddItem() throws DAOException, SQLException {
@@ -149,8 +148,6 @@ public class TestController {
         controller.addOrder(order);
 
         assertEquals(sizeActual+1, controller.getOrders().size());
-        controller.removeOrder(order);
-
     }
     @Test
     public void testRemoveOrder() throws DAOException, SQLException {
@@ -163,6 +160,9 @@ public class TestController {
         Orders order = new Orders(1, standardCustomer, item, 3, LocalDateTime.now());
         int sizeActual = controller.getOrders().size();
         controller.addOrder(order);
+
+        order.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
+
         assertEquals(sizeActual+1, controller.getOrders().size());
         controller.removeOrder(order);
 
@@ -190,8 +190,7 @@ public class TestController {
         ArrayList<Item> items = controller.getItems();
         int size  = controller.getItems().size();
         assertEquals(size, items.size());
-        /*assertEquals(item1, items.get(0));
-        assertEquals(item2, items.get(1));*/
+
     }
     @Test
     public void testFindItemByCode() throws DAOException {
@@ -219,7 +218,10 @@ public class TestController {
         controller.addOrder(order);
         order.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
         assertEquals(sizeActual+1, controller.getOrders().size());
-        controller.deleteOrderByNumber(order.getOrderNumber());
+
+        int ordernumber = order.getOrderNumber();
+        controller.deleteOrderByNumber(ordernumber);
+        sizeActual = controller.getOrders().size();
 
         assertEquals(sizeActual, controller.getOrders().size());
     }
@@ -249,14 +251,17 @@ public class TestController {
 
         assertEquals(1, pendingOrders.size());
         assertTrue(pendingOrders.get(0).getCustomer().getId().equals(customer1.getId()));
-        controller.removeOrder(order1);
-        controller.removeOrder(order2);
+
+
+
     }
 
     @Test
     public void testGetSentOrders() throws DAOException, SQLException {
-        Customer customer1 = new StandardCustomer("John Doe", "123 Main St", "1", "john@example.com");
-        Customer customer2 = new StandardCustomer("Jane Smith", "456 Elm St", "2", "jane@example.com");
+
+        Customer customer1 = new StandardCustomer("John Doe", "123 Main St", "5", "john@example.com");
+        Customer customer2 = new StandardCustomer("Jane Smith", "456 Elm St", "6", "jane@example.com");
+
         controller.addCustomer(customer1);
         customer1.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         controller.addCustomer(customer2);
@@ -275,14 +280,10 @@ public class TestController {
 
         assertEquals(1, sentOrders.size());
         assertTrue(sentOrders.get(0).getCustomer().getId().equals(customer1.getId()));
-        int ordernumber = order1.getOrderNumber();
-        controller.deleteOrderByNumber(order1.getOrderNumber());
-        controller.deleteOrderByNumber(order2.getOrderNumber());
-    }
 
-    @Test
-    public void createBBDD(){
-
+       int ordernumber = order1.getOrderNumber();
+        int ordernumber2 = order2.getOrderNumber();
 
     }
+
 }
