@@ -202,8 +202,8 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
             return order;
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Can't converted");
+            //e.printStackTrace(); // Imprimir detalles del error
+            throw new DAOException("Can't converted",e);
         }
     }
 

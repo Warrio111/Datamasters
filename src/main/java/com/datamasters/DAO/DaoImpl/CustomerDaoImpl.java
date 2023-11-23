@@ -275,7 +275,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
                 }
             }
         }catch(Exception ex){
-            new DAOException("Erron in SQL");
+            new DAOException("Erron in SQL,getCustomerType");
         }
         return c;
     }
@@ -307,7 +307,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
             }
         }catch (SQLException ex) {
             ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
+            throw new DAOException("Error in SQL, getCustomerbyType", ex);
         } finally {
             if (statement != null) {
                 try {
@@ -359,7 +359,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
                 }
             }
         }catch(Exception ex){
-            new DAOException("Erron in SQL");
+            new DAOException("Erron in SQL,getShippingDiscountByCustomer");
         }
         return null;
     }
@@ -391,7 +391,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
                 }
             }
         }catch(Exception ex){
-            new DAOException("Erron in SQL");
+            new DAOException("Erron in SQL,getMembershipFeeByCustomer");
         }
         return null;
     }
