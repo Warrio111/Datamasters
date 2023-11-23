@@ -1,9 +1,7 @@
 package com.datamasters.controlador;
 
-import com.datamasters.DAO.CustomerDAO;
 import com.datamasters.DAO.DAOException;
 import com.datamasters.DAO.DAOFactory;
-import com.datamasters.DAO.DaoImpl.OrderDaoImpl;
 import com.datamasters.modelo.*;
 
 import java.sql.SQLException;
@@ -24,7 +22,7 @@ public class Controller {
         this.exceptionHandler = exceptionHandler;
     }
 
-    public void addCustomer(Customer customer) {
+    public void addCustomer(CustomerEntity customer) {
         try {
             dao.getCustomerDAO().insert(customer);
         } catch (Exception ex) {
@@ -32,7 +30,7 @@ public class Controller {
         }
     }
 
-    public void removeCustomer(Customer customer) {
+    public void removeCustomer(CustomerEntity customer) {
         try {
             dao.getCustomerDAO().remove(customer);
         } catch (Exception ex) {
@@ -40,7 +38,7 @@ public class Controller {
         }
     }
 
-    public void addOrder(Orders order) {
+    public void addOrder(OrdersEntity order) {
         try {
             dao.getOrdersDAO().insert(order);
         } catch (Exception ex) {
@@ -48,7 +46,7 @@ public class Controller {
         }
     }
 
-    public void removeOrder(Orders order) {
+    public void removeOrder(OrdersEntity order) {
         try {
             dao.getOrdersDAO().remove(order);
         } catch (Exception ex) {
@@ -56,7 +54,7 @@ public class Controller {
         }
     }
 
-    public void addItem(Item item) {
+    public void addItem(ItemEntity item) {
         try {
             dao.getItemDAO().insert(item);
         } catch (Exception ex) {
@@ -64,7 +62,7 @@ public class Controller {
         }
     }
 
-    public void removeItem(Item item) {
+    public void removeItem(ItemEntity item) {
         try {
             dao.getItemDAO().remove(item);
         } catch (Exception ex) {
@@ -102,7 +100,7 @@ public class Controller {
             return null;
         }
     }
-    public ArrayList<Item> getItems() throws DAOException {
+    public ArrayList<ItemEntity> getItems() throws DAOException {
         return dao.getItemDAO().getAll().getArrayList();
     }
 
@@ -115,7 +113,7 @@ public class Controller {
     }
 
     public void deleteOrderByNumber(int orderNumber) throws DAOException {
-        Orders order = findOrderByNumber(orderNumber);
+        OrdersEntity order = findOrderByNumber(orderNumber);
         if (order != null && !order.isCancelable(LocalDateTime.now())) {
             dao.getOrdersDAO().remove(order);
         }

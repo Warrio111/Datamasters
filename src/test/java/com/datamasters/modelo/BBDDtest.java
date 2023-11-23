@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 public class BBDDtest {
 
@@ -127,11 +128,11 @@ public class BBDDtest {
 
         List<Item> itemList = dao.getAll();
 
-        for(int i = 0; i < itemList.getSize(); i++) {
+        for(int i = 0; i < itemList.size(); i++) {
 
-            if(codeToDelete.equals(itemList.getAt(i).getCode())) {
+            if(codeToDelete.equals(itemList.get(i).getCode())) {
 
-                itemToDelete = itemList.getAt(i);
+                itemToDelete = itemList.get(i);
             }
         }
 

@@ -1,399 +1,216 @@
 package com.datamasters.DAO.DaoImpl;
-
 import com.datamasters.DAO.*;
 
-import com.datamasters.modelo.*;
 
-
+import com.datamasters.modelo.CustomerEntity;
+import com.datamasters.modelo.ItemEntity;
+import com.datamasters.modelo.OrdersEntity;
+import org.hibernate.Session;
 import java.sql.*;
 
-
+import java.util.ArrayList;
+import java.util.List;
 public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
-    public final String INSERT = "INSERT INTO Customer (name,address,email,customerType,membershipFee,shippingDiscount) VALUES(?,?,?,?,?,?)";
-    public final String UPDATE = "UPDATE Customer SET name = ?, address = ?, email = ?,customerType =?, memberShipFee = ?,shippingDiscount = ?  WHERE id=?";
-    public final String DELETE = "DELETE FROM Customer WHERE id= ?";
-    public final String GETALL= "SELECT * FROM Customer";
-    public final String GETBYID= "SELECT * FROM Customer WHERE id = ?";
-    public final String GETBYCUSTOMERTYPE = "SELECT * FROM Customer WHERE customerType = ?;";
-
-    public final String GETSHIPPINGDISCOUNTBYCOUSTOMET = "SELECT * FROM Customer WHERE id = ?;";
-
-    public final String GETMEMBERSHIPFEEBYCUSTOMER = "SELECT * FROM Customer WHERE id = ?;";
-
-
-    PreparedStatement statement = null;
-
-    Connection connection = null;
-
-    ResultSet resultSet = null;
-    Customer c = null;
-    CallableStatement callableStatement = null;
+    private final String GETALL = "FROM CustomerEntity";
+    private final String GETBYID = "FROM CustomerEntity WHERE id = :id";
+    private final String GETBYCUSTOMERTYPE = "FROM CustomerEntity WHERE customerType = :customerType";
+    private final String GETSHIPPINGDISCOUNTBYCOUSTOMET = "SELECT shippingDiscount FROM CustomerEntity WHERE id = :id";
+    private final String GETMEMBERSHIPFEEBYCUSTOMER = "SELECT membershipFee FROM CustomerEntity WHERE id = :id";
 
 
     /**
-     * @param c
+     * @param customer
      * @throws DAOException
      */
     @Override
-    public void insert(Customer c) throws DAOException, SQLException {
-
-
-
+    public void insert(CustomerEntity customer) throws DAOException {
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call InsertCustomer(?,?,?,?,?,?)}");
-            callableStatement.setString(1, c.getName());
-            callableStatement.setString(2, c.getAddress());
-            callableStatement.setString(3, c.getEmail());
-            callableStatement.setDouble(4, c.getMembershipFee());
-            callableStatement.setDouble(5, c.getShippingDiscount());
-            callableStatement.setString(6, c.getCustomerType().toString());
-
-
-            callableStatement.execute();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.save(customer);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            ex.printStackTrace();
+            throw new DAOException("Error in Insert Customer Method", ex);
         } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
     }
 
     /**
-     * @param c
+     * @param customer
      * @throws DAOException
      */
     @Override
-    public void update(Customer c) throws DAOException {
-
-
-
+    public void update(CustomerEntity customer) throws DAOException {
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call UpdateCustomer(?,?,?,?,?,?,?)}");
-            callableStatement.setString(1, c.getName());
-            callableStatement.setString(2, c.getAddress());
-            callableStatement.setString(3, c.getEmail());
-            callableStatement.setDouble(4, c.getMembershipFee());
-            callableStatement.setDouble(5, c.getShippingDiscount());
-            callableStatement.setString(6, c.getCustomerType().toString());
-            callableStatement.setString(7, c.getName());
-
-
-
-            resultSet = callableStatement.executeQuery();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.update(customer);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            ex.printStackTrace();
+            throw new DAOException("Error in Update Customer Method", ex);
         } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
     }
 
-    /**
-     * @param c
-     * @throws DAOException
-     */
     @Override
-    public void remove(Customer c) throws DAOException {
-
-
+    public void remove(CustomerEntity customer) throws DAOException {
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call DeleteCustomer(?)}");
-            callableStatement.setString(1,c.getId());
-
-            resultSet = callableStatement.executeQuery();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.remove(customer);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            ex.printStackTrace();
+            throw new DAOException("Error in Remove Customer Method", ex);
         } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
     }
-    public Customer convertir(ResultSet rs) throws DAOException {
-        try {
 
-            String name = rs.getString("name");
-            String address = rs.getString("address");
-            String id = rs.getString("id");
-            String email = rs.getString("email");
-            String customerType = rs.getString("customerType");
-            double membershipFee = rs.getDouble("membershipFee");
-            double shippingDiscount = rs.getDouble("shippingDiscount");
-
-            if ("PREMIUM".equals(customerType)) {
-                c = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
-            } else {
-                c = new StandardCustomer(name, address, id, email);
-            }
-            return c;
-
-        } catch (SQLException e) {
-            e.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Can't converted");
-        }
-    }
-    /**
-     * @return
-     * @throws DAOException
-     */
     @Override
-    public List<Customer> getAll() throws DAOException {
-
-        List<Customer> customerList = new List<>();
-
+    public List<CustomerEntity> getAll() throws DAOException {
+        List<CustomerEntity> customerList;
+        Session session = null;
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETALL);
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                customerList.add(convertir(resultSet));
-            }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
+            session = HibernateUtil.abrirSession();
+            customerList = session.createQuery(GETALL, CustomerEntity.class).list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get All Customers", ex);
         } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("Error in SQL", ex);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("Error in SQL", ex);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
         return customerList;
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws DAOException
-     */
     @Override
-    public Customer getById(int id) throws DAOException {
-
+    public CustomerEntity getById(int id) throws DAOException {
+        CustomerEntity customer = null;
+        Session session = null;
         try {
-            connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call getByIdCustomer(?)}");
-            callableStatement.setInt(1, id);
-
-            resultSet = callableStatement.executeQuery();
-
-            if (resultSet.next()) {
-                c = convertir(resultSet);
-                System.out.println(c.toString());
-            } else {
-                throw new DAOException("Customer not found");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
+            session = HibernateUtil.abrirSession();
+            customer = session.createQuery(GETBYID, CustomerEntity.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get Customer by Id", ex);
         } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
-
-        return c;
+        return customer;
     }
 
-    /**
-     * @param customerType
-     * @return
-     * @throws DAOException
-     */
     @Override
-    public Customer getCustomerType(String customerType) throws DAOException {
-
+    public CustomerEntity getCustomerType(String customerType) throws DAOException {
+        CustomerEntity customer = null;
+        Session session = null;
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYCUSTOMERTYPE);
-            statement.setString(1, customerType);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                c = convertir(resultSet);
-                System.out.println(c.toString());
-            } else {
-                throw new DAOException("Customer not found");
-            }
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }catch(Exception ex){
-            new DAOException("Erron in SQL");
-        }
-        return c;
-    }
-
-    /**
-     * @param customerType
-     * @return
-     * @throws DAOException
-     */
-    @Override
-    public List<Customer> getCustomerByType(String customerType) throws DAOException {
-        List<Customer> customerList = new List<>();
-
-        try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYCUSTOMERTYPE);
-            statement.setString(1, customerType);
-            resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                customerList.add(convertir(resultSet));
-            }
-
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
+            session = HibernateUtil.abrirSession();
+            customer = session.createQuery(GETBYCUSTOMERTYPE, CustomerEntity.class)
+                    .setParameter("customerType", customerType)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get Customer by Type", ex);
         } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("ERROR in SQL", ex);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
+            }
+        }
+        return customer;
+    }
+
+    @Override
+    public List<CustomerEntity> getCustomerByType(String customerType) throws DAOException {
+        List<CustomerEntity> customerList;
+        Session session = null;
+        try {
+            session = HibernateUtil.abrirSession();
+            customerList = session.createQuery(GETBYCUSTOMERTYPE, CustomerEntity.class)
+                    .setParameter("customerType", customerType)
+                    .list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get Customers by Type", ex);
+        } finally {
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
         return customerList;
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws DAOException
-     */
-    //TODO
     @Override
     public Double getSpendByCustomer(int id) throws DAOException {
+        // TODO: Implementar lógica para obtener el gasto del cliente
         return null;
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws DAOException
-     */
     @Override
     public Double getShippingDiscountByCustomer(int id) throws DAOException {
-
+        Double shippingDiscount = null;
+        Session session = null;
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETSHIPPINGDISCOUNTBYCOUSTOMET);
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-
-                Double shippingDiscount = resultSet.getDouble("shippingDiscount");
-
-                System.out.println("ShippingDiscount: " + shippingDiscount );
+            session = HibernateUtil.abrirSession();
+            shippingDiscount = (Double) session.createQuery(GETSHIPPINGDISCOUNTBYCOUSTOMET)
+                    .setParameter("id", id)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get Shipping Discount by Customer", ex);
+        } finally {
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
-
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }catch(Exception ex){
-            new DAOException("Erron in SQL");
         }
-        return null;
+        return shippingDiscount;
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws DAOException
-     */
     @Override
     public Double getMembershipFeeByCustomer(int id) throws DAOException {
+        Double membershipFee = null;
+        Session session = null;
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETMEMBERSHIPFEEBYCUSTOMER);
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-
-                Double membershipFee = resultSet.getDouble("membershipFee");
-
-                System.out.println("MembershipFee: " + membershipFee);
+            session = HibernateUtil.abrirSession();
+            membershipFee = (Double) session.createQuery(GETMEMBERSHIPFEEBYCUSTOMER)
+                    .setParameter("id", id)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get Membership Fee by Customer", ex);
+        } finally {
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
-
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }catch(Exception ex){
-            new DAOException("Erron in SQL");
         }
-        return null;
+        return membershipFee;
     }
 
     /**
