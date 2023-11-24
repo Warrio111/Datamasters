@@ -16,8 +16,9 @@ public class Orders {
         this.item = item;
         this.quantityUnits = quantityUnits;
         this.orderDateTime = orderDateTime;
-        this.preparationTimeMinutes = item.getPreparationTimeMinutes()*quantityUnits;
+        this.preparationTimeMinutes = item.getPreparationTimeMinutes() * quantityUnits;
     }
+
     public int getOrderNumber() {
         return orderNumber;
     }
@@ -87,18 +88,21 @@ public class Orders {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "orderNumber=" + orderNumber +
-                ", customer=" + customer.getId() + customer.getName() +
-                ", item=" + item.getCode() +item.getDescription() +
-                ", quantityUnits=" + quantityUnits +
-                ", Item price=  " + item.getSellingPrice()+
-                ", Order price= " + calculateOrderPrice() +
-                ", orderDateTime=" + orderDateTime +
-                ", preparationTimeMinutes=" + this.preparationTimeMinutes +
-                ", orderIsCancelable=" + isCancelable(LocalDateTime.now()) +
-                ", shippingCost= " + item.getShippingCost()+
-                ", orderIsSent=" + orderIsSent(LocalDateTime.now()) +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Numero de pedido: ").append(orderNumber).append("\n");
+        stringBuilder.append("Cliente: ").append(customer.getId()).append(", ").append(customer.getName()).append("\n");
+        stringBuilder.append("Articulo: ").append(item.getCode()).append(", ").append(item.getDescription())
+                .append("\n");
+        stringBuilder.append("Cantidad de unidades: ").append(quantityUnits).append("\n");
+        stringBuilder.append("Precio del articulo: ").append(item.getSellingPrice()).append("\n");
+        stringBuilder.append("Precio del pedido: ").append(calculateOrderPrice()).append("\n");
+        stringBuilder.append("Fecha y hora del pedido: ").append(orderDateTime).append("\n");
+        stringBuilder.append("Tiempo de preparacion (minutos): ").append(preparationTimeMinutes).append("\n");
+        stringBuilder.append("Es posible cancelar el pedido: ").append(isCancelable(LocalDateTime.now())).append("\n");
+        stringBuilder.append("Costo de envio: ").append(item.getShippingCost()).append("\n");
+        stringBuilder.append("El pedido ha sido enviado: ").append(orderIsSent(LocalDateTime.now())).append("\n");
+        stringBuilder.append("\n----------------------------------------").append("\n");
+        return stringBuilder.toString();
     }
+
 }

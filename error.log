@@ -21756,3 +21756,60 @@ Caused by: java.sql.SQLSyntaxErrorException: PROCEDURE onlinestore.DeletetItem d
 	at com.datamasters.DAO.DaoImpl.ItemDaoImpl.remove(ItemDaoImpl.java:201)
 	... 43 more
 
+Timestamp: 2023-11-24T21:49:38.175871
+An exception occurred:
+com.datamasters.DAO.DAOException: Error in SQL
+	at com.datamasters.DAO.DaoImpl.ItemDaoImpl.insert(ItemDaoImpl.java:75)
+	at com.datamasters.controlador.Controller.addItem(Controller.java:61)
+	at com.datamasters.vista.ManageOS.addItems(ManageOS.java:146)
+	at com.datamasters.vista.ManageOS.manageItems(ManageOS.java:64)
+	at com.datamasters.vista.ManageOS.run(ManageOS.java:35)
+	at com.datamasters.vista.OnlineStore.main(OnlineStore.java:10)
+Caused by: java.sql.SQLSyntaxErrorException: PROCEDURE onlinestore.InsertItem does not exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354)
+	at com.mysql.cj.jdbc.CallableStatement.execute(CallableStatement.java:847)
+	at com.datamasters.DAO.DaoImpl.ItemDaoImpl.insert(ItemDaoImpl.java:71)
+	... 5 more
+
+Timestamp: 2023-11-24T21:52:34.762068700
+An exception occurred:
+com.datamasters.DAO.DAOException: Error in SQL
+	at com.datamasters.DAO.DaoImpl.ItemDaoImpl.insert(ItemDaoImpl.java:75)
+	at com.datamasters.controlador.Controller.addItem(Controller.java:61)
+	at com.datamasters.vista.ManageOS.addItems(ManageOS.java:146)
+	at com.datamasters.vista.ManageOS.manageItems(ManageOS.java:64)
+	at com.datamasters.vista.ManageOS.run(ManageOS.java:35)
+	at com.datamasters.vista.OnlineStore.main(OnlineStore.java:10)
+Caused by: java.sql.SQLSyntaxErrorException: PROCEDURE onlinestore.InsertItem does not exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354)
+	at com.mysql.cj.jdbc.CallableStatement.execute(CallableStatement.java:847)
+	at com.datamasters.DAO.DaoImpl.ItemDaoImpl.insert(ItemDaoImpl.java:71)
+	... 5 more
+
+Timestamp: 2023-11-24T22:08:17.934465800
+An exception occurred:
+java.lang.IllegalArgumentException: No enum constant com.datamasters.modelo.CustomerType.STABDAR
+	at java.base/java.lang.Enum.valueOf(Unknown Source)
+	at com.datamasters.modelo.CustomerType.valueOf(CustomerType.java:1)
+	at com.datamasters.vista.ManageOS.addCustomer(ManageOS.java:181)
+	at com.datamasters.vista.ManageOS.manageCustomers(ManageOS.java:88)
+	at com.datamasters.vista.ManageOS.run(ManageOS.java:38)
+	at com.datamasters.vista.OnlineStore.main(OnlineStore.java:10)
+
+Timestamp: 2023-11-24T23:06:44.472302600
+An exception occurred:
+java.lang.IllegalArgumentException: No enum constant com.datamasters.modelo.CustomerType.
+	at java.base/java.lang.Enum.valueOf(Unknown Source)
+	at com.datamasters.modelo.CustomerType.valueOf(CustomerType.java:1)
+	at com.datamasters.vista.ManageOS.addCustomer(ManageOS.java:205)
+	at com.datamasters.vista.ManageOS.addOrder(ManageOS.java:278)
+	at com.datamasters.vista.ManageOS.manageOrders(ManageOS.java:139)
+	at com.datamasters.vista.ManageOS.run(ManageOS.java:47)
+	at com.datamasters.vista.OnlineStore.main(OnlineStore.java:10)
+
