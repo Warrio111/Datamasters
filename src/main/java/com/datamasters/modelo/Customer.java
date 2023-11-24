@@ -9,7 +9,8 @@ public abstract class Customer {
     private double membershipFee;
     private double shippingDiscount;
 
-    public Customer(String name, String address, String id, String email, CustomerType customerType, double membershipFee, double shippingDiscount) {
+    public Customer(String name, String address, String id, String email, CustomerType customerType,
+            double membershipFee, double shippingDiscount) {
         this.name = name;
         this.address = address;
         this.id = id;
@@ -51,7 +52,9 @@ public abstract class Customer {
         this.email = email;
     }
 
-    public double getMembershipFee() { return this.membershipFee; }
+    public double getMembershipFee() {
+        return this.membershipFee;
+    }
 
     public void setMembershipFee(double membershipFee) {
         this.membershipFee = membershipFee;
@@ -60,6 +63,7 @@ public abstract class Customer {
     public CustomerType getCustomerType() {
         return customerType;
     }
+
     public void setCustomerType(CustomerType customerType) {
         this.customerType = customerType;
     }
@@ -80,14 +84,15 @@ public abstract class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", id='" + id + '\'' +
-                ", email='" + email + '\'' +
-                ", customerType=" + customerType +
-                ", membershipFee=" + membershipFee +
-                ", shippingDiscount=" + shippingDiscount +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Nombre: ").append(name).append("\n");
+        stringBuilder.append("Direccion: ").append(address).append("\n");
+        stringBuilder.append("ID: ").append(id).append("\n");
+        stringBuilder.append("Correo electronico: ").append(email).append("\n");
+        stringBuilder.append("Tipo de cliente: ").append(customerType).append("\n");
+        stringBuilder.append("Tarifa de membresia: ").append(String.format("%.2f", membershipFee)).append("\n");
+        stringBuilder.append("Descuento de envio: ").append(String.format("%.2f", shippingDiscount)).append("\n");
+        stringBuilder.append("\n----------------------------------------").append("\n");
+        return stringBuilder.toString();
     }
 }

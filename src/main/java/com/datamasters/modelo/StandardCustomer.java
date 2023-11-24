@@ -22,12 +22,14 @@ public class StandardCustomer extends Customer {
 
     @Override
     public String toString() {
-        return "StandardCustomer{" +
-                "name='" + getName() + '\'' +
-                ", address='" + getAddress() + '\'' +
-                ", id='" + getId() + '\'' +
-                ", email='" + getEmail() + '\'' +
-                ", customerType=" + getCustomerType() +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Nombre: ").append(getName()).append("\n");
+        stringBuilder.append("Dirección: ").append(getAddress()).append("\n");
+        stringBuilder.append("ID: ").append(getId()).append("\n");
+        stringBuilder.append("Correo electrónico: ").append(getEmail()).append("\n");
+        stringBuilder.append("Tipo de cliente: ").append(getCustomerType()).append("\n");
+        stringBuilder.append("\n----------------------------------------").append("\n");
+        return stringBuilder.toString();
     }
+
 }

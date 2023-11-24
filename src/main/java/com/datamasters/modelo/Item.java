@@ -1,6 +1,6 @@
 package com.datamasters.modelo;
 
-public  class Item {
+public class Item {
     private String code;
     private String description;
     private double sellingPrice;
@@ -76,13 +76,14 @@ public  class Item {
 
     @Override
     public String toString() {
-        return "Item{" +
-                "code='" + this.code + '\'' +
-                ", description='" + this.description + '\'' +
-                ", sellingPrice=" + this.sellingPrice +
-                ", shippingCost=" + this.shippingCost +
-                ", preparationTimeMinutes=" + this.preparationTimeMinutes +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Codigo: ").append(this.code).append("\n");
+        stringBuilder.append("Descripcion: ").append(this.description).append("\n");
+        stringBuilder.append("Precio de venta: ").append(this.sellingPrice).append("\n");
+        stringBuilder.append("Costo de envio: ").append(this.shippingCost).append("\n");
+        stringBuilder.append("Tiempo de preparacion (minutos): ").append(this.preparationTimeMinutes).append("\n");
+        stringBuilder.append("\n----------------------------------------").append("\n");
+        return stringBuilder.toString();
     }
-}
 
+}
