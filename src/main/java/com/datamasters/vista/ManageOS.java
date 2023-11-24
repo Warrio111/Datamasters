@@ -23,11 +23,15 @@ public class ManageOS {
         boolean exit = false;
 
         while (!exit) {
-            System.out.println("1. Manage Items");
-            System.out.println("2. Manage Customers");
-            System.out.println("3. Manage Orders");
-            System.out.println("0. Exit");
+            System.out.print("\n========== Menu ==========\n" +
+                    "1. Manage Items\n" +
+                    "2. Manage Customers\n" +
+                    "3. Manage Orders\n" +
+                    "0. Exit\n" +
+                    "==========================\n" +
+                    "Ingrese su eleccion: ");
             int choice = scanner.nextInt();
+            System.out.println("\n----------------------------");
             scanner.nextLine(); // Consume the newline character
 
             switch (choice) {
@@ -53,10 +57,14 @@ public class ManageOS {
     }
 
     private void manageItems() throws DAOException {
-        System.out.println("1. Add Item");
-        System.out.println("2. Delete Item");
-        System.out.println("3. Show Item");
+        System.out.print("\n========== Menu Articulos ==========\n" +
+                "1. Add Item\n" +
+                "2. Delete Item\n" +
+                "3. Show Item\n" +
+                "==========================\n" +
+                "Insert your selection: ");
         int choice = scanner.nextInt();
+        System.out.println("\n----------------------------\n");
         scanner.nextLine(); // Consume the newline character
 
         switch (choice) {
@@ -75,12 +83,16 @@ public class ManageOS {
     }
 
     private void manageCustomers() throws DAOException, SQLException {
-        System.out.println("1. Add Customer");
-        System.out.println("2. Delete Customer");
-        System.out.println("3. Show Customers");
-        System.out.println("4. Show Standard Customers");
-        System.out.println("5. Show Premium Customers");
+        System.out.print("\n========== Menu Clientes ==========\n" +
+                "1. Add Customer\n" +
+                "2. Delete Customer\n" +
+                "3. Show Customers\n" +
+                "4. Show Standard Customers\n" +
+                "5. Show Premium Customers\n" +
+                "==========================\n" +
+                "Insert your selection: ");
         int choice = scanner.nextInt();
+        System.out.println("\n----------------------------\n");
         scanner.nextLine(); // Consume the newline character
 
         switch (choice) {
@@ -105,11 +117,16 @@ public class ManageOS {
     }
 
     private void manageOrders() throws DAOException, SQLException {
-        System.out.println("1. Add Order");
-        System.out.println("2. Delete Order");
-        System.out.println("3. Show Pending Orders");
-        System.out.println("4. Show Sent Orders");
+        System.out.print("\n========== Menu Pedidos ==========\n" +
+                "1. Add Order\n" +
+                "2. Delete Order\n" +
+                "3. Show Pending Orders\n" +
+                "4. Show Sent Orders\n" +
+                "==========================\n" +
+                "Insert your selection: ");
+
         int choice = scanner.nextInt();
+        System.out.println("\n----------------------------\n");
         scanner.nextLine(); // Consume the newline character
 
         switch (choice) {
@@ -160,7 +177,7 @@ public class ManageOS {
     }
     private void showItems() throws DAOException {
         ArrayList<Item> items = controller.getItems();
-        System.out.println("Items:");
+        System.out.println("Items:\n");
         for (Item item : items) {
             System.out.println(item);
         }
@@ -183,7 +200,7 @@ public class ManageOS {
                 Customer customer = new StandardCustomer(name, address, id, email);
                 controller.addCustomer(customer);
                 customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
-                System.out.println("Standard customer added successfully.");
+                System.out.println("\nStandard customer added successfully.");
             } else if (customerType == CustomerType.PREMIUM) {
                 System.out.print("Enter membership fee: ");
                 double membershipFee = scanner.nextDouble();
@@ -193,7 +210,7 @@ public class ManageOS {
                 Customer customer = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
                 controller.addCustomer(customer);
                 customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
-                System.out.println("Premium customer added successfully.");
+                System.out.println("\nPremium customer added successfully.");
             } else {
                 System.out.println("Invalid customer type. Please try again.");
             }
@@ -216,25 +233,42 @@ public class ManageOS {
     }
     private void showCustomers() throws DAOException, SQLException {
         ArrayList<Customer> customers = controller.getCustomers();
-        System.out.println("Customers:");
-        for (Customer customer : customers) {
-            System.out.println(customer);
+        if(customers.isEmpty()){
+            System.out.println("\nNo customers found\n");
         }
+        else
+        {
+            System.out.println("Customers:\n");
+            for (Customer customer : customers) {
+                System.out.println(customer);
+            }
+        }
+
     }
 
     private void showStandardCustomers() throws DAOException, SQLException {
         ArrayList<Customer> standardCustomers = controller.getCustomersByType(CustomerType.STANDARD);
-        System.out.println("Standard Customers:");
-        for (Customer customer : standardCustomers) {
-            System.out.println(customer);
+        if (standardCustomers.isEmpty()){
+            System.out.println("\nNo standard customers found\n");
+        }
+        else {
+            System.out.println("Standard Customers:\n");
+            for (Customer customer : standardCustomers) {
+                System.out.println(customer);
+            }
         }
     }
 
     private void showPremiumCustomers() throws DAOException, SQLException {
         ArrayList<Customer> premiumCustomers = controller.getCustomersByType(CustomerType.PREMIUM);
-        System.out.println("Premium Customers:");
-        for (Customer customer : premiumCustomers) {
-            System.out.println(customer);
+        if (premiumCustomers.isEmpty()){
+            System.out.println("\nNo premium customers found\n");
+        }
+        else{
+            System.out.println("Premium Customers:\n");
+            for (Customer customer : premiumCustomers) {
+                System.out.println(customer);
+            }
         }
     }
 
@@ -297,9 +331,15 @@ public class ManageOS {
         System.out.println("Enter Customer ID to find pending order: ");
         String customerId = scanner.nextLine();
         ArrayList<Orders> pendingOrders = controller.getPendingOrders(customerId);
-        System.out.println("Pending Orders:");
-        for (Orders order : pendingOrders) {
-            System.out.println(order);
+        if (pendingOrders.isEmpty()){
+            System.out.println("\nNo pending orders found\n");
+        }
+        else
+        {
+            System.out.println("Pending Orders:");
+            for (Orders order : pendingOrders) {
+                System.out.println(order);
+            }
         }
     }
 
@@ -307,9 +347,14 @@ public class ManageOS {
         System.out.println("Enter Customer ID to find sent orders: ");
         String customerId = scanner.nextLine();
         ArrayList<Orders> sentOrders = controller.getSentOrders(customerId);
-        System.out.println("Sent Orders:");
-        for (Orders order : sentOrders) {
-            System.out.println(order);
+        if (sentOrders.isEmpty()){
+            System.out.println("\nNo sent orders found\n");
+        }
+        else {
+            System.out.println("Sent Orders:");
+            for (Orders order : sentOrders) {
+                System.out.println(order);
+            }
         }
     }
 }
