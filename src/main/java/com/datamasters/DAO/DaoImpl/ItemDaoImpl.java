@@ -127,12 +127,12 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
      * @throws DAOException
      */
     @Override
-    public List<ItemEntity> getAll() throws DAOException {
-        List<ItemEntity> itemList = new ArrayList<>();
+    public ArrayList<ItemEntity> getAll() throws DAOException {
+        List<ItemEntity> itemList;
         Session session = null;
         try {
             session = HibernateUtil.abrirSession();
-            itemList = (List<ItemEntity>) session.createQuery(GETALL, ItemEntity.class).list();
+            itemList = session.createQuery(GETALL, ItemEntity.class).list();
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new DAOException("Error in Get All Items", ex);
@@ -141,7 +141,8 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
                 HibernateUtil.cerrarSession(session);
             }
         }
-        return itemList;
+        ArrayList<ItemEntity> itemEntityArrayList = new ArrayList<>(itemList);
+        return itemEntityArrayList;
     }
 
 

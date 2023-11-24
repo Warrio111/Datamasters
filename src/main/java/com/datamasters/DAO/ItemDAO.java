@@ -2,6 +2,7 @@ package com.datamasters.DAO;
 
 import com.datamasters.modelo.ItemEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ItemDAO extends DAO<ItemEntity>{
@@ -32,7 +33,7 @@ public interface ItemDAO extends DAO<ItemEntity>{
      * @throws DAOException
      */
     @Override
-    List<ItemEntity> getAll() throws DAOException;
+    ArrayList<ItemEntity> getAll() throws DAOException;
 
     /**
      * @param id

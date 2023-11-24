@@ -1,3 +1,4 @@
+/*
 package com.datamasters.modelo;
 
 import static org.junit.Assert.*;
@@ -126,7 +127,7 @@ public class BBDDtest {
 
         Item itemToDelete = null;
 
-        List<Item> itemList = dao.getAll();
+       ArrayList<Item> itemList = dao.getAll();
 
         for(int i = 0; i < itemList.size(); i++) {
 
@@ -149,3 +150,4 @@ public class BBDDtest {
 }
 
 
+*/

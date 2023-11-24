@@ -3,6 +3,7 @@ import com.datamasters.DAO.*;
 
 
 import com.datamasters.modelo.CustomerEntity;
+import com.datamasters.modelo.CustomerType;
 import com.datamasters.modelo.ItemEntity;
 import com.datamasters.modelo.OrdersEntity;
 import org.hibernate.Session;
@@ -89,13 +90,14 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         }
     }
 
+
     @Override
-    public List<CustomerEntity> getAll() throws DAOException {
-        List<CustomerEntity> customerList;
+    public ArrayList<CustomerEntity> getAll() throws DAOException {
+        List<CustomerEntity> list;
         Session session = null;
         try {
             session = HibernateUtil.abrirSession();
-            customerList = session.createQuery(GETALL, CustomerEntity.class).list();
+            list = session.createQuery(GETALL, CustomerEntity.class).list();
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new DAOException("Error in Get All Customers", ex);
@@ -104,8 +106,10 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
                 HibernateUtil.cerrarSession(session);
             }
         }
+        ArrayList<CustomerEntity> customerList = new ArrayList<>(list);
         return customerList;
     }
+
 
     @Override
     public CustomerEntity getById(int id) throws DAOException {
@@ -128,27 +132,7 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
     }
 
     @Override
-    public CustomerEntity getCustomerType(String customerType) throws DAOException {
-        CustomerEntity customer = null;
-        Session session = null;
-        try {
-            session = HibernateUtil.abrirSession();
-            customer = session.createQuery(GETBYCUSTOMERTYPE, CustomerEntity.class)
-                    .setParameter("customerType", customerType)
-                    .uniqueResult();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new DAOException("Error in Get Customer by Type", ex);
-        } finally {
-            if (session != null) {
-                HibernateUtil.cerrarSession(session);
-            }
-        }
-        return customer;
-    }
-
-    @Override
-    public List<CustomerEntity> getCustomerByType(String customerType) throws DAOException {
+    public ArrayList<CustomerEntity> getCustomerByType(CustomerType customerType) throws DAOException {
         List<CustomerEntity> customerList;
         Session session = null;
         try {
@@ -164,7 +148,8 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
                 HibernateUtil.cerrarSession(session);
             }
         }
-        return customerList;
+        ArrayList<CustomerEntity> customerArrayList = new ArrayList<>(customerList);
+        return customerArrayList;
     }
 
     @Override

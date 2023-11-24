@@ -81,13 +81,14 @@ public class CustomerEntity {
 
     @Basic
     @Column(name = "customerType", nullable = false)
-    private Object customerType;
+    @Enumerated(EnumType.STRING)
+    private CustomerType customerType;
 
-    public Object getCustomerType() {
+    public CustomerType getCustomerType() {
         return customerType;
     }
 
-    public void setCustomerType(Object customerType) {
+    public void setCustomerType(CustomerType customerType) {
         this.customerType = customerType;
     }
 

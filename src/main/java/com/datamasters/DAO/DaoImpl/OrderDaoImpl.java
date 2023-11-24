@@ -9,6 +9,7 @@ import com.datamasters.modelo.*;
 import org.hibernate.Session;
 import java.sql.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +96,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     }
 
     @Override
-    public List<OrdersEntity> getAll() throws DAOException {
+    public ArrayList<OrdersEntity> getAll() throws DAOException {
         List<OrdersEntity> orderList;
         Session session = null;
         try {
@@ -109,49 +110,9 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
                 HibernateUtil.cerrarSession(session);
             }
         }
-        return orderList;
+        ArrayList<OrdersEntity> orderArrayList = new ArrayList<>(orderList);
+        return orderArrayList;
     }
-
-    public Orders convertir(ResultSet rs) throws DAOException {
-        Customer c = null;
-        try {
-            String name = rs.getString("name");
-            String address = rs.getString("address");
-            String id = rs.getString("id");
-            String email = rs.getString("email");
-            String customerType = rs.getString("customerType");
-            double membershipFee = rs.getDouble("membershipFee");
-            double shippingDiscount = rs.getDouble("shippingDiscount");
-            int orderNumber = rs.getInt("orderNumber");
-            int quantityUnits = rs.getInt("quantityUnits");
-            Timestamp orderDateTimeTimestamp = rs.getTimestamp("orderDateTime");
-            LocalDateTime orderDateTime = orderDateTimeTimestamp.toLocalDateTime();
-            String code = rs.getString("code");
-            String description = rs.getString("description");
-            double sellingPrice = rs.getDouble("sellingPrice");
-            double shippingCost = rs.getDouble("shippingCost");
-            int preparationTimeMinutes = rs.getInt("preparationTimeMinutes");
-
-            Item it = new Item(code, description, sellingPrice, shippingCost, preparationTimeMinutes);
-
-            if (customerType.equals("PREMIUM")) {
-
-                c = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
-            } else {
-                c = new StandardCustomer(name, address, id, email);
-            }
-            Orders order = new Orders(orderNumber, c, it, quantityUnits, orderDateTime);
-
-            return order;
-
-        } catch (SQLException e) {
-            e.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Can't converted");
-        }
-    }
-
-
-
     @Override
     public OrdersEntity getById(int id) throws DAOException {
         OrdersEntity order = null;
@@ -179,13 +140,23 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public boolean orderIsSent(int id) throws DAOException {
-        // TODO: Implementar lógica para verificar si el pedido está enviado
+        OrdersEntity orderEntity = getById(id);
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (orderEntity != null) {
+            LocalDateTime cutoffTime = orderEntity.getOrderDateTime().toLocalDateTime().plusMinutes(orderEntity.getPreparationTimeMinutes());
+            return currentTime.isAfter(cutoffTime);
+        }
         return false;
     }
 
     @Override
     public boolean orderIsCancelable(int id) throws DAOException {
-        // TODO: Implementar lógica para verificar si el pedido se puede cancelar
+        OrdersEntity orderEntity = getById(id);
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (orderEntity != null) {
+            LocalDateTime cutoffTime = orderEntity.getOrderDateTime().toLocalDateTime().plusMinutes(orderEntity.getPreparationTimeMinutes());
+            return currentTime.isBefore(cutoffTime);
+        }
         return false;
     }
 

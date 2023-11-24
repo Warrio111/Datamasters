@@ -12,6 +12,12 @@ public class OrdersEntity {
     @Id
     @jakarta.persistence.Column(name = "orderNumber", nullable = false)
     private int orderNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Customer_id", referencedColumnName = "id",insertable = true, updatable = false)
+    private CustomerEntity customer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Item_code", referencedColumnName = "code",insertable = true, updatable = false)
+    private ItemEntity item;
 
     public int getOrderNumber() {
         return orderNumber;
@@ -122,5 +128,26 @@ public class OrdersEntity {
                 ", customerId=" + customerId +
                 ", itemCode=" + itemCode +
                 '}';
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
+        if (customer != null) {
+            this.customerId = customer.getId();
+        }
+    }
+
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setItem(ItemEntity item) {
+        this.item = item;
+        if (item != null) {
+            this.itemCode = item.getCode();
+        }
+    }
+    public ItemEntity getItem() {
+        return item;
     }
 }

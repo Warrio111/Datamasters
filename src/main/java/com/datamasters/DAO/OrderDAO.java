@@ -1,7 +1,7 @@
 package com.datamasters.DAO;
 
 import com.datamasters.modelo.OrdersEntity;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public interface OrderDAO extends DAO <OrdersEntity>{
@@ -31,7 +31,7 @@ public interface OrderDAO extends DAO <OrdersEntity>{
      * @throws DAOException
      */
     @Override
-    List<OrdersEntity> getAll() throws DAOException;
+    ArrayList<OrdersEntity> getAll() throws DAOException;
 
     /**
      * @param id
