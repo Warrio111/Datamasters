@@ -5,7 +5,6 @@ import com.datamasters.modelo.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.Assert.*;
 import java.sql.SQLException;
@@ -19,34 +18,24 @@ public class TestController {
     private CustomerEntity premiumCustomer;
 
     @Before
-    public void setUp() throws DAOException {
+    public void setUpEach() throws DAOException {
         controller = new Controller();
-        CustomerEntity standardCustomer= new CustomerEntity();
-        CustomerEntity premiumCustomer = new CustomerEntity();
+         standardCustomer = new CustomerEntity();
+         premiumCustomer = new CustomerEntity();
         standardCustomer.setName("John Doe");
         standardCustomer.setAddress("123 Main St");
         standardCustomer.setId(6);
         standardCustomer.setEmail("john@example.com");
+        standardCustomer.setMembershipFee(0);
+        standardCustomer.setShippingDiscount(0);
+        standardCustomer.setCustomerType(CustomerType.STANDARD);
         premiumCustomer.setName("Jane Smith");
         premiumCustomer.setAddress("456 Oak St");
         premiumCustomer.setId(7);
         premiumCustomer.setEmail("jane@gmail.com");
         premiumCustomer.setMembershipFee(1000.0);
         premiumCustomer.setShippingDiscount(0.1);
-    }
-    @BeforeEach
-    public void setUpEach() throws DAOException {
-        controller = new Controller();
-        CustomerEntity standardCustomer= new CustomerEntity();
-        CustomerEntity premiumCustomer = new CustomerEntity();
-        standardCustomer.setName("John Doe");
-        standardCustomer.setAddress("123 Main St");
-        standardCustomer.setId(6);
-        standardCustomer.setEmail("john@example.com");
-        premiumCustomer.setName("Jane Smith");
-        premiumCustomer.setAddress("456 Oak St");
-        premiumCustomer.setId(7);
-        premiumCustomer.setEmail("jane@gmail.com");
+        premiumCustomer.setCustomerType(CustomerType.PREMIUM);
         premiumCustomer.setMembershipFee(1000.0);
         premiumCustomer.setShippingDiscount(0.1);
     }
@@ -181,7 +170,6 @@ public class TestController {
         controller.addCustomer(standardCustomer);
         standardCustomer.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         OrdersEntity order = new OrdersEntity();
-        order.setOrderNumber(1);
         order.setCustomer(standardCustomer);
         order.setItem(item);
         order.setQuantityUnits(3);
@@ -205,7 +193,6 @@ public class TestController {
         controller.addCustomer(standardCustomer);
         standardCustomer.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         OrdersEntity order = new OrdersEntity();
-        order.setOrderNumber(1);
         order.setCustomer(standardCustomer);
         order.setItem(item);
         order.setQuantityUnits(3);
@@ -284,7 +271,6 @@ public class TestController {
         item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
         standardCustomer.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         OrdersEntity order = new OrdersEntity();
-        order.setOrderNumber(1);
         order.setCustomer(standardCustomer);
         order.setItem(item);
         order.setQuantityUnits(3);
@@ -310,6 +296,9 @@ public class TestController {
         customer1.setAddress("123 Main St");
         customer1.setId(1);
         customer1.setEmail("john@example.com");
+        customer1.setCustomerType(CustomerType.STANDARD);
+        customer1.setMembershipFee(0);
+        customer1.setShippingDiscount(0);
         controller.addCustomer(customer1);
         customer1.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         CustomerEntity customer2 = new CustomerEntity();
@@ -317,6 +306,9 @@ public class TestController {
         customer2.setAddress("456 Elm St");
         customer2.setId(2);
         customer2.setEmail("jane@example.com");
+        customer2.setCustomerType(CustomerType.PREMIUM);
+        customer2.setMembershipFee(1000.0);
+        customer2.setShippingDiscount(0.1);
         controller.addCustomer(customer2);
         customer2.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         ItemEntity item = new ItemEntity();
@@ -328,17 +320,23 @@ public class TestController {
         controller.addItem(item);
         item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
         OrdersEntity order1 = new OrdersEntity();
-        order1.setOrderNumber(1);
+
         order1.setCustomer(standardCustomer);
         order1.setItem(item);
         order1.setQuantityUnits(3);
         order1.setOrderDateTime(Timestamp.valueOf(LocalDateTime.now().plusSeconds(1)));
+        order1.setPreparationTimeMinutes(item.getPreparationTimeMinutes()*order1.getQuantityUnits());
+        order1.setCustomerId(customer1.getId());
+        order1.setItemCode(item.getCode());
         OrdersEntity order2 = new OrdersEntity();
-        order2.setOrderNumber(2);
+
         order2.setCustomer(standardCustomer);
         order2.setItem(item);
         order2.setQuantityUnits(3);
         order2.setOrderDateTime(Timestamp.valueOf(LocalDateTime.now().plusSeconds(1)));
+        order2.setPreparationTimeMinutes(item.getPreparationTimeMinutes()*order2.getQuantityUnits());
+        order2.setCustomerId(customer2.getId());
+        order2.setItemCode(item.getCode());
         controller.addOrder(order1);
         order1.setOrderNumber(controller.getOrders().get(controller.getOrders().size() -1).getOrderNumber());
         controller.addOrder(order2);
@@ -358,12 +356,17 @@ public class TestController {
         customer1.setAddress("123 Main St");
         customer1.setId(1);
         customer1.setEmail("john@example.com");
-
+        customer1.setCustomerType(CustomerType.STANDARD);
+        customer1.setMembershipFee(0);
+        customer1.setShippingDiscount(0);
         CustomerEntity customer2 = new CustomerEntity();
         customer2.setName("Jane Smith");
         customer2.setAddress("456 Elm St");
         customer2.setId(2);
         customer2.setEmail("jane@example.com");
+        customer2.setCustomerType(CustomerType.PREMIUM);
+        customer2.setMembershipFee(1000.0);
+        customer2.setShippingDiscount(0.1);
         controller.addCustomer(customer1);
         customer1.setId(controller.getCustomers().get(controller.getCustomers().size() -1).getId());
         controller.addCustomer(customer2);
@@ -377,17 +380,17 @@ public class TestController {
         controller.addItem(item);
         item.setCode(controller.getItems().get(controller.getItems().size() -1).getCode());
         OrdersEntity order1 = new OrdersEntity();
-        order1.setOrderNumber(1);
-        order1.setCustomer(customer1);
-        order1.setItem(item);
+        order1.setCustomerId(customer1.getId());
+        order1.setItemCode(item.getCode());
         order1.setQuantityUnits(3);
         order1.setOrderDateTime(Timestamp.valueOf(LocalDateTime.now().minusMinutes(100)));
+        order1.setPreparationTimeMinutes(item.getPreparationTimeMinutes());
 
         OrdersEntity order2 = new OrdersEntity();
-        order2.setOrderNumber(2);
-        order2.setCustomer(customer2);
-        order2.setItem(item);
+        order2.setCustomerId(customer2.getId());
+        order2.setItemCode(item.getCode());
         order2.setQuantityUnits(3);
+        order2.setPreparationTimeMinutes(item.getPreparationTimeMinutes());
         order2.setOrderDateTime(Timestamp.valueOf(LocalDateTime.now().plusMinutes(100)));
 
         controller.addOrder(order1);

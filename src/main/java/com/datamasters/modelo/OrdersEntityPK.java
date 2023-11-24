@@ -1,3 +1,4 @@
+/*
 package com.datamasters.modelo;
 
 import jakarta.persistence.Column;
@@ -10,15 +11,12 @@ import java.io.Serializable;
 public class OrdersEntityPK implements Serializable {
     @Column(name = "orderNumber")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderNumber;
     @Column(name = "Customer_id")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int customerId;
     @Column(name = "Item_code")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int itemCode;
 
     public int getOrderNumber() {
@@ -76,3 +74,4 @@ public class OrdersEntityPK implements Serializable {
                 '}';
     }
 }
+*/

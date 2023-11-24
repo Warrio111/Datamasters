@@ -66,6 +66,7 @@ public class ManageOS {
                 break;
             case 2:
                 removeItem();
+                break;
             case 3:
                 showItems();
                 break;
@@ -132,10 +133,7 @@ public class ManageOS {
     }
 
     private void addItems() {
-        System.out.print("Enter Item code: ");
-        int code = scanner.nextInt();
         System.out.print("Enter Item description: ");
-        scanner.nextLine(); // Consume the newline character
         String description = scanner.nextLine();
         System.out.print("Enter selling price: ");
         double sellingPrice = scanner.nextDouble();
@@ -144,7 +142,6 @@ public class ManageOS {
         System.out.print("Enter preparation time (minutes): ");
         int preparationTimeMinutes = scanner.nextInt();
         ItemEntity item = new ItemEntity();
-        item.setCode(code);
         item.setDescription(description);
         item.setSellingPrice(sellingPrice);
         item.setShippingCost(shippingCost);
@@ -175,11 +172,8 @@ public class ManageOS {
     private void addCustomer() {
         System.out.print("Enter customer name: ");
         String name = scanner.nextLine();
-        scanner.nextLine();
         System.out.print("Enter customer address: ");
         String address = scanner.nextLine();
-        System.out.print("Enter customer ID: ");
-        int id = scanner.nextInt();
         System.out.print("Enter customer email: ");
         String email = scanner.nextLine();
         System.out.print("Enter customer type (STANDARD or PREMIUM): ");
@@ -190,13 +184,11 @@ public class ManageOS {
                 CustomerEntity customer = new CustomerEntity();
                 customer.setName(name);
                 customer.setAddress(address);
-                customer.setId(id);
                 customer.setEmail(email);
                 customer.setCustomerType(CustomerType.STANDARD);
                 customer.setMembershipFee(0);
                 customer.setShippingDiscount(0);
                 controller.addCustomer(customer);
-                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("Standard customer added successfully.");
             } else if (customerType == CustomerType.PREMIUM) {
                 System.out.print("Enter membership fee: ");
@@ -206,13 +198,11 @@ public class ManageOS {
                 CustomerEntity customer = new CustomerEntity();
                 customer.setName(name);
                 customer.setAddress(address);
-                customer.setId(id);
                 customer.setEmail(email);
                 customer.setCustomerType(CustomerType.PREMIUM);
                 customer.setMembershipFee(membershipFee);
                 customer.setShippingDiscount(shippingDiscount);
                 controller.addCustomer(customer);
-                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("Premium customer added successfully.");
             } else {
                 System.out.println("Invalid customer type. Please try again.");
@@ -259,9 +249,6 @@ public class ManageOS {
     }
 
     private void addOrder() throws DAOException, SQLException {
-        System.out.print("Enter order number: ");
-        int orderNumber = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
 
         System.out.print("Enter customer ID: ");
         int customerId = scanner.nextInt();
@@ -269,6 +256,7 @@ public class ManageOS {
 
         if (customer == null) {
             System.out.println("Customer not found. Please add the customer details.");
+            scanner.nextLine(); // Consume the newline character
             addCustomer();
             customer = controller.getCustomers().get(controller.getCustomers().size()-1);
         }
@@ -291,10 +279,10 @@ public class ManageOS {
 
         LocalDateTime orderDateTime = LocalDateTime.now();
         OrdersEntity order = new OrdersEntity();
-        order.setOrderNumber(orderNumber);
-        order.setCustomer(customer);
-        order.setItem(item);
+        order.setItemCode(item.getCode());
+        order.setCustomerId(customer.getId());
         order.setQuantityUnits(quantityUnits);
+        order.setPreparationTimeMinutes(item.getPreparationTimeMinutes());
         order.setOrderDateTime(Timestamp.valueOf(orderDateTime));
         controller.addOrder(order);
         System.out.println("Order added successfully.");

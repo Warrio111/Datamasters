@@ -1,5 +1,6 @@
 package com.datamasters.modelo;
 
+
 import jakarta.persistence.*;
 
 @Entity

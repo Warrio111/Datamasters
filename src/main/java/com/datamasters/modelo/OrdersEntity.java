@@ -5,18 +5,18 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@jakarta.persistence.Table(name = "orders", schema = "onlinestore")
-@IdClass(OrdersEntityPK.class)
+@Table(name = "orders", schema = "onlinestore")
+//@IdClass(OrdersEntityPK.class)
 public class OrdersEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @jakarta.persistence.Column(name = "orderNumber", nullable = false)
+    @jakarta.persistence.Column(name = "orderNumber", insertable = true, nullable = false)
     private int orderNumber;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Customer_id", referencedColumnName = "id",insertable = true, updatable = false)
+    @JoinColumn(name = "Customer_id", referencedColumnName = "id",insertable = false, updatable = false)
     private CustomerEntity customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Item_code", referencedColumnName = "code",insertable = true, updatable = false)
+    @JoinColumn(name = "Item_code", referencedColumnName = "code",insertable = false, updatable = false)
     private ItemEntity item;
 
     public int getOrderNumber() {
@@ -60,11 +60,11 @@ public class OrdersEntity {
     }
 
     public void setPreparationTimeMinutes(int preparationTimeMinutes) {
-        this.preparationTimeMinutes = preparationTimeMinutes;
+        this.preparationTimeMinutes = preparationTimeMinutes*this.quantityUnits;
     }
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
+
+
     @Column(name = "Customer_id", nullable = false)
     private int customerId;
 
@@ -76,8 +76,8 @@ public class OrdersEntity {
         this.customerId = customerId;
     }
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
+
+
     @Column(name = "Item_code", nullable = false)
     private int itemCode;
 

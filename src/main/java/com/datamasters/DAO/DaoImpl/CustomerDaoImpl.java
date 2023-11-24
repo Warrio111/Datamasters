@@ -97,9 +97,13 @@ public class CustomerDaoImpl extends DAOFactory implements CustomerDAO {
         Session session = null;
         try {
             session = HibernateUtil.abrirSession();
+            session.beginTransaction();
             list = session.createQuery(GETALL, CustomerEntity.class).list();
+            session.getTransaction().commit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
             throw new DAOException("Error in Get All Customers", ex);
         } finally {
             if (session != null) {

@@ -17,6 +17,7 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     private final String GETALL = "FROM OrdersEntity o JOIN FETCH o.customer JOIN FETCH o.item";
     private final String GETBYID = "FROM OrdersEntity o JOIN FETCH o.customer JOIN FETCH o.item WHERE o.orderNumber = :id";
 
+
     @Override
     public CustomerDAO getCustomerDAO() {
         return null;
