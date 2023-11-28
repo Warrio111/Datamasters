@@ -2,6 +2,8 @@ package com.datamasters.DAO.DaoImpl;
 
 import com.datamasters.DAO.*;
 import com.datamasters.modelo.*;
+import jdk.jshell.execution.Util;
+
 import java.util.ArrayList;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -172,32 +174,19 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
     public Orders convertir(ResultSet rs) throws DAOException {
         Customer c = null;
         try {
-            String name = rs.getString("name");
-            String address = rs.getString("address");
-            String id = rs.getString("id");
-            String email = rs.getString("email");
-            String customerType = rs.getString("customerType");
-            double membershipFee = rs.getDouble("membershipFee");
-            double shippingDiscount = rs.getDouble("shippingDiscount");
             int orderNumber = rs.getInt("orderNumber");
             int quantityUnits = rs.getInt("quantityUnits");
             Timestamp orderDateTimeTimestamp = rs.getTimestamp("orderDateTime");
             LocalDateTime orderDateTime = orderDateTimeTimestamp.toLocalDateTime();
-            String code = rs.getString("code");
-            String description = rs.getString("description");
-            double sellingPrice = rs.getDouble("sellingPrice");
-            double shippingCost = rs.getDouble("shippingCost");
             int preparationTimeMinutes = rs.getInt("preparationTimeMinutes");
+            int customerID = rs.getInt("Customer_id");
+            int itemCode = rs.getInt("Item_code");
+            UtilityMySqlDAOFactory dao = new UtilityMySqlDAOFactory();
+            Item it = dao.getItemDAO().getById(itemCode);
+            Customer customer = dao.getCustomerDAO().getById(customerID);
 
-            Item it = new Item(code, description, sellingPrice, shippingCost, preparationTimeMinutes);
 
-            if (customerType.equals("PREMIUM")) {
-
-                c = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
-            } else {
-                c = new StandardCustomer(name, address, id, email);
-            }
-            Orders order = new Orders(orderNumber, c, it, quantityUnits, orderDateTime);
+            Orders order = new Orders(orderNumber, customer, it, quantityUnits, orderDateTime);
 
             return order;
 

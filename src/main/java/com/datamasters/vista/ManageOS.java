@@ -29,7 +29,7 @@ public class ManageOS {
                     "3. Manage Orders\n" +
                     "0. Exit\n" +
                     "==========================\n" +
-                    "Ingrese su eleccion: ");
+                    "Add Your Selection: ");
             int choice = scanner.nextInt();
             System.out.println("\n----------------------------");
             scanner.nextLine(); // Consume the newline character
@@ -57,7 +57,7 @@ public class ManageOS {
     }
 
     private void manageItems() throws DAOException {
-        System.out.print("\n========== Menu Articulos ==========\n" +
+        System.out.print("\n========== Menu Item ==========\n" +
                 "1. Add Item\n" +
                 "2. Delete Item\n" +
                 "3. Show Item\n" +
@@ -83,7 +83,7 @@ public class ManageOS {
     }
 
     private void manageCustomers() throws DAOException, SQLException {
-        System.out.print("\n========== Menu Clientes ==========\n" +
+        System.out.print("\n========== Menu Customer ==========\n" +
                 "1. Add Customer\n" +
                 "2. Delete Customer\n" +
                 "3. Show Customers\n" +
@@ -117,7 +117,7 @@ public class ManageOS {
     }
 
     private void manageOrders() throws DAOException, SQLException {
-        System.out.print("\n========== Menu Pedidos ==========\n" +
+        System.out.print("\n========== Menu Orders ==========\n" +
                 "1. Add Order\n" +
                 "2. Delete Order\n" +
                 "3. Show Pending Orders\n" +
@@ -148,20 +148,28 @@ public class ManageOS {
     }
 
     private void addItems() {
-        System.out.print("Enter Item code: ");
-        String code = scanner.nextLine();
-        System.out.print("Enter Item description: ");
-        String description = scanner.nextLine();
-        System.out.print("Enter selling price: ");
-        double sellingPrice = scanner.nextDouble();
-        System.out.print("Enter shipping cost: ");
-        double shippingCost = scanner.nextDouble();
-        System.out.print("Enter preparation time (minutes): ");
-        int preparationTimeMinutes = scanner.nextInt();
+        try {
+            String code = "1";
+            if(!controller.getItems().isEmpty())
+            code= controller.getItems().get(controller.getItems().size()-1).getCode();
+            code = String.valueOf(Integer.parseInt(code)+1);
+            System.out.print("Enter Item description: ");
+            String description = scanner.nextLine();
+            System.out.print("Enter selling price: ");
+            double sellingPrice = scanner.nextDouble();
+            System.out.print("Enter shipping cost: ");
+            double shippingCost = scanner.nextDouble();
+            System.out.print("Enter preparation time (minutes): ");
+            int preparationTimeMinutes = scanner.nextInt();
 
-        Item item = new Item(code, description, sellingPrice, shippingCost, preparationTimeMinutes);
-        controller.addItem(item);
-        System.out.println("Item added successfully.");
+            Item item = new Item(code, description, sellingPrice, shippingCost, preparationTimeMinutes);
+            controller.addItem(item);
+            System.out.println("Item added successfully.");
+        }
+        catch (Exception ex){
+            exceptionHandler.handleException(ex);
+        }
+
     }
     public void removeItem() throws DAOException {
         System.out.println("Enter code of Item to delete");
@@ -188,28 +196,30 @@ public class ManageOS {
         String name = scanner.nextLine();
         System.out.print("Enter customer address: ");
         String address = scanner.nextLine();
-        System.out.print("Enter customer ID: ");
-        String id = scanner.nextLine();
         System.out.print("Enter customer email: ");
         String email = scanner.nextLine();
         System.out.print("Enter customer type (STANDARD or PREMIUM): ");
 
         try {
             CustomerType customerType = CustomerType.valueOf(scanner.nextLine().toUpperCase());
+            String id = "1";
             if (customerType == CustomerType.STANDARD) {
+                if (!controller.getCustomers().isEmpty())
+                id= controller.getCustomers().get(controller.getCustomers().size()-1).getId();
+                id = String.valueOf(Integer.parseInt(id)+1);
                 Customer customer = new StandardCustomer(name, address, id, email);
                 controller.addCustomer(customer);
-                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("\nStandard customer added successfully.");
             } else if (customerType == CustomerType.PREMIUM) {
                 System.out.print("Enter membership fee: ");
                 double membershipFee = scanner.nextDouble();
                 System.out.print("Enter shipping discount: ");
                 double shippingDiscount = scanner.nextDouble();
-
+                if (!controller.getCustomers().isEmpty())
+                id = controller.getCustomers().get(controller.getCustomers().size()-1).getId();
+                id = String.valueOf(Integer.parseInt(id)+1);
                 Customer customer = new PremiumCustomer(name, address, id, email, membershipFee, shippingDiscount);
                 controller.addCustomer(customer);
-                customer.setId(controller.getCustomers().get(controller.getCustomers().size()-1).getId());
                 System.out.println("\nPremium customer added successfully.");
             } else {
                 System.out.println("Invalid customer type. Please try again.");
@@ -273,41 +283,48 @@ public class ManageOS {
     }
 
     private void addOrder() throws DAOException, SQLException {
-        System.out.print("Enter order number: ");
-        int orderNumber = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
 
-        System.out.print("Enter customer ID: ");
-        String customerId = scanner.nextLine();
-        Customer customer = controller.findCustomerById(customerId);
 
-        if (customer == null) {
-            System.out.println("Customer not found. Please add the customer details.");
-            addCustomer();
-            customer = controller.getCustomers().get(controller.getCustomers().size()-1);
-        }
-        scanner.nextLine(); // Consume the newline character
-        System.out.print("Enter item code: ");
-        String itemCode = scanner.nextLine();
-        Item item = controller.findItemByCode(itemCode);
+        try {
+            System.out.print("Enter customer ID: ");
+            String customerId = scanner.nextLine();
+            Customer customer = controller.findCustomerById(customerId);
 
-        if (item == null) {
-            System.out.println("Product not found. Please add the product details.");
+            if (customer == null) {
+                System.out.println("Customer not found. Please add the customer details.");
+                addCustomer();
+                customer = controller.getCustomers().get(controller.getCustomers().size()-1);
+            }
             scanner.nextLine(); // Consume the newline character
-            addItems();
-            item = controller.getItems().get(controller.getItems().size()-1);
+            System.out.print("Enter item code: ");
+            String itemCode = scanner.nextLine();
+            Item item = controller.findItemByCode(itemCode);
 
+            if (item == null) {
+                System.out.println("Product not found. Please add the product details.");
+                scanner.nextLine(); // Consume the newline character
+                addItems();
+                item = controller.getItems().get(controller.getItems().size()-1);
+
+            }
+
+            System.out.print("Enter quantity of units: ");
+            int quantityUnits = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            LocalDateTime orderDateTime = LocalDateTime.now();
+            int orderNumber = 1;
+            if(!controller.getOrders().isEmpty())
+            {
+                orderNumber= controller.getOrders().get(controller.getOrders().size()-1).getOrderNumber();
+                orderNumber++;
+            }
+            Orders order = new Orders(orderNumber, customer, item, quantityUnits, orderDateTime);
+            controller.addOrder(order);
+            System.out.println("Order added successfully.");
+        }catch (Exception ex) {
+            exceptionHandler.handleException(ex);
         }
-
-        System.out.print("Enter quantity of units: ");
-        int quantityUnits = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
-
-        LocalDateTime orderDateTime = LocalDateTime.now();
-
-        Orders order = new Orders(orderNumber, customer, item, quantityUnits, orderDateTime);
-        controller.addOrder(order);
-        System.out.println("Order added successfully.");
     }
 
     private void deleteOrder() throws DAOException {
