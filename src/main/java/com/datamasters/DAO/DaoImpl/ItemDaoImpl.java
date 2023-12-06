@@ -1,30 +1,20 @@
 package com.datamasters.DAO.DaoImpl;
 import com.datamasters.DAO.*;
-import com.datamasters.modelo.Customer;
-import com.datamasters.modelo.Item;
-import com.datamasters.modelo.List;
 
-import com.datamasters.modelo.Orders;
+
+import com.datamasters.modelo.ItemEntity;
+import com.datamasters.modelo.OrdersEntity;
+import org.hibernate.Session;
 
 import java.sql.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDaoImpl extends DAOFactory implements ItemDAO {
-    public final String INSERT = "INSERT INTO Item(description,sellingPrice,shippingCost,preparationTimeMinutes) VALUES(?,?,?,?)";
-    public final String UPDATE = "UPDATE Item SET description = ?, sellingPrice = ?, shippingCost = ?,preparationTimeMinutes = ? WHERE code=?";
-    public final String DELETE = "DELETE FROM Item WHERE code= ?";
-    public final String GETALL= "SELECT * FROM Item";
-    public final String GETBYID= "SELECT * FROM Item WHERE code = ?;";
-    PreparedStatement statement = null;
-
-    CallableStatement callableStatement = null;
-    ResultSet resultSet = null;
-    Orders order = null;
-  
-    public ItemDaoImpl() throws DAOException {
-        getDAOFactory(1);
-    }
+    private final String GETALL = "FROM ItemEntity";
+    private final String GETBYID = "FROM ItemEntity WHERE code = :code";
+    OrdersEntity order = null;
 
     /**
      * @return
@@ -51,35 +41,31 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     }
 
     /**
-     * @param c
+     * @param item
      * @throws DAOException
      */
     @Override
-    public void insert(Item c) throws DAOException {
-
+    public void insert(ItemEntity item) throws DAOException {
+        Session session = null;
         try {
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.save(item);
+            session.getTransaction().commit();
 
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call InsertItem(?,?,?,?)}");
-            callableStatement.setString(1, c.getDescription());
-            callableStatement.setDouble(2, c.getSellingPrice());
-            callableStatement.setDouble(3, c.getShippingCost());
-            callableStatement.setInt(4, c.getPreparationTimeMinutes());
-
-
-            callableStatement.execute();
-
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            if (session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
             ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
+            throw new DAOException("Error in Insert ItemMethod", ex);
 
         } finally {
 
-            if (callableStatement != null) {
+            if (session != null) {
                 try {
-                    callableStatement.close();
-                } catch (SQLException e) {
+                    HibernateUtil.cerrarSession(session);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
 
                 }
@@ -88,129 +74,75 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
     }
 
     /**
-     * @param c
+     * @param item
      * @throws DAOException
      */
     @Override
-    public void update(Item c) throws DAOException {
-
-
-
+    public void update(ItemEntity item) throws DAOException {
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call UpdatetItem(?,?,?,?,?)}");
-            callableStatement.setString(1, c.getDescription());
-            callableStatement.setDouble(2, c.getSellingPrice());
-            callableStatement.setDouble(3, c.getShippingCost());
-            callableStatement.setInt(4, c.getPreparationTimeMinutes());
-            callableStatement.setString(5, c.getCode());
-
-            callableStatement.execute();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.update(item);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            ex.printStackTrace();
+            throw new DAOException("Error in Update ItemMethod", ex);
         } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
     }
-
     /**
-     * @param c
+     * @param item
      * @throws DAOException
      */
     @Override
-    public void remove(Item c) throws DAOException {
-
-
+    public void remove(ItemEntity item) throws DAOException {
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call DeleteItem(?)}");
-            callableStatement.setString(1, c.getCode());
-
-            callableStatement.execute();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
-        } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.remove(item);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
             }
-
+            ex.printStackTrace();
+            throw new DAOException("Error in Remove ItemMethod", ex);
+        } finally {
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
+            }
         }
     }
-    public Item convertir(ResultSet rs) throws DAOException{
-        Item it = null;
-        try {
 
-            String code = rs.getString("code");
-            String description = rs.getString("description");
-            double sellingPrice = rs.getDouble("sellingPrice");
-            double shippingCost = rs.getDouble("shippingCost");
-            int preparationTimeMinutes = rs.getInt("preparationTimeMinutes");
-
-            it = new Item(code,description,sellingPrice,shippingCost,preparationTimeMinutes);
-
-            return it;
-
-        } catch (SQLException e) {
-            e.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Can't converted");
-        }
-
-    }
     /**
      * @return
      * @throws DAOException
      */
     @Override
-    public List<Item> getAll() throws DAOException {
-        ResultSet rs = null;
-        List<Item> itemList = new List<>();
+    public ArrayList<ItemEntity> getAll() throws DAOException {
+        List<ItemEntity> itemList;
+        Session session = null;
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETALL);
-            rs = statement.executeQuery();
-            while (rs.next()) {
-                itemList.add(convertir(rs));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
+            session = HibernateUtil.abrirSession();
+            itemList = session.createQuery(GETALL, ItemEntity.class).list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get All Items", ex);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("Error in SQL", ex);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("Error in SQL", ex);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
-        return itemList;
+        ArrayList<ItemEntity> itemEntityArrayList = new ArrayList<>(itemList);
+        return itemEntityArrayList;
     }
 
 
@@ -220,34 +152,23 @@ public class ItemDaoImpl extends DAOFactory implements ItemDAO {
      * @throws DAOException
      */
     @Override
-    public Item getById(int id) throws DAOException {
-        ResultSet resultSet = null;
-        Item it = null;
-
+    public ItemEntity getById(int id) throws DAOException {
+        ItemEntity item = null;
+        Session session = null;
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETBYID);
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            Customer c = null;
-            if (resultSet.next()) {
-                it = convertir(resultSet);
-                System.out.println(it.toString());
-            } else {
-                throw new DAOException("Customer not found");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
+            session = HibernateUtil.abrirSession();
+            item = session.createQuery(GETBYID, ItemEntity.class)
+                    .setParameter("code", id)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get Item by Id", ex);
         } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
-        return it;
+        return item;
     }
 
 }

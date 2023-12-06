@@ -1,280 +1,136 @@
 package com.datamasters.DAO.DaoImpl;
-
 import com.datamasters.DAO.*;
+
+
+import com.datamasters.modelo.CustomerEntity;
+import com.datamasters.modelo.ItemEntity;
+import com.datamasters.modelo.OrdersEntity;
 import com.datamasters.modelo.*;
-import jdk.jshell.execution.Util;
-
-import java.util.ArrayList;
+import org.hibernate.Session;
 import java.sql.*;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDaoImpl extends DAOFactory implements OrderDAO {
-
-    public final String INSERT = "INSERT INTO Orders(quantityUnits,orderDateTime,preparationTimeMinutes,Customer_id,Item_code) VALUES(?,?,?,?,?)";
-
-    public final String UPDATE = "UPDATE ORDERS SET  quantityUnits = ?, orderDateTime = ?, preparationTimeMinutes= ?, Customer_id = ? Item_code = ? WHERE orderNumber = ?";
-
-    public final String DELETE = "DELETE FROM ORDERS WHERE Customer_id = ?";
-    public final String GETALL = "SELECT * FROM ORDERS\n " +
-            "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
-            "JOIN Item ON ORDERS.Item_code= Item.code\n";
-
-    // Consulta SQL para obtener el objeto Customer y el objeto Item
-    public final String objecItemCustomer = "SELECT * FROM Customer c " + "JOIN Item i ON c.id_Customer = i.customer_id " + "WHERE c.id_Customer = ?";
-
-    PreparedStatement statement = null;
-
-    CallableStatement callableStatement = null;
-    ResultSet resultSet = null;
-    Orders order = null;
+    private final String GETALL = "FROM OrdersEntity o JOIN FETCH o.customer JOIN FETCH o.item";
+    private final String GETBYID = "FROM OrdersEntity o JOIN FETCH o.customer JOIN FETCH o.item WHERE o.orderNumber = :id";
 
 
-    public final String GETBYID = "SELECT * FROM ORDERS\n" +
-            "JOIN Customer ON ORDERS.Customer_id = Customer.id\n" +
-            "JOIN Item ON ORDERS.Item_code = Item.code\n" +
-            "WHERE orderNumber = ?;";
-
-    /**
-     * @return
-     */
     @Override
     public CustomerDAO getCustomerDAO() {
         return null;
     }
 
-    /**
-     * @return
-     * @throws DAOException
-     */
     @Override
     public ItemDAO getItemDAO() throws DAOException {
         return null;
     }
 
-    /**
-     * @return
-     */
     @Override
     public OrderDAO getOrdersDAO() {
         return null;
     }
 
-    /**
-     * @param c
-     * @throws DAOException
-     */
     @Override
-    public void insert(Orders c) throws DAOException {
-
+    public void insert(OrdersEntity order) throws DAOException {
+        Session session = null;
         try {
-
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call InsertOrder(?,?,?,?,?)}");
-            callableStatement.setInt(1, c.getQuantityUnits());
-            Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-            callableStatement.setTimestamp(2, date);
-            callableStatement.setInt(3, c.getPreparationTimeMinutes());
-            callableStatement.setString(4, c.getCustomer().getId());
-            callableStatement.setString(5, c.getItem().getCode());
-
-            resultSet = callableStatement.executeQuery();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
-        } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.save(order);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
             }
-
+            ex.printStackTrace();
+            throw new DAOException("Error in Insert Order Method", ex);
+        } finally {
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
+            }
         }
     }
 
-    /**
-     * @param c
-     * @throws DAOException
-     */
     @Override
-    public void update(Orders c) throws DAOException {
-
-
+    public void update(OrdersEntity order) throws DAOException {
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call UpdateOrder(?,?,?,?,?,?)}");
-            callableStatement.setInt(1, c.getQuantityUnits());
-            Timestamp date = Timestamp.valueOf(c.getOrderDateTime());
-            callableStatement.setTimestamp(2, date);
-            callableStatement.setInt(3, c.getPreparationTimeMinutes());
-            callableStatement.setString(4, c.getCustomer().getId());
-            callableStatement.setString(5, c.getItem().getCode());
-            callableStatement.setInt(6, c.getOrderNumber());
-
-
-            resultSet = callableStatement.executeQuery();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
-        } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.update(order);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
             }
-
+            ex.printStackTrace();
+            throw new DAOException("Error in Update Order Method", ex);
+        } finally {
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
+            }
         }
     }
 
-    /**
-     * @param c
-     * @throws DAOException
-     */
     @Override
-    public void remove(Orders c) throws DAOException {
-
-
+    public void remove(OrdersEntity order) throws DAOException {
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call DeleteOrder(?)}");
-            callableStatement.setInt(1, c.getOrderNumber());
-
-            resultSet = callableStatement.executeQuery();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
-        } finally {
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            session = HibernateUtil.abrirSession();
+            session.beginTransaction();
+            session.remove(order);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session != null && session.getTransaction() != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
             }
-
+            ex.printStackTrace();
+            throw new DAOException("Error in Remove Order Method", ex);
+        } finally {
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
+            }
         }
     }
 
-    public Orders convertir(ResultSet rs) throws DAOException {
-        Customer c = null;
-        try {
-            int orderNumber = rs.getInt("orderNumber");
-            int quantityUnits = rs.getInt("quantityUnits");
-            Timestamp orderDateTimeTimestamp = rs.getTimestamp("orderDateTime");
-            LocalDateTime orderDateTime = orderDateTimeTimestamp.toLocalDateTime();
-            int preparationTimeMinutes = rs.getInt("preparationTimeMinutes");
-            int customerID = rs.getInt("Customer_id");
-            int itemCode = rs.getInt("Item_code");
-            UtilityMySqlDAOFactory dao = new UtilityMySqlDAOFactory();
-            Item it = dao.getItemDAO().getById(itemCode);
-            Customer customer = dao.getCustomerDAO().getById(customerID);
-
-
-            Orders order = new Orders(orderNumber, customer, it, quantityUnits, orderDateTime);
-
-            return order;
-
-        } catch (SQLException e) {
-            //e.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Can't converted",e);
-        }
-    }
-
-    /**
-     * @return
-     * @throws DAOException
-     */
     @Override
-    public List<Orders> getAll() throws DAOException {
-        ResultSet rs = null;
-        List<Orders> ordersList = new List<>();
+    public ArrayList<OrdersEntity> getAll() throws DAOException {
+        List<OrdersEntity> orderList;
+        Session session = null;
         try {
-            statement = UtilityMySqlDAOFactory.getConnection().prepareStatement(GETALL);
-            rs = statement.executeQuery();
-            while (rs.next()) {
-                ordersList.add(convertir(rs));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
+            session = HibernateUtil.abrirSession();
+            orderList = session.createQuery(GETALL, OrdersEntity.class).list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get All Orders", ex);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("Error in SQL", ex);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                    throw new DAOException("Error in SQL", ex);
-                }
-            }
-            return ordersList;
         }
+        ArrayList<OrdersEntity> orderArrayList = new ArrayList<>(orderList);
+        return orderArrayList;
     }
-
-    /**
-     * @param id
-     * @return
-     * @throws DAOException
-     */
     @Override
-    public Orders getById(int id) throws DAOException {
-
+    public OrdersEntity getById(int id) throws DAOException {
+        OrdersEntity order = null;
+        Session session = null;
         try {
-            Connection connection = UtilityMySqlDAOFactory.getConnection();
-
-            callableStatement = connection.prepareCall("{call orderById(?)}");
-            callableStatement.setInt(1, id);
-
-            resultSet = callableStatement.executeQuery();
-
-            if (resultSet.next()) {
-                order = convertir(resultSet);
-            } else {
-                throw new DAOException("Order not found");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // Imprimir detalles del error
-            throw new DAOException("Error in SQL", ex);
-
+            session = HibernateUtil.abrirSession();
+            order = session.createQuery(GETBYID, OrdersEntity.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Error in Get Order by Id", ex);
         } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if (callableStatement != null) {
-                try {
-                    callableStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            if (session != null) {
+                HibernateUtil.cerrarSession(session);
             }
         }
-
         return order;
     }
 
@@ -285,16 +141,23 @@ public class OrderDaoImpl extends DAOFactory implements OrderDAO {
      */
     @Override
     public boolean orderIsSent(int id) throws DAOException {
+        OrdersEntity orderEntity = getById(id);
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (orderEntity != null) {
+            LocalDateTime cutoffTime = orderEntity.getOrderDateTime().toLocalDateTime().plusMinutes(orderEntity.getPreparationTimeMinutes());
+            return currentTime.isAfter(cutoffTime);
+        }
         return false;
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws DAOException
-     */
     @Override
     public boolean orderIsCancelable(int id) throws DAOException {
+        OrdersEntity orderEntity = getById(id);
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (orderEntity != null) {
+            LocalDateTime cutoffTime = orderEntity.getOrderDateTime().toLocalDateTime().plusMinutes(orderEntity.getPreparationTimeMinutes());
+            return currentTime.isBefore(cutoffTime);
+        }
         return false;
     }
 

@@ -16,7 +16,7 @@ public abstract class DAOFactory {
     public  static  DAOFactory getDAOFactory(int whichFactory) throws DAOException{
         switch (whichFactory) {
             case MYSQL:
-                return new UtilityMySqlDAOFactory();
+                return new HibernateUtil();
             case ORACLE:
                 throw new DAOException("Oracle not implemented yet");
                 //return new OracleDAOFactory();
