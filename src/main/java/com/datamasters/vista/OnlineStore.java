@@ -1,43 +1,36 @@
 package com.datamasters.vista;
 
-import com.datamasters.DAO.DAOException;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.sql.SQLException;
+import java.io.IOException;
+import java.net.URL;
 
+public class OnlineStore extends Application {
 
-public class OnlineStore {
-	public static void main(String[] args) throws DAOException, SQLException {
+	@Override
+	public void start(Stage primaryStage) throws IOException {
+		URL resourceUrl = OnlineStore.class.getResource("/com.datamasters/vista/ManageOSFX.fxml");
 
-/*		Configuration configuration = new Configuration();
-		configuration.configure("hibernate.cfg.xml");
+		if (resourceUrl != null) {
+			System.out.println("Ruta del recurso ManageOSFX.fxml: " + resourceUrl.toExternalForm());
 
-		SessionFactory sessionFactory = configuration.buildSessionFactory();
-		Session session = sessionFactory.openSession();
+			FXMLLoader loader = new FXMLLoader(resourceUrl);
 
-		try {
-			Transaction transaction = session.beginTransaction();
+			Scene scene = new Scene(loader.load(), 800, 600);
+			primaryStage.setTitle("Hello Datamaster");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			// Resto de tu código para cargar la escena y mostrar la ventana
+		} else {
+			System.out.println("No se encontró el recurso ManageOSFX.fxml");
+		}
 
-			ItemEntity itemEntity = new ItemEntity();
-			itemEntity.setCode(300);
-			itemEntity.setDescription("Item 1");
-			itemEntity.setSellingPrice(100.0);
-			itemEntity.setShippingCost(10.0);
-			itemEntity.setPreparationTimeMinutes(10);
+	}
 
-			session.save(itemEntity);
-
-			transaction.commit();
-			System.out.println("ItemEntity saved successfully.....!!");
-		} catch (Exception e) {
-			if (session.getTransaction() != null && session.getTransaction().isActive()) {
-				session.getTransaction().rollback();
-			}
-			e.printStackTrace();
-		} finally {
-			session.close();
-			sessionFactory.close();
-		}*/
-		ManageOS manageOS = new ManageOS();
-		manageOS.run();
+	public static void main(String[] args) {
+		launch();
 	}
 }

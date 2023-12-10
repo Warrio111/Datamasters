@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.datamasters.vista.ManageOSFX"
+            prefHeight="600.0" prefWidth="800.0">
+    <children>
+        <MenuBar layoutX="235.0" layoutY="14.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="Manage Items">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#btnAddItemClick" text="AddItem" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnDeleteItemClick" text="DeleteItem" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnShowItemsClick" text="ShowItems" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Manage Customers">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#btnAddCustomerClick" text="AddCustomer" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnDeleteCustomerClick" text="DeleteCustomer" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnShowCustomersClick" text="ShowCustomers" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnShowCustomersStandardClick" text="ShowCustomersStandard" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnShowCustomersPremiumClick" text="ShowCustomersPremium" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Manage Orders">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#btnAddOrderClick" text="AddOrder" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnDeleteOrderClick" text="DeleteOrder" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnShowPendingOrdersClick" text="ShowPendingOrders" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnShowSentOrdersClick" text="ShowSentOrders" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </children>
+</AnchorPane>
