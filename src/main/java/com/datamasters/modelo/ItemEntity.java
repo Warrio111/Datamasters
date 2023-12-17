@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @jakarta.persistence.Table(name = "item", schema = "onlinestore")
-public class ItemEntity {
+public class ItemEntity implements EntityBase{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @jakarta.persistence.Column(name = "code", nullable = false)

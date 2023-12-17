@@ -23,7 +23,6 @@ public class OnlineStore extends Application {
 			primaryStage.setTitle("Hello Datamaster");
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			// Resto de tu código para cargar la escena y mostrar la ventana
 		} else {
 			System.out.println("No se encontró el recurso ManageOSFX.fxml");
 		}

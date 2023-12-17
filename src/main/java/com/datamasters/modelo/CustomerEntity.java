@@ -2,10 +2,13 @@ package com.datamasters.modelo;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Entity
 @jakarta.persistence.Table(name = "customer", schema = "onlinestore")
-public class CustomerEntity {
+public class CustomerEntity implements EntityBase{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @jakarta.persistence.Column(name = "id", nullable = false)
@@ -137,5 +140,17 @@ public class CustomerEntity {
                 ", shippingDiscount=" + shippingDiscount +
                 ", customerType=" + customerType +
                 '}';
+    }
+
+    public Set<String> getProperties() {
+        Set<String> properties = new HashSet<>();
+        properties.add("id");
+        properties.add("name");
+        properties.add("address");
+        properties.add("email");
+        properties.add("membershipFee");
+        properties.add("shippingDiscount");
+        properties.add("customerType");
+        return properties;
     }
 }

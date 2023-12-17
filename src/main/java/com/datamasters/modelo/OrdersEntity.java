@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "orders", schema = "onlinestore")
 //@IdClass(OrdersEntityPK.class)
-public class OrdersEntity {
+public class OrdersEntity implements EntityBase{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @jakarta.persistence.Column(name = "orderNumber", insertable = true, nullable = false)
