@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.datamasters.vista.ManageOSFX"
-            prefHeight="600.0" prefWidth="800.0">
+<?import javafx.scene.control.Button?>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.datamasters.vista.ManageOSFX">
     <children>
         <MenuBar layoutX="235.0" layoutY="14.0">
             <menus>
@@ -41,5 +45,102 @@
         </MenuBar>
         <TableView fx:id="tableView" layoutX="287.0" layoutY="153.0" prefHeight="327.0" prefWidth="482.0">
         </TableView>
+       <Label fx:id="lblAddCustomer" layoutX="45.0" layoutY="80.0" prefHeight="26.0" prefWidth="130.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Add Customer" visible="false" />
+        <GridPane fx:id="customerGridPane" layoutX="50.0" layoutY="150.0" visible="false">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="txtCustomerName" text="CustomerName" GridPane.rowIndex="0" />
+                <TextField fx:id="txtAddress" text="CustomerAddress" GridPane.rowIndex="1" />
+                <TextField fx:id="txtEmail" text="CustomerEmail" GridPane.rowIndex="2" />
+                <ComboBox fx:id="choiceCustomerType" prefHeight="26.0" prefWidth="270.0" GridPane.rowIndex="3" />
+                <TextField fx:id="txtMembershipFee" text="CustomerMemberShipFee" GridPane.rowIndex="4" />
+                <TextField fx:id="txtShippingDiscount" text="CustomerShippingDiscount" GridPane.rowIndex="5" />
+                <Button fx:id="btnConfirmAddCustomer" mnemonicParsing="false" onAction="#btnConfirmAddCustomerClick" text="Confirm Customer" GridPane.rowIndex="6" />
+            </children>
+        </GridPane>
+       <Label fx:id="lblAddOrder" layoutX="45.0" layoutY="80.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Add Order" visible="false" />
+        <GridPane fx:id="orderGridPane" layoutX="50.0" layoutY="150.0" visible="false">
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="txtCustomerId" text="CustomerId" GridPane.rowIndex="0" />
+                <TextField fx:id="txtItemCode" text="ItemCode" GridPane.rowIndex="1" />
+                <TextField fx:id="txtQuantityUnits" text="QuantityUnits" GridPane.rowIndex="2" />
+                <TextField fx:id="txtPreparationTimeMinutes" text="PreparationTimeMinutes" GridPane.rowIndex="3" />
+                <Button fx:id="btnConfirmAddItem" mnemonicParsing="false" onAction="#btnConfirmAddItemClick" text="Confirm Item" GridPane.rowIndex="4" />
+            </children>
+            <columnConstraints>
+                <ColumnConstraints />
+            </columnConstraints>
+        </GridPane>
+       <Label fx:id="lblAddItem" layoutX="45.0" layoutY="80.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Add Item" visible="false" />
+       <GridPane fx:id="itemGridPane" layoutX="50.0" layoutY="150.0" visible="false">
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" />
+         </rowConstraints>
+            <children>
+                <TextField fx:id="txtItemDescription" text="ItemDescription" GridPane.rowIndex="0" />
+                <TextField fx:id="txtSellingPrice" text="ItemSellingPrice" GridPane.rowIndex="1" />
+                <TextField fx:id="txtShippingCost" text="ItemShippingCost" GridPane.rowIndex="2" />
+                <TextField fx:id="txtPreparationTime" text="ItemPreparationTime" GridPane.rowIndex="3" />
+                <Button fx:id="btnConfirmAddOrder" mnemonicParsing="false" onAction="#btnConfirmAddItemClick" text="Confirm Order" GridPane.rowIndex="4" />
+            </children>
+         <columnConstraints>
+            <ColumnConstraints />
+         </columnConstraints>
+       </GridPane>
+        <Label fx:id="lblDeleteCustomer" layoutX="45.0" layoutY="80.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Delete Customer" visible="false" />
+        <GridPane fx:id="deleteCustomerPane" layoutX="50.0" layoutY="150.0" visible="false">
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="txtDeleteCustomerId" text="CustomerId" GridPane.rowIndex="0" />
+                <Button fx:id="btnConfirmDeleteCustomer" mnemonicParsing="false" onAction="#btnConfirmDeleteCustomerClick" text="Confirm Delete Customer" GridPane.rowIndex="1" />
+            </children>
+        </GridPane>
+        <Label fx:id="lblDeleteItem" layoutX="45.0" layoutY="80.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Delete Item" visible="false" />
+        <GridPane fx:id="deleteItemPane" layoutX="50.0" layoutY="150.0" visible="false">
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="txtItemCodeId" text="ItemCode" GridPane.rowIndex="0" />
+                <Button fx:id="btnConfirmDeleteItem" mnemonicParsing="false" onAction="#btnConfirmDeleteItemClick" text="Confirm Delete Item" GridPane.rowIndex="1" />
+            </children>
+        </GridPane>
+        <Label fx:id="lblDeleteOrder" layoutX="45.0" layoutY="80.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Delete Order" visible="false" />
+        <GridPane fx:id="deleteOrderPane" layoutX="50.0" layoutY="150.0" visible="false">
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="txtOrderId" text="OrderId" GridPane.rowIndex="0" />
+                <Button fx:id="btnConfirmDeleteOrder" mnemonicParsing="false" onAction="#btnConfirmDeleteOrderClick" text="Confirm Delete Order" GridPane.rowIndex="1" />
+            </children>
+        </GridPane>
     </children>
 </AnchorPane>

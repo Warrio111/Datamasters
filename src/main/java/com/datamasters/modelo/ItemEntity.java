@@ -3,6 +3,9 @@ package com.datamasters.modelo;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @jakarta.persistence.Table(name = "item", schema = "onlinestore")
 public class ItemEntity implements EntityBase{
@@ -106,5 +109,15 @@ public class ItemEntity implements EntityBase{
                 ", shippingCost=" + shippingCost +
                 ", preparationTimeMinutes=" + preparationTimeMinutes +
                 '}';
+    }
+
+    public Set<String> getProperties() {
+        Set<String> properties = new HashSet<>();
+        properties.add("code");
+        properties.add("description");
+        properties.add("sellingPrice");
+        properties.add("shippingCost");
+        properties.add("preparationTimeMinutes");
+        return properties;
     }
 }
