@@ -3,6 +3,8 @@ package com.datamasters.modelo;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders", schema = "onlinestore")
@@ -149,5 +151,16 @@ public class OrdersEntity implements EntityBase{
     }
     public ItemEntity getItem() {
         return item;
+    }
+
+    public Set<String> getProperties() {
+        Set<String> properties = new HashSet<>();
+        properties.add("orderNumber");
+        properties.add("quantityUnits");
+        properties.add("orderDateTime");
+        properties.add("preparationTimeMinutes");
+        properties.add("customerId");
+        properties.add("itemCode");
+        return properties;
     }
 }

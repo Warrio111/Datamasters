@@ -37,6 +37,7 @@
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#btnAddOrderClick" text="AddOrder" />
                         <MenuItem mnemonicParsing="false" onAction="#btnDeleteOrderClick" text="DeleteOrder" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnShowOrdersClick" text="ShowOrders" />
                         <MenuItem mnemonicParsing="false" onAction="#btnShowPendingOrdersClick" text="ShowPendingOrders" />
                         <MenuItem mnemonicParsing="false" onAction="#btnShowSentOrdersClick" text="ShowSentOrders" />
                     </items>
@@ -76,14 +77,12 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" />
             </rowConstraints>
             <children>
                 <TextField fx:id="txtCustomerId" text="CustomerId" GridPane.rowIndex="0" />
                 <TextField fx:id="txtItemCode" text="ItemCode" GridPane.rowIndex="1" />
                 <TextField fx:id="txtQuantityUnits" text="QuantityUnits" GridPane.rowIndex="2" />
-                <TextField fx:id="txtPreparationTimeMinutes" text="PreparationTimeMinutes" GridPane.rowIndex="3" />
-                <Button fx:id="btnConfirmAddItem" mnemonicParsing="false" onAction="#btnConfirmAddItemClick" text="Confirm Item" GridPane.rowIndex="4" />
+                <Button fx:id="btnConfirmAddOrder" mnemonicParsing="false" onAction="#btnConfirmAddOrderClick" text="Confirm Order" GridPane.rowIndex="3" />
             </children>
             <columnConstraints>
                 <ColumnConstraints />
@@ -103,7 +102,7 @@
                 <TextField fx:id="txtSellingPrice" text="ItemSellingPrice" GridPane.rowIndex="1" />
                 <TextField fx:id="txtShippingCost" text="ItemShippingCost" GridPane.rowIndex="2" />
                 <TextField fx:id="txtPreparationTime" text="ItemPreparationTime" GridPane.rowIndex="3" />
-                <Button fx:id="btnConfirmAddOrder" mnemonicParsing="false" onAction="#btnConfirmAddItemClick" text="Confirm Order" GridPane.rowIndex="4" />
+                <Button fx:id="btnConfirmAddItem" mnemonicParsing="false" onAction="#btnConfirmAddItemClick" text="Confirm Item" GridPane.rowIndex="4" />
             </children>
          <columnConstraints>
             <ColumnConstraints />
@@ -140,6 +139,28 @@
             <children>
                 <TextField fx:id="txtOrderId" text="OrderId" GridPane.rowIndex="0" />
                 <Button fx:id="btnConfirmDeleteOrder" mnemonicParsing="false" onAction="#btnConfirmDeleteOrderClick" text="Confirm Delete Order" GridPane.rowIndex="1" />
+            </children>
+        </GridPane>
+        <Label fx:id="lblShowPendingOrders" layoutX="45.0" layoutY="80.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Show Pending Orders" visible="false" />
+        <GridPane fx:id="showPendingOrdersPane" layoutX="50.0" layoutY="150.0" visible="false">
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="txtPendingCustomerID" text="CustomerID" GridPane.rowIndex="0" />
+                <Button fx:id="btnConfirmShowPendingOrders" mnemonicParsing="false" onAction="#btnConfirmShowPendingOrders" text="Show Pending Orders" GridPane.rowIndex="1" />
+            </children>
+        </GridPane>
+        <Label fx:id="lblShowSentOrders" layoutX="45.0" layoutY="80.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Show Sent Orders" visible="false" />
+        <GridPane fx:id="showSentOrdersPane" layoutX="50.0" layoutY="150.0" visible="false">
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="txtSentCustomerID" text="CustomerID" GridPane.rowIndex="0" />
+                <Button fx:id="btnConfirmShowSentOrders" mnemonicParsing="false" onAction="#btnConfirmShowSentOrders" text="Show Sent Orders" GridPane.rowIndex="1" />
             </children>
         </GridPane>
     </children>
