@@ -2,11 +2,10 @@ package com.datamasters.controlador;
 
 import com.datamasters.DAO.DAOException;
 import com.datamasters.modelo.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ public class TestController {
     private CustomerEntity standardCustomer;
     private CustomerEntity premiumCustomer;
 
-    @Before
+    @BeforeEach
     public void setUpEach() throws DAOException {
         controller = new Controller();
          standardCustomer = new CustomerEntity();
@@ -39,7 +38,7 @@ public class TestController {
         premiumCustomer.setMembershipFee(1000.0);
         premiumCustomer.setShippingDiscount(0.1);
     }
-    @After
+    @AfterEach
     public void tearDownEach() throws DAOException, SQLException {
         removeAllCustomers();
         removeAllItems();
